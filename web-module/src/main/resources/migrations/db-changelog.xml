@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="ROLE TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_ROLE">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_NAME" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="USER TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_USER">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_EMAIL" type="varchar(128)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="F_SURNAME" type="varchar(128)"/>
+            <column name="F_NAME" type="varchar(128)"/>
+            <column name="F_MIDDLE_NAME" type="varchar(128)"/>
+            <column name="F_PASSWORD" type="varchar(128)"/>
+            <column name="F_ROLE_ID" type="BIGINT"/>
+            <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK ROLE USER" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_ROLE_ID"
+                                 baseTableName="T_USER"
+                                 constraintName="FK_F_ROLE_F_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_ROLE"/>
+    </changeSet>
+
+    <changeSet id="REVIEW TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_REVIEW">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_USER_ID" type="BIGINT"/>
+            <column name="F_DESCRIPTION" type="BLOB"/>
+            <column name="F_CREATED" type="DATETIME"/>
+            <column name="F_HIDDEN" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK USER REVIEW" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_USER_ID"
+                                 baseTableName="T_REVIEW"
+                                 constraintName="FK_F_REVIEW_F_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="addColumn-Deleted ">
+        <addColumn tableName="T_REVIEW">
+            <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

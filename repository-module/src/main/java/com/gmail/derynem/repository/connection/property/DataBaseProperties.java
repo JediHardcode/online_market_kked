@@ -1,4 +1,4 @@
-package com.gmail.derynem.service.property;
+package com.gmail.derynem.repository.connection.property;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,8 +13,6 @@ public class DataBaseProperties {
     private String databaseUrl;
     @Value("${spring.datasource.driver-class-name}")
     private String databaseDriverName;
-    @Value("${spring.config.location}")
-    private String initialDataSql;
 
     public String getDatabasePassword() {
         return databasePassword;
@@ -30,9 +28,5 @@ public class DataBaseProperties {
 
     public String getDatabaseDriverName() {
         return databaseDriverName;
-    }
-
-    public String getInitialDataSql() {
-        return initialDataSql;
     }
 }

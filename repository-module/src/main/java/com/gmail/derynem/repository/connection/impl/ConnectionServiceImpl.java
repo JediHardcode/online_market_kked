@@ -1,9 +1,8 @@
 package com.gmail.derynem.repository.connection.impl;
 
+import com.gmail.derynem.repository.connection.property.DataBaseProperties;
 import com.gmail.derynem.repository.exception.ConnectionServiceException;
-import com.gmail.derynem.repository.exception.ItemRepositoryException;
 import com.gmail.derynem.repository.connection.ConnectionService;
-import com.gmail.derynem.service.property.DataBaseProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

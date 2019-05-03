@@ -2,19 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.gmail.derynem</groupId>
     <artifactId>online_market</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
     <name>online_market_kked</name>
-
-    <properties>
-        <repository.module.version>1.0</repository.module.version>
-        <service.module.version>1.0</service.module.version>
-        <spring.boot.module.version>1.0</spring.boot.module.version>
-        <java.version>1.8</java.version>
-    </properties>
 
     <modules>
         <module>repository-module</module>

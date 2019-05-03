@@ -1,4 +1,4 @@
-package com.gmail.derynem.springbootmodule.security.config;
+package com.gmail.derynem.web.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

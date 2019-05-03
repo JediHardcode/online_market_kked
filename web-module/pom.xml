@@ -9,6 +9,11 @@
         <relativePath/>
     </parent>
 
+    <artifactId>web-module</artifactId>
+    <version>${web.module.version}</version>
+    <groupId>com.gmail.derynem</groupId>
+    <packaging>jar</packaging>
+
     <properties>
         <service.module.version>1.0</service.module.version>
         <web.module.version>1.0</web.module.version>
@@ -17,11 +22,6 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
-
-    <artifactId>web-module</artifactId>
-    <version>${web.module.version}</version>
-    <name>web-module</name>
-    <description>jd2_project</description>
 
     <dependencies>
         <dependency>
