@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <nav>
+            <div>
+                <ul>
+                    <li class="active"><a href="#">Home</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <section class="content-wrapper">
+        <div class="container">
+            <section id="aboutus">
+                <h2>О нас</h2>
+                <p class="block-desc">Описание блока Описание блока Описание блока Описание блока Описание блока
+                    Описание блока Описание блока </p>
+                <div class="block-content">
+                    <!-- контент блока -->
+                </div>
+            </section>
+            <section id="reviews">
+                <h2>Отзывы</h2>
+                <p class="block-desc">Описание блока Описание блока Описание блока Описание блока Описание блока
+                    Описание блока Описание блока </p>
+                <div class="reviews-list">
+                    <div class="review-item">
+                        <form>
+                            <div class="review-content">
+                                <h4>Фамилия Имя Отчество</h4>
+                                <p>Текст отзыва Текст отзыва Текст отзыва Текст отзыва Текст отзыва </p>
+                                <span class="review-date">04.05.2019</span>
+                            </div>
+                            <div class="review-control">
+                                <input type="checkbox">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+    <footer>
+        <div sec:authorize="isAuthenticated()">
+            <ul>
+                <li>Logged user: <span sec:authentication="name"></span></li>
+                <li> Roles: <span sec:authentication="principal.authorities"></span></li>
+                <li><a href="#">Sign Out</a></li>
+            </ul>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

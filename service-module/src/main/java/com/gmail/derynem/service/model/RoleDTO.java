@@ -1,11 +1,7 @@
-package com.gmail.derynem.repository.model;
+package com.gmail.derynem.service.model;
 
-public class Role {
+public class RoleDTO {
     private Long id;
-    private String name; //TODO CHANGE FOR LIST OF PERMISSIONS LATER
-
-    public Role() {
-    }
 
     public Long getId() {
         return id;
@@ -22,4 +18,6 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
+    private String name; //TODO CHANGE FOR LIST OF PERMISSIONS LATER
 }

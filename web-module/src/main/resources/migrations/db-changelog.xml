@@ -74,4 +74,25 @@
             <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="insert roles">
+        <insert tableName="T_ROLE">
+            <column name="F_ID" type="BIGINT" value='1'/>
+            <column name="F_NAME" type="varchar(50)" value="ADMINISTRATOR"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="insert admin user">
+        <insert tableName="T_USER">
+            <column name="F_ID" type="BIGINT" value='1'/>
+            <column name="F_NAME" type="varchar(128)" value="ROOT"/>
+            <column name="F_EMAIL" type="varchar(128)" value="root@root"/>
+            <column name="F_SURNAME" type="varchar(128)" value="ROOT"/>
+            <column name="F_NAME" type="varchar(128)" value="ROOT"/>
+            <column name="F_MIDDLE_NAME" type="varchar(128)" value="ROOT"/>
+            <column name="F_PASSWORD" type="varchar(128)"
+                    value="$2a$12$Y7Mc0UocJjqO63qdNBfkn.nh9R3ope/l6e7RUmkAZqpud0lrcdWlS"/>
+            <column name="F_ROLE_ID" type="BIGINT" value='1'/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

@@ -1,14 +1,18 @@
-package com.gmail.derynem.repository.model;
+package com.gmail.derynem.service.model;
 
-public class User {
+public class UserDTO {
     private Long id;
     private String name;
     private String surName;
     private String middleName;
     private String email;
     private String password;
-    private Role role;
+    private RoleDTO role;
     private Boolean deleted;
+
+    public UserDTO() {
+        deleted = false;
+    }
 
     public Long getId() {
         return id;
@@ -58,11 +62,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public RoleDTO getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleDTO role) {
         this.role = role;
     }
 

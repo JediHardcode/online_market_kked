@@ -2,6 +2,6 @@ package com.gmail.derynem.repository.connection;
 
 import java.sql.Connection;
 
-public interface ConnectionService {
+public interface GenericRepository {
     Connection getConnection();
 }

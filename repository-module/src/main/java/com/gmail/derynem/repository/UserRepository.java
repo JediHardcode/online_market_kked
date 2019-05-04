@@ -1,10 +1,11 @@
 package com.gmail.derynem.repository;
 
+import com.gmail.derynem.repository.connection.GenericRepository;
 import com.gmail.derynem.repository.model.User;
 
 import java.sql.Connection;
 
-public interface UserRepository {
+public interface UserRepository extends GenericRepository {
     User add(User user, Connection connection);
 
     int changeRole(Long roleId, Connection connection);
