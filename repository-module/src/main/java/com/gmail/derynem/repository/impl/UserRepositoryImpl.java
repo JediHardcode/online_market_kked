@@ -1,7 +1,6 @@
 package com.gmail.derynem.repository.impl;
 
 import com.gmail.derynem.repository.UserRepository;
-import com.gmail.derynem.repository.connection.impl.GenericRepositoryImpl;
 import com.gmail.derynem.repository.exception.UserRepositoryException;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
@@ -14,6 +13,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
 
 @Repository
 public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRepository {
@@ -46,13 +49,9 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     }
 
     @Override
-    public int changeRole(Long roleId, Connection connection) {
-        return 0;
-    }
-
-    @Override
     public User getUserByEmail(String email, Connection connection) {
-        String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID  WHERE F_EMAIL =?"; //TODO CHANGE LATER FOR LIST OF PERMISSIONS
+        String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID" +
+                "  WHERE F_EMAIL =?"; //TODO CHANGE LATER FOR LIST OF PERMISSIONS
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -69,10 +68,81 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         return null;
     }
 
+
     @Override
-    public int deleteUser(Long id, Connection connection) {
-        return 0;
+    public List<User> getUsersWithOffset(Connection connection, Integer page) {
+        String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID " +
+                " WHERE F_DELETED = FALSE ORDER BY F_EMAIL LIMIT ?,?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setLong(1, page);
+            preparedStatement.setLong(2, OFFSET_LIMIT);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<User> users = new ArrayList<>();
+                while (resultSet.next()) {
+                    users.add(getUser(resultSet));
+                }
+                return users;
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("error at Method getUsers!" + e.getMessage(), e);
+        }
     }
+
+    @Override
+    public int updateUserRole(Connection connection, Long roleId, Long id) {
+        String sqlQuery = "UPDATE T_USER SET F_ROLE_ID=? WHERE F_ID=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setLong(1, roleId);
+            preparedStatement.setLong(2, id);
+            int row = preparedStatement.executeUpdate();
+            logger.info("Updated successfully, updated user id:{} , new role id:{}", roleId, id);
+            return row;
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("error at Method updateUserRole!" + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int deleteUsers(Connection connection, int[] ids) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("UPDATE T_USER SET F_DELETED= true where ");
+        for (int i = 0; i < ids.length; i++) {
+            if (i == 0) {
+                stringBuilder.append("F_ID=").append(ids[i]);
+            } else {
+                stringBuilder.append("OR F_ID=").append(ids[i]);
+            }
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
+            int rows = preparedStatement.executeUpdate();
+            logger.info(" users deleted , count of deleted users is:{}", rows);
+            return rows;
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("error at method delete users at repository module|" + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public int getCountOfUsers(Connection connection) {
+        String sqlQuery = "SELECT COUNT(F_ID) FROM T_USER WHERE F_DELETED = FALSE";
+        int countOfUsers = 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                countOfUsers = resultSet.getInt(1);
+                logger.info("Count of users in database is {}", countOfUsers);
+                return countOfUsers;
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("error at method getCountOfUsers at repository module|" + e.getMessage(), e);
+        }
+        return countOfUsers;
+    }
+
 
     private User getUserWithId(ResultSet resultSet, User user) throws SQLException {
         User savedUser = new User();
@@ -94,7 +164,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         user.setSurName(resultSet.getString("F_SURNAME"));
         user.setMiddleName(resultSet.getString("F_MIDDLE_NAME"));
         user.setPassword(resultSet.getString("F_PASSWORD"));
-        user.setEmail(resultSet.getString("F_PASSWORD"));
+        user.setEmail(resultSet.getString("F_EMAIL"));
         user.setDeleted(resultSet.getBoolean("F_DELETED"));
         Role role = new Role();
         role.setId(resultSet.getLong("F_ROLE_ID"));

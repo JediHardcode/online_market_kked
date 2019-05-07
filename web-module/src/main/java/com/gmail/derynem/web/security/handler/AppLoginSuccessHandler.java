@@ -45,7 +45,9 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
             if (grantedAuthority.getAuthority().equalsIgnoreCase("ADMINISTRATOR")) {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
                 return "/home";
-            } // TODO ADD LATER ALL URL FOR 4 ROLES
+            } else {
+                return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
+            }
         }
         logger.debug("Not found matched roles, check success Handler");
         throw new IllegalStateException();

@@ -1,61 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Users</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
 <div class="wrapper">
     <div class="header">
-        <nav>
-            <div>
-                <ul>
-                    <li class="active"><a href="#">Home</a></li>
-                </ul>
-            </div>
-        </nav>
+        <div th:replace="fragments/header :: header"/>
     </div>
     <section class="content-wrapper">
         <div class="container">
             <section id="aboutus">
-                <h2 class="section-title">Список пользователей</h2>
+                <h2 class="section-title">Users</h2>
                 <div class="block-content">
                     <div class="users-list">
-                        <form id="users-delete-form"></form>
-                        <form class="users-list-form"> <!-- закрыть тег тут и указать в селектах form="айди_формы" -->
+                        <form id="users-delete-form" method="post" action="/private/users"></form>
+                        <th:block th:each="user : ${users}">
                             <div class="user-item">
                                 <div class="user-info">
-                                    <h4>Фамилия Имя Отчество</h4>
-                                    <span class="user-email">email@email.com</span>
-                                    <select>
-                                        <option>работяга</option>
-                                        <option>одмен</option>
-                                    </select>
-                                    <button class="btn-default">Изменить привелегию</button>
+                                    <h4><span th:text="*{user.name}"/>|<span th:text="*{user.middleName}"/>|<span
+                                            th:text="*{user.surName}"/>
+                                    </h4>
+                                    <span class="user-email">email:<span th:text="*{user.email}"/></span>
+                                    <form class="user-list-form" method="post" action="/private/users/role"
+                                          th:object="${updateObj}">
+                                        <th:block th:if="${user.name !='ROOT'}">
+                                            <td><input hidden value="#"
+                                                       th:attr="value=${user.id}" th:name="id"/></td>
+                                            <select name="role" th:name="role">
+                                                <option th:each="role:${roles}"
+                                                        th:value="${role}"
+                                                        th:text="${role}"
+                                                        th:selected="${user.role.name == role}"
+                                                        th:disabled="${user.role.name == role}">
+                                                </option>
+                                            </select>
+                                        </th:block>
+                                        <th:block th:if="${user.name !='ROOT'}">
+                                            <button class="btn-default">Change privilege
+                                            </button>
+                                        </th:block>
+                                    </form>
                                 </div>
-                                <div class="user-control">
-                                    <input type="checkbox" form="users-delete-form">
-                                </div>
+                                <th:block th:if="${user.name !='ROOT'}">
+                                    <div class="user-control">
+                                        <input type="checkbox" name="ids" th:value="${user.id}"
+                                               form="users-delete-form">
+                                    </div>
+                                </th:block>
                             </div>
-                        </form> <!-- этот тег убрать -->
+                        </th:block>
+                        </th:block>
                         <div class="button-wrapper">
-                            <button class="btn-default">Удалить пользователей</button>
+                            <button th:form="users-delete-form" class="btn-default">Delete selected users</button>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
-    </section>
-    <footer>
-        <div sec:authorize="isAuthenticated()">
-            <ul>
-                <li>Logged user: <span sec:authentication="name"></span></li>
-                <li> Roles: <span sec:authentication="principal.authorities"></span></li>
-                <li><a href="#">Sign Out</a></li>
-            </ul>
+        <div id="pagination" th:if="${pages.getCount().size() > 1}">
+            <th:block th:each="count:${pages.getCount()}">
+                <a class="pagination-item "
+                   th:href="@{/private/users(page=${count})}"><span th:text="${count}"/></a>
+            </th:block>
         </div>
-    </footer>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
 </div>
 </body>
 </html>

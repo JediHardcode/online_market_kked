@@ -1,12 +1,14 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Role;
+import com.gmail.derynem.service.RoleService;
 import com.gmail.derynem.service.converter.RoleConverter;
 import com.gmail.derynem.service.model.RoleDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RoleConverterImpl implements RoleConverter {
+
     @Override
     public RoleDTO toDTO(Role role) {
         RoleDTO roleDTO = new RoleDTO();
@@ -19,7 +21,6 @@ public class RoleConverterImpl implements RoleConverter {
     public Role toRole(RoleDTO roleDTO) {
         Role role = new Role();
         role.setName(roleDTO.getName());
-        role.setId(roleDTO.getId());
         return role;
     }
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section class="content-wrapper">
+        <form class="custom-form" action="#" th:action="@{/private/user}" th:object="${user}" method="post">
+            <h1>Add information about user</h1>
+            <div class="input-form-with-error">
+                <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</th:block>
+                <input type="text" name="name" id="name"
+                       placeholder="Name" th:required="true" th:field="*{name}"/>
+            </div>
+            <div class="input-form-with-error">
+                <th:block th:if="${#fields.hasErrors('surName')}" th:errors="*{surName}">Surname Error
+                </th:block>
+                <input type="text" name="surName" id="surName"
+                       placeholder="sur name" th:required="true" th:field="*{surName}"/>
+            </div>
+            <div class="input-form-with-error">
+                <th:block th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}">Middle name Error
+                </th:block>
+                <input type="text" name="middleName" id="middleName"
+                       placeholder="Middle Name" th:required="true" th:field="*{middleName}"/>
+            </div>
+            <div class="input-form-with-error">
+                <th:block th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</th:block>
+                <input type="text" name="email" id="email"
+                       placeholder="email@email.com" th:required="true" th:field="*{email}"/>
+            </div>
+            <select name="role" th:field="*{role}">
+                <option th:each="roleValue:${roles}"
+                        th:value="${roleValue}"
+                        th:text="${roleValue}">
+                </option>
+            </select>
+            <div>
+                <input class="btn-default" type="submit" value="Confirm"/>
+            </div>
+        </form>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

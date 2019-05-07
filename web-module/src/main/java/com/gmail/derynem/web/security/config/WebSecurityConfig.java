@@ -42,12 +42,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest()//TODO ADD LATER ALL URL EXCEPT /ABOUT AND /ITEMS
-                .authenticated()
-                .antMatchers("/403", "/login", "/home")
-                .permitAll()
                 .antMatchers("/private/**")
                 .hasAuthority("ADMINISTRATOR")     //TODO CHANGE TO PERMISSIONS LATER
+                .antMatchers("/403", "/login", "/home")
+                .permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")

@@ -1,4 +1,4 @@
-package com.gmail.derynem.repository.connection;
+package com.gmail.derynem.repository;
 
 import java.sql.Connection;
 
