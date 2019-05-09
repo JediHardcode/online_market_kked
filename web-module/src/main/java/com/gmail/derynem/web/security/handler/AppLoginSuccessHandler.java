@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 
-
 public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger logger = LoggerFactory.getLogger(AppLoginSuccessHandler.class);
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();

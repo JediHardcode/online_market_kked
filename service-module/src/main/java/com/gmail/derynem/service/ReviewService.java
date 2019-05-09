@@ -6,7 +6,6 @@ import com.gmail.derynem.service.model.review.ReviewDTO;
 import java.util.List;
 
 public interface ReviewService {
-
     PageDTO getNotHiddenReviewPages();
 
     PageDTO getAllReviewPages();

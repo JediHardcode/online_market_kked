@@ -15,7 +15,6 @@ public class GenericRepositoryImpl implements GenericRepository {
     private DataSource dataSource;
     private final static Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
 
-
     @Override
     public Connection getConnection() {
         try {

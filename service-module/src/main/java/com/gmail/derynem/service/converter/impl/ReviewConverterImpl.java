@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReviewConverterImpl implements ReviewConverter {
+
     @Override
     public ReviewDTO toDTO(Review review) {
         ReviewDTO reviewDTO = new ReviewDTO();

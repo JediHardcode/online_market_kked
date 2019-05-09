@@ -33,7 +33,6 @@ public class ReviewServiceImpl implements ReviewService {
         this.pageService = pageService;
     }
 
-
     @Override
     public PageDTO getNotHiddenReviewPages() {
         try (Connection connection = reviewRepository.getConnection()) {

@@ -6,8 +6,8 @@ import com.gmail.derynem.service.EncoderService;
 import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.converter.RoleConverter;
 import com.gmail.derynem.service.converter.UserConverter;
-import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 import org.springframework.stereotype.Component;
 

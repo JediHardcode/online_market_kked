@@ -4,7 +4,6 @@ import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.model.PageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +23,6 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public int getValidPage(Integer page, int countOfPages) {
-
         if (page == null) {
             page = 1;
         } else if (page > countOfPages) {

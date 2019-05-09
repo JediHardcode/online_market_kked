@@ -68,7 +68,6 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         return null;
     }
 
-
     @Override
     public List<User> getUsersWithOffset(Connection connection, Integer page) {
         String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID " +
@@ -157,7 +156,6 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
             throw new UserRepositoryException("error at method changePassword at repository module" + e.getMessage(), e);
         }
     }
-
 
     private User getUserWithId(ResultSet resultSet, User user) throws SQLException {
         User savedUser = new User();

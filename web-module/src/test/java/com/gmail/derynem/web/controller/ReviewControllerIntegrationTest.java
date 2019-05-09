@@ -52,7 +52,7 @@ public class ReviewControllerIntegrationTest {
     public void shouldDeleteReview() {
         Long id = 4L;
         String url = reviewController.deleteReview(id);
-        Assert.assertEquals("redirect:/private/reviews", url);
+        Assert.assertEquals(REDIRECT_PRIVATE_REVIEWS, url);
     }
 
     @Test

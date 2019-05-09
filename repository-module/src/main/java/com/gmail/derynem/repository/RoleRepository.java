@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface RoleRepository extends GenericRepository {
     List<Role> getRoles(Connection connection);
-
-    Long getRoleIdByRoleName(Connection connection, String role);
 }

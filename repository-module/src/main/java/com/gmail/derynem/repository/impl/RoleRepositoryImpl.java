@@ -27,31 +27,12 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRep
             while (resultSet.next()) {
                 roles.add(getRole(resultSet));
             }
-            logger.info("Role name founded, count of names is:{}", roles.size());
+            logger.info("Role name founded, count of roles is:{}", roles.size());
             return roles;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RoleRepositoryException("error at Method getListOfRoleName at repository module" + e.getMessage(), e);
         }
-    }
-
-    @Override
-    public Long getRoleIdByRoleName(Connection connection, String role) {
-        String sqlQuery = "SELECT F_ID FROM T_ROLE WHERE F_NAME =?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            preparedStatement.setString(1, role);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    Long id = resultSet.getLong(1);
-                    logger.info("roleId found , role name was :{}, id this role is {}", role, id);
-                    return id;
-                }
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new RoleRepositoryException("error at Method getRoleIdByRoleName at repository module" + e.getMessage(), e);
-        }
-        return null;
     }
 
     private Role getRole(ResultSet resultSet) throws SQLException {

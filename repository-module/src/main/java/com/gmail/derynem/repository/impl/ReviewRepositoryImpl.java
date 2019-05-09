@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
@@ -45,7 +44,6 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
             throw new ReviewRepositoryException("error at method get not hidden reviews with offset at repository module|" + e.getMessage(), e);
         }
     }
-
 
     @Override
     public int getCountOfAllReviews(Connection connection) {

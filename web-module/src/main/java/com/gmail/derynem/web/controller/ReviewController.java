@@ -47,7 +47,7 @@ public class ReviewController {
     @PostMapping("/private/review")
     public String deleteReview(@RequestParam(value = "id") Long id) {
         if (id == null) {
-            logger.info("redirect at reviews cause id is null");
+            logger.info("redirect at reviews cause review id is null");
             return REDIRECT_PRIVATE_REVIEWS;
         }
         reviewService.deleteReview(id);
