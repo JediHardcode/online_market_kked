@@ -17,25 +17,29 @@
                 <h2 class="section-title">Users</h2>
                 <div class="block-content">
                     <div class="users-list">
-                        <form id="users-delete-form" method="post" action="/private/users"></form>
+                        <form id="users-delete-form" method="post" th:action="@{/private/users}"></form>
                         <th:block th:each="user : ${users}">
-                            <div class="user-item">
+                            <div id="button" class="review-content">
                                 <div class="user-info">
-                                    <h4><span th:text="*{user.name}"/>|<span th:text="*{user.middleName}"/>|<span
-                                            th:text="*{user.surName}"/>
-                                    </h4>
+                                    <h6>
+                                        <div class="info-field">
+                                            <span th:text="*{user.name}"/>
+                                            <span th:text="*{user.middleName}"/>
+                                            <span th:text="*{user.surName}"/>
+                                        </div>
+                                    </h6>
                                     <span class="user-email">email:<span th:text="*{user.email}"/></span>
-                                    <form class="user-list-form" method="post" action="/private/users/role"
+                                    <form class="user-list-form" method="post" th:action="@{/private/users/role}"
                                           th:object="${updateObj}">
                                         <th:block th:if="${user.name !='ROOT'}">
                                             <td><input hidden value="#"
                                                        th:attr="value=${user.id}" th:name="id"/></td>
-                                            <select name="role" th:name="role">
-                                                <option th:each="role:${roles}"
-                                                        th:value="${role}"
-                                                        th:text="${role}"
-                                                        th:selected="${user.role.name == role}"
-                                                        th:disabled="${user.role.name == role}">
+                                            <select name="role" th:name="roleId">
+                                                <option th:each="role,stat:${roles}"
+                                                        th:value="${roles[__${stat.index}__].id}"
+                                                        th:text="${roles[__${stat.index}__].name}"
+                                                        th:selected="${user.role.name == roles[__${stat.index}__].name}"
+                                                        th:disabled="${user.role.name == roles[__${stat.index}__].name}">
                                                 </option>
                                             </select>
                                         </th:block>
@@ -45,6 +49,11 @@
                                         </th:block>
                                     </form>
                                 </div>
+                                <form th:action="@{/private/user/{id}/password(id=${user.id})}" method="post">
+                                    <div class="button-wrapper">
+                                        <button class="btn-default">Change password</button>
+                                    </div>
+                                </form>
                                 <th:block th:if="${user.name !='ROOT'}">
                                     <div class="user-control">
                                         <input type="checkbox" name="ids" th:value="${user.id}"

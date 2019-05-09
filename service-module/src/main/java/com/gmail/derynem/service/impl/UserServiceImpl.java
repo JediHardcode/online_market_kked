@@ -1,15 +1,16 @@
 package com.gmail.derynem.service.impl;
 
-import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.PageService;
+import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.UserConverter;
 import com.gmail.derynem.service.exception.UserServiceException;
-import com.gmail.derynem.service.model.AddUserDTO;
 import com.gmail.derynem.service.model.PageDTO;
-import com.gmail.derynem.service.model.UserDTO;
+import com.gmail.derynem.service.model.role.UpdateRoleDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
+import com.gmail.derynem.service.model.user.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,14 @@ public class UserServiceImpl implements UserService {
     private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-    private final RoleRepository roleRepository;
     private final PageService pageService;
+    private final RandomService randomService;
 
-    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter, RoleRepository roleRepository, PageService pageService) {
+    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter, PageService pageService, RandomService randomService) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
-        this.roleRepository = roleRepository;
         this.pageService = pageService;
+        this.randomService = randomService;
     }
 
     @Override
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService {
                 List<User> userList = userRepository.getUsersWithOffset(connection, offset);
                 if (userList == null || userList.isEmpty()) {
                     logger.info("no available users in database");
+                    connection.commit();
                     return Collections.emptyList();
                 }
                 List<UserDTO> users = userList.stream()
@@ -92,14 +94,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserRole(String role, Long id) {
+    public void updateUserRole(UpdateRoleDTO updateRoleDTO) {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                Long roleId = roleRepository.getRoleIdByRoleName(connection, role);
-                int row = userRepository.updateUserRole(connection, roleId, id);
+
+                int row = userRepository.updateUserRole(connection, updateRoleDTO.getRoleId(), updateRoleDTO.getId());
                 if (row != 0) {
-                    logger.info("User role successfully updated , user id{} , new role {}", id, role);
+                    logger.info("User role successfully updated , user id{} , new role id {}",
+                            updateRoleDTO.getId(), updateRoleDTO.getRoleId());
                     connection.commit();
                 } else {
                     logger.info("сan not find user with this id in database ");
@@ -172,7 +175,6 @@ public class UserServiceImpl implements UserService {
                     return;
                 }
                 User user = userConverter.fromAddUserToUser(userDTO);
-                user.getRole().setId(roleRepository.getRoleIdByRoleName(connection, userDTO.getRole()));
                 User savedUser = userRepository.add(user, connection);
                 logger.info("user saved , user name :{}, user id is {}", savedUser.getName(), savedUser.getId());
                 connection.commit();
@@ -184,6 +186,30 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new UserServiceException("error at method Add user at service module||" + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void changePassword(Long id) {
+        try (Connection connection = userRepository.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                String password = randomService.generatePassword();
+                int row = userRepository.changePassword(connection, userConverter.convertUserPassword(password), id);
+                if (row == 0) {
+                    logger.info(" no user with this id{} in database ", id);
+                } else {
+                    logger.info(" new password {} have user with id {}", password, id);
+                }
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                logger.error(e.getMessage(), e);
+                throw new UserServiceException("error at method changePassword at service module" + e.getMessage(), e);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserServiceException("error at method changePassword at service module" + e.getMessage(), e);
         }
     }
 }

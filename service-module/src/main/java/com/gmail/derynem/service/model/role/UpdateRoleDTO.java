@@ -1,19 +1,19 @@
-package com.gmail.derynem.service.model;
+package com.gmail.derynem.service.model.role;
 
 import javax.validation.constraints.NotNull;
 
 public class UpdateRoleDTO {
     @NotNull
-    private String role;
+    private Long roleId;
     @NotNull
     private Long id;
 
-    public String getRole() {
-        return role;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public Long getId() {

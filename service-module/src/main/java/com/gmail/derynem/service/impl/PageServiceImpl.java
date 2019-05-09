@@ -21,4 +21,16 @@ public class PageServiceImpl implements PageService {
         logger.info("page service  return page dto with list size {}", pageDTO.getCount().size());
         return pageDTO;
     }
+
+    @Override
+    public int getValidPage(Integer page, int countOfPages) {
+
+        if (page == null) {
+            page = 1;
+        } else if (page > countOfPages) {
+            page = countOfPages;
+        }
+        logger.info("page is {}", page);
+        return page;
+    }
 }

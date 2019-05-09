@@ -6,9 +6,9 @@ import com.gmail.derynem.service.EncoderService;
 import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.converter.RoleConverter;
 import com.gmail.derynem.service.converter.UserConverter;
-import com.gmail.derynem.service.model.AddUserDTO;
-import com.gmail.derynem.service.model.RoleDTO;
-import com.gmail.derynem.service.model.UserDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
+import com.gmail.derynem.service.model.role.RoleDTO;
+import com.gmail.derynem.service.model.user.UserDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -64,9 +64,14 @@ public class UserConverterImpl implements UserConverter {
                         (randomService.generatePassword()));
         user.setDeleted(userDTO.getDeleted());
         Role role = new Role();
-        role.setName(userDTO.getName());
+        role.setId(userDTO.getRoleId());
         user.setRole(role);
         user.setName(userDTO.getName());
         return user;
+    }
+
+    @Override
+    public String convertUserPassword(String password) {
+        return encoderService.encorePassword(password);
     }
 }

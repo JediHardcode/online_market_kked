@@ -51,7 +51,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     @Override
     public User getUserByEmail(String email, Connection connection) {
         String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID" +
-                "  WHERE F_EMAIL =?"; //TODO CHANGE LATER FOR LIST OF PERMISSIONS
+                "  WHERE F_EMAIL =?"; //TODO CHANGE LATER FOR LIST OF PERMISSIONS LATER
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -107,12 +107,12 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     @Override
     public int deleteUsers(Connection connection, int[] ids) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("UPDATE T_USER SET F_DELETED= true where ");
+        stringBuilder.append("UPDATE T_USER SET F_DELETED= TRUE WHERE ");
         for (int i = 0; i < ids.length; i++) {
             if (i == 0) {
-                stringBuilder.append("F_ID=").append(ids[i]);
+                stringBuilder.append("F_ID = ").append(ids[i]);
             } else {
-                stringBuilder.append("OR F_ID=").append(ids[i]);
+                stringBuilder.append(" OR F_ID = ").append(ids[i]);
             }
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
@@ -141,6 +141,21 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
             throw new UserRepositoryException("error at method getCountOfUsers at repository module|" + e.getMessage(), e);
         }
         return countOfUsers;
+    }
+
+    @Override
+    public int changePassword(Connection connection, String password, Long id) {
+        String sqlQuery = "UPDATE T_USER SET F_PASSWORD =? WHERE F_ID =?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setString(1, password);
+            preparedStatement.setLong(2, id);
+            int row = preparedStatement.executeUpdate();
+            logger.info(" users in database changed :{}", row);
+            return row;
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("error at method changePassword at repository module" + e.getMessage(), e);
+        }
     }
 
 

@@ -1,8 +1,9 @@
 package com.gmail.derynem.web.controller;
 
-import com.gmail.derynem.service.model.AddUserDTO;
-import com.gmail.derynem.service.model.RoleDTO;
-import com.gmail.derynem.service.model.UpdateRoleDTO;
+import com.gmail.derynem.service.RandomService;
+import com.gmail.derynem.service.model.role.RoleDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
+import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_USERS;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerIntegrationTest {
+    @Autowired
+    private RandomService randomService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -77,10 +81,10 @@ public class UserControllerIntegrationTest {
     public void shouldUpdateRoleUser() {
         UpdateRoleDTO updateRoleDTO = new UpdateRoleDTO();
         updateRoleDTO.setId(2L);
-        updateRoleDTO.setRole("ADMINISTRATOR");
+        updateRoleDTO.setRoleId(1L);
         Mockito.when(bindingResult.hasErrors()).thenReturn(false);
         String url = userController.changeStatus(updateRoleDTO, bindingResult);
-        Assert.assertEquals("redirect:/private/users", url);
+        Assert.assertEquals(REDIRECT_PRIVATE_USERS, url);
     }
 
     @Test
@@ -88,7 +92,7 @@ public class UserControllerIntegrationTest {
     public void shouldDeleteUsers() {
         int[] ids = {3, 4};
         String url = userController.deleteUsers(ids);
-        Assert.assertEquals("redirect:/private/users", url);
+        Assert.assertEquals(REDIRECT_PRIVATE_USERS, url);
     }
 
     @Test
@@ -103,13 +107,20 @@ public class UserControllerIntegrationTest {
     @WithMockUser(authorities = {"ADMINISTRATOR"})
     public void shouldAddValidUser() {
         AddUserDTO addUserDTO = new AddUserDTO();
-        addUserDTO.setEmail("test@testo.com");
+        addUserDTO.setEmail(randomService.generatePassword() + "@test.com");
         addUserDTO.setMiddleName("test");
         addUserDTO.setName("test");
-        addUserDTO.setRole("CUSTOMER");
+        addUserDTO.setRoleId(1L);
         addUserDTO.setSurName("test");
         Mockito.when(bindingResult.hasErrors()).thenReturn(false);
         String url = userController.addUser(addUserDTO, bindingResult);
-        Assert.assertEquals("redirect:/private/users", url);
+        Assert.assertEquals(REDIRECT_PRIVATE_USERS, url);
+    }
+
+    @Test
+    public void shouldChangePassword() {
+        Long id = 2L;
+        String url = userController.changePassword(id);
+        Assert.assertEquals(REDIRECT_PRIVATE_USERS, url);
     }
 }

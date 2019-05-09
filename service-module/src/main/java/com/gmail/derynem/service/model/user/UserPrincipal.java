@@ -1,4 +1,4 @@
-package com.gmail.derynem.service.model;
+package com.gmail.derynem.service.model.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

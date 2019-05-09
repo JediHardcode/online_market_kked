@@ -1,8 +1,8 @@
 package com.gmail.derynem.service.converter;
 
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.model.AddUserDTO;
-import com.gmail.derynem.service.model.UserDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
+import com.gmail.derynem.service.model.user.UserDTO;
 
 
 public interface UserConverter {
@@ -11,4 +11,6 @@ public interface UserConverter {
     User toUser(UserDTO userDTO);
 
     User fromAddUserToUser(AddUserDTO userDTO);
+
+    String convertUserPassword(String password);
 }

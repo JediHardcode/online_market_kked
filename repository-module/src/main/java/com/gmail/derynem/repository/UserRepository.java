@@ -17,4 +17,6 @@ public interface UserRepository extends GenericRepository {
     int deleteUsers(Connection connection, int[] ids);
 
     int getCountOfUsers(Connection connection);
+
+    int changePassword(Connection connection, String password,Long id);
 }

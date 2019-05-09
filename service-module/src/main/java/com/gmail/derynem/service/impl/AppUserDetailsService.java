@@ -1,8 +1,8 @@
 package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.service.UserService;
-import com.gmail.derynem.service.model.UserDTO;
-import com.gmail.derynem.service.model.UserPrincipal;
+import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.model.user.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;

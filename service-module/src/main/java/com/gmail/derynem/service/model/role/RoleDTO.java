@@ -1,4 +1,4 @@
-package com.gmail.derynem.service.model;
+package com.gmail.derynem.service.model.role;
 
 public class RoleDTO {
     private Long id;

@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>add user</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 
@@ -37,10 +37,10 @@
                 <input type="text" name="email" id="email"
                        placeholder="email@email.com" th:required="true" th:field="*{email}"/>
             </div>
-            <select name="role" th:field="*{role}">
-                <option th:each="roleValue:${roles}"
-                        th:value="${roleValue}"
-                        th:text="${roleValue}">
+            <select name="role" th:name="roleId">
+                <option th:each="rolevalue,stat:${roles}"
+                        th:value="${roles[__${stat.index}__].id}"
+                        th:text="${roles[__${stat.index}__].name}">
                 </option>
             </select>
             <div>

@@ -4,4 +4,6 @@ import com.gmail.derynem.service.model.PageDTO;
 
 public interface PageService {
     PageDTO getPages(int countOfPages);
+
+    int getValidPage(Integer page, int countOfPages);
 }

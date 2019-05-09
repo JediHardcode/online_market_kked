@@ -2,6 +2,7 @@ package com.gmail.derynem.repository.impl;
 
 import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.exception.RoleRepositoryException;
+import com.gmail.derynem.repository.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -18,16 +19,16 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRep
     private final static Logger logger = LoggerFactory.getLogger(RoleRepositoryImpl.class);
 
     @Override
-    public List<String> getListOfRoleNames(Connection connection) {
-        String sqlQuery = "SELECT F_NAME FROM T_ROLE";
+    public List<Role> getRoles(Connection connection) {
+        String sqlQuery = "SELECT * FROM T_ROLE";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
              ResultSet resultSet = preparedStatement.executeQuery()) {
-            List<String> roleNames = new ArrayList<>();
+            List<Role> roles = new ArrayList<>();
             while (resultSet.next()) {
-                roleNames.add(resultSet.getString(1));
+                roles.add(getRole(resultSet));
             }
-            logger.info("Role name founded, count of names is:{}", roleNames.size());
-            return roleNames;
+            logger.info("Role name founded, count of names is:{}", roles.size());
+            return roles;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new RoleRepositoryException("error at Method getListOfRoleName at repository module" + e.getMessage(), e);
@@ -51,5 +52,12 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRep
             throw new RoleRepositoryException("error at Method getRoleIdByRoleName at repository module" + e.getMessage(), e);
         }
         return null;
+    }
+
+    private Role getRole(ResultSet resultSet) throws SQLException {
+        Role role = new Role();
+        role.setId(resultSet.getLong("F_ID"));
+        role.setName(resultSet.getString("F_NAME"));
+        return role;
     }
 }

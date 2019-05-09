@@ -1,4 +1,6 @@
-package com.gmail.derynem.service.model;
+package com.gmail.derynem.service.model.user;
+
+import com.gmail.derynem.service.model.role.RoleDTO;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -25,7 +27,7 @@ public class AddUserDTO {
     @Pattern(regexp = EMAIL_PATTERN)
     private String email;
     @NotNull
-    private String role;
+    private Long roleId;
     private Boolean deleted;
 
     public AddUserDTO() {
@@ -64,12 +66,12 @@ public class AddUserDTO {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public Boolean getDeleted() {
@@ -81,18 +83,6 @@ public class AddUserDTO {
     }
 
     @Override
-    public String toString() {
-        return "AddUserDTO{" +
-                "name='" + name + '\'' +
-                ", surName='" + surName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", deleted=" + deleted +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -101,12 +91,12 @@ public class AddUserDTO {
                 Objects.equals(surName, that.surName) &&
                 Objects.equals(middleName, that.middleName) &&
                 Objects.equals(email, that.email) &&
-                Objects.equals(role, that.role) &&
+                Objects.equals(roleId, that.roleId) &&
                 Objects.equals(deleted, that.deleted);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surName, middleName, email, role, deleted);
+        return Objects.hash(name, surName, middleName, email, roleId, deleted);
     }
 }

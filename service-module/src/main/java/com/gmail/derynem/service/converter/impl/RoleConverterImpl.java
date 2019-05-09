@@ -1,9 +1,8 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Role;
-import com.gmail.derynem.service.RoleService;
 import com.gmail.derynem.service.converter.RoleConverter;
-import com.gmail.derynem.service.model.RoleDTO;
+import com.gmail.derynem.service.model.role.RoleDTO;
 import org.springframework.stereotype.Component;
 
 @Component
