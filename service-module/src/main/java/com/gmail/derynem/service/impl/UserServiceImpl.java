@@ -98,16 +98,14 @@ public class UserServiceImpl implements UserService {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-
                 int row = userRepository.updateUserRole(connection, updateRoleDTO.getRoleId(), updateRoleDTO.getId());
                 if (row != 0) {
                     logger.info("User role successfully updated , user id{} , new role id {}",
                             updateRoleDTO.getId(), updateRoleDTO.getRoleId());
-                    connection.commit();
                 } else {
                     logger.info("сan not find user with this id in database ");
-                    connection.commit();
                 }
+                connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
@@ -127,11 +125,10 @@ public class UserServiceImpl implements UserService {
                 int row = userRepository.deleteUsers(connection, ids);
                 if (row != 0) {
                     logger.info("Users with ids {} successfully deleted", ids);
-                    connection.commit();
                 } else {
-                    logger.info(" not found users with this ids {}", Arrays.toString(ids));
-                    connection.commit();
+                    logger.info(" not found users with this ids {}", ids);
                 }
+                connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
                 logger.info(e.getMessage(), e);

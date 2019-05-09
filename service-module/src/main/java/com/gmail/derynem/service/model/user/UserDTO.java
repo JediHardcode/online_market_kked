@@ -16,6 +16,16 @@ public class UserDTO {
         deleted = false;
     }
 
+    public UserDTO(Long id, String name, String surName, String middleName, String email, String password, RoleDTO role) {
+        this.id = id;
+        this.name = name;
+        this.surName = surName;
+        this.middleName = middleName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public Long getId() {
         return id;
     }

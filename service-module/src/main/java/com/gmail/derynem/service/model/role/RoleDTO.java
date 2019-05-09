@@ -4,6 +4,13 @@ public class RoleDTO {
     private Long id;
     private String name; //TODO CHANGE FOR LIST OF PERMISSIONS LATER
 
+    public RoleDTO(long id, String name) {
+
+    }
+
+    public RoleDTO() {
+    }
+
     public Long getId() {
         return id;
     }
