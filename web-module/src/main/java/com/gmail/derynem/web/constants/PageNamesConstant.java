@@ -7,7 +7,7 @@ public class PageNamesConstant {
     public static final String ADD_USER_PAGE = "adduser";
     public static final String ERROR_PAGE_FORBIDDEN = "error403";
     public static final String ERROR_PAGE_NOT_FOUND = "error404";
-    public static final String PRIVATE_HOME_PAGE = "privateindex";
+    public static final String PRIVATE_HOME_PAGE = "reviews";
 
     private PageNamesConstant() {
     }
