@@ -1,7 +1,6 @@
 package com.gmail.derynem.service.model.user;
 
-import com.gmail.derynem.service.model.role.RoleDTO;
-
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -10,21 +9,25 @@ import java.util.Objects;
 import static com.gmail.derynem.service.validation.constant.ValidationConstant.*;
 
 public class AddUserDTO {
-    @NotNull
+    @NotNull(message = "{user.name.empty}")
+    @NotEmpty(message = "{user.name.empty}")
     @Size(max = NAME_LENGTH)
-    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN)
+    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN, message = "{user.name.not.valid}")
     private String name;
-    @NotNull
+    @NotNull(message = "{user.surname.empty}")
+    @NotEmpty(message = "{user.surname.empty}")
     @Size(max = SURNAME_LENGTH)
-    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN)
+    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN, message = "{user.surname.not.valid}")
     private String surName;
-    @NotNull
+    @NotNull(message = "{user.middle.name.empty}")
+    @NotEmpty(message = "{user.middle.name.empty}")
     @Size(max = MIDDLE_NAME_LENGTH)
-    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN)
+    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN, message = "{user.middle.name.not.valid}")
     private String middleName;
-    @NotNull
+    @NotNull(message = "{user.email.empty}")
+    @NotEmpty(message = "{user.email.empty}")
     @Size(max = EMAIL_LENGTH)
-    @Pattern(regexp = EMAIL_PATTERN)
+    @Pattern(regexp = EMAIL_PATTERN, message = "{user.email.not.valid}")
     private String email;
     @NotNull
     private Long roleId;

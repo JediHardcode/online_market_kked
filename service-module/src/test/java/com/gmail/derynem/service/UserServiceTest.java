@@ -19,14 +19,11 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
+import static com.gmail.derynem.repository.constants.DataBaseConstants.OFFSET_LIMIT;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class UserServiceTest {
@@ -77,7 +74,7 @@ public class UserServiceTest {
     public void shouldThrowUSerExceptionAtMethodGetUserByEmailIfSmthDoWrong() {
         String email = "test";
         Mockito.when(userRepository.getUserByEmail(email, connection)).thenThrow(UserRepositoryException.class);
-        UserDTO expectedUser = userService.getUserByEmail(email);
+        userService.getUserByEmail(email);
     }
 
     @Test

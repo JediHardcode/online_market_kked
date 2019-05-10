@@ -86,8 +86,11 @@ public class UserController {
     @PostMapping("/private/user")
     public String addUser(@ModelAttribute(value = "user")
                           @Valid AddUserDTO user,
-                          BindingResult bindingResult) {
+                          BindingResult bindingResult,
+                          Model model) {
         if (bindingResult.hasErrors()) {
+            List<RoleDTO> roles = roleService.getRoles();
+            model.addAttribute("roles", roles);
             return ADD_USER_PAGE;
         }
         userService.addUser(user);

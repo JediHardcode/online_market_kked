@@ -16,7 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
+import static com.gmail.derynem.repository.constants.DataBaseConstants.OFFSET_LIMIT;
 
 @Repository
 public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRepository {

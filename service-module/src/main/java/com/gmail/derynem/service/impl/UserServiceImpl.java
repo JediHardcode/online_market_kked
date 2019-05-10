@@ -17,12 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,7 +66,7 @@ public class UserServiceImpl implements UserService {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int offset = (page * OFFSET_LIMIT) - OFFSET_LIMIT;
+                int offset = pageService.getOffset(page);
                 List<User> userList = userRepository.getUsersWithOffset(connection, offset);
                 if (userList == null || userList.isEmpty()) {
                     logger.info("no available users in database");
@@ -146,10 +143,10 @@ public class UserServiceImpl implements UserService {
             connection.setAutoCommit(false);
             try {
                 int countOfUsers = userRepository.getCountOfUsers(connection);
-                int countOfPages = (countOfUsers + OFFSET_LIMIT - 1) / OFFSET_LIMIT; // TODO  make a separate service
+                PageDTO pages = pageService.getPages(countOfUsers);
                 connection.commit();
-                logger.info("count of users in database:{}, count of pages:{}", countOfUsers, countOfPages);
-                return pageService.getPages(countOfPages);
+                logger.info("count of users in database:{}, count of pages:{}", countOfUsers, pages.getCount().size());
+                return pages;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);

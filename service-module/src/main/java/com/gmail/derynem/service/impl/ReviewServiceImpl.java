@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.gmail.derynem.repository.constants.DataBaseVariables.OFFSET_LIMIT;
+import static com.gmail.derynem.repository.constants.DataBaseConstants.OFFSET_LIMIT;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -39,11 +39,11 @@ public class ReviewServiceImpl implements ReviewService {
             connection.setAutoCommit(false);
             try {
                 int countOfReviews = reviewRepository.getCountOfNotHiddenReviews(connection);
-                int countOfPages = (countOfReviews + OFFSET_LIMIT - 1) / OFFSET_LIMIT; // TODO  make a separate service
+                PageDTO pages = pageService.getPages(countOfReviews);
                 connection.commit();
                 logger.info("Count of reviews is {}, count of pages with Offset{} is {}",
-                        countOfReviews, OFFSET_LIMIT, countOfPages);
-                return pageService.getPages(countOfPages);
+                        countOfReviews, OFFSET_LIMIT, pages.getCount().size());
+                return pages;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
@@ -60,7 +60,7 @@ public class ReviewServiceImpl implements ReviewService {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int offset = (page * OFFSET_LIMIT) - OFFSET_LIMIT;
+                int offset = pageService.getOffset(page);
                 List<Review> reviewList = reviewRepository.getReviewsWithOffset(connection, offset);
                 if (reviewList == null || reviewList.isEmpty()) {
                     logger.info("no available reviews");
@@ -89,7 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int offset = (page * OFFSET_LIMIT) - OFFSET_LIMIT;
+                int offset = pageService.getOffset(page);
                 List<Review> reviewList = reviewRepository.getNotHiddenReviewsWithOffset(connection, offset);
                 if (reviewList == null || reviewList.isEmpty()) {
                     logger.info("no available reviews or all is hidden");
@@ -175,11 +175,11 @@ public class ReviewServiceImpl implements ReviewService {
             connection.setAutoCommit(false);
             try {
                 int countOfReviews = reviewRepository.getCountOfAllReviews(connection);
-                int countOfPages = (countOfReviews + OFFSET_LIMIT - 1) / OFFSET_LIMIT; // TODO  make a separate service
+                PageDTO pages = pageService.getPages(countOfReviews);
                 connection.commit();
                 logger.info("Count of reviews is {}, count of pages with Offset{} is {}",
-                        countOfReviews, OFFSET_LIMIT, countOfPages);
-                return pageService.getPages(countOfPages);
+                        countOfReviews, OFFSET_LIMIT, pages.getCount().size());
+                return pages;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
