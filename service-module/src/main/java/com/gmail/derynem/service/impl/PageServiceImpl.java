@@ -1,7 +1,6 @@
 package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.service.PageService;
-import com.gmail.derynem.service.model.PageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,22 +12,18 @@ public class PageServiceImpl implements PageService {
     private final Logger logger = LoggerFactory.getLogger(PageServiceImpl.class);
 
     @Override
-    public PageDTO getPages(int countOfObjects) {
-        int countOfPages = (countOfObjects + OFFSET_LIMIT - 1) / OFFSET_LIMIT;
+    public int getPages(int countOfObjects) {
         logger.info(" page service get {}", countOfObjects);
-        PageDTO pageDTO = new PageDTO();
-        for (int i = 0; i < countOfPages; i++) {
-            pageDTO.getCount().add(i + 1);
-        }
-        logger.info("page service  return page dto with list size {}", pageDTO.getCount().size());
-        return pageDTO;
+        int countOfPages = (countOfObjects + OFFSET_LIMIT - 1) / OFFSET_LIMIT;
+        logger.info("count of pages is {} with offset :{}", countOfPages, OFFSET_LIMIT);
+        return countOfPages;
     }
 
     @Override
     public int getValidPage(Integer page, int countOfPages) {
-        if (page == null) {
+        if (page <= 0) {
             page = 1;
-        } else if (page > countOfPages) {
+        } else if (page > countOfPages && countOfPages != 0) {
             page = countOfPages;
         }
         logger.info("page is {}", page);

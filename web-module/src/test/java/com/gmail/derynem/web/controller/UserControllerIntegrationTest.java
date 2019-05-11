@@ -59,7 +59,7 @@ public class UserControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("users"))
                 .andExpect(model().attributeExists("roles"))
-                .andExpect(model().attributeExists("updateObj"));
+                .andExpect(model().attributeExists("userRoleUpdate"));
     }
 
     @Test

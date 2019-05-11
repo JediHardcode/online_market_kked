@@ -20,11 +20,11 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        UserDTO foundUser = userService.getUserByEmail(s);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserDTO foundUser = userService.getUserByEmail(email);
         if (foundUser == null) {
-            logger.info("Not found user in database");
-            throw new UsernameNotFoundException("not found user with by current username");
+            logger.info("Not found user in database with this email: {}", email);
+            throw new UsernameNotFoundException("Not found user in database with this email:" + email);
         }
         return new UserPrincipal(foundUser);
     }

@@ -6,15 +6,11 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface ReviewRepository extends GenericRepository {
-    List<Review> getReviewsWithOffset(Connection connection, int offset);
+    List<Review> getReviewsWithOffset(Connection connection, int offset, Boolean isHidden);
 
-    List<Review> getNotHiddenReviewsWithOffset(Connection connection, int offset);
-
-    int getCountOfAllReviews(Connection connection);
+    int getCountOfReviews(Connection connection, Boolean isHidden);
 
     int deleteReview(Connection connection, Long id);
 
-    int changeHiddenStatus(Connection connection, boolean b, List<Long> ids);
-
-    int getCountOfNotHiddenReviews(Connection connection);
+    int changeIsHiddenStatus(Connection connection, boolean isHidden, List<Long> ids);
 }

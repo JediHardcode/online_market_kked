@@ -39,10 +39,10 @@
                 </div>
             </section>
         </div>
-        <div id="pagination" th:if="${pages.getCount().size() > 1}">
-            <th:block th:each="count:${pages.getCount()}">
+        <div id="pagination" th:if="${pages > 1}">
+            <th:block  th:each="i : ${#numbers.sequence( 1,pages)}">
                 <a class="pagination-item "
-                   th:href="@{/home(page=${count})}"><span th:text="${count}"/></a>
+                   th:href="@{/home(page=${i})}"><span th:text="${i}"/></a>
             </th:block>
         </div>
     </section>

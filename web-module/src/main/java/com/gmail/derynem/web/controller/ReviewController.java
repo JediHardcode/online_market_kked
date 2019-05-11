@@ -2,7 +2,6 @@ package com.gmail.derynem.web.controller;
 
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import com.gmail.derynem.service.model.review.ReviewsDTO;
 import org.slf4j.Logger;
@@ -23,9 +22,9 @@ import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_
 
 @Controller
 public class ReviewController {
+    private final static Logger logger = LoggerFactory.getLogger(ReviewController.class);
     private final PageService pageService;
     private final ReviewService reviewService;
-    private final static Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     public ReviewController(PageService pageService, ReviewService reviewService) {
         this.pageService = pageService;
@@ -33,14 +32,14 @@ public class ReviewController {
     }
 
     @GetMapping("private/reviews")
-    public String administratorHome(@RequestParam(value = "page", required = false) Integer page,
+    public String managementReviews(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                     Model model) {
-        PageDTO pages = reviewService.getAllReviewPages();
-        Integer validPage = pageService.getValidPage(page, pages.getCount().size());
-        List<ReviewDTO> reviewDTO = reviewService.getListOfAllReviews(validPage);
+        int countOfPages = reviewService.getCountOfPagesOfReviews(null);
+        Integer validPage = pageService.getValidPage(page, countOfPages);
+        List<ReviewDTO> reviewDTO = reviewService.getListOfReviews(validPage, null);
         ReviewsDTO reviews = new ReviewsDTO(reviewDTO);
         model.addAttribute("reviews", reviews);
-        model.addAttribute("pages", pages);
+        model.addAttribute("pages", countOfPages);
         return PRIVATE_HOME_PAGE;
     }
 
@@ -61,7 +60,7 @@ public class ReviewController {
         if (bindingResult.hasErrors()) {
             return REDIRECT_PRIVATE_REVIEWS;
         }
-        reviewService.changeHiddenStatus(reviews.getReviews());
+        reviewService.changeIsHiddenStatus(reviews.getReviews());
         return REDIRECT_PRIVATE_REVIEWS;
     }
 }

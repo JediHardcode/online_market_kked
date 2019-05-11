@@ -43,7 +43,7 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority.getAuthority().equalsIgnoreCase("ADMINISTRATOR")) {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
-                return "/home";
+                return "/private/reviews";
             } else {
                 return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
             }
@@ -60,4 +60,3 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
     }
 }
-

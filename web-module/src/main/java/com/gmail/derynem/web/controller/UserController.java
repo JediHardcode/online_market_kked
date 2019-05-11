@@ -3,7 +3,6 @@ package com.gmail.derynem.web.controller;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RoleService;
 import com.gmail.derynem.service.UserService;
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
@@ -40,16 +39,17 @@ public class UserController {
     }
 
     @GetMapping("/private/users")
-    public String showUsers(Model model, @RequestParam(value = "page", required = false) Integer page,
-                            UpdateRoleDTO updateObj) {
-        PageDTO pages = userService.getPages();
-        Integer validPage = pageService.getValidPage(page, pages.getCount().size());
+    public String showUsers(Model model,
+                            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                            UpdateRoleDTO roleUpdate) {
+        int pages = userService.getCountOfPagesOfUsers();
+        Integer validPage = pageService.getValidPage(page, pages);
         model.addAttribute("pages", pages);
         List<RoleDTO> roles = roleService.getRoles();
         List<UserDTO> users = userService.getUsers(validPage);
         model.addAttribute("users", users);
         model.addAttribute("roles", roles);
-        model.addAttribute("updateObj", updateObj);
+        model.addAttribute("userRoleUpdate", roleUpdate);
         return USERS_PAGE;
     }
 

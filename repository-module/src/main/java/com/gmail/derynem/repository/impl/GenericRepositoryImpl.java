@@ -11,9 +11,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class GenericRepositoryImpl implements GenericRepository {
+    private final static Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
     @Autowired
     private DataSource dataSource;
-    private final static Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
 
     @Override
     public Connection getConnection() {

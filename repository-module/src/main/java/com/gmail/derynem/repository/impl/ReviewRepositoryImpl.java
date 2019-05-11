@@ -22,10 +22,14 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
     private final static Logger logger = LoggerFactory.getLogger(ReviewRepositoryImpl.class);
 
     @Override
-    public List<Review> getReviewsWithOffset(Connection connection, int offset) {
-        String sqlQuery = " SELECT * FROM T_REVIEW AS R LEFT JOIN T_USER AS U ON R.F_USER_ID= U.F_ID" +
-                " WHERE R.F_DELETED = FALSE LIMIT ?,?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+    public List<Review> getReviewsWithOffset(Connection connection, int offset, Boolean isHidden) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT * FROM T_REVIEW AS R LEFT JOIN T_USER AS U ON R.F_USER_ID= U.F_ID WHERE R.F_DELETED = FALSE");
+        if (isHidden != null) {
+            stringBuilder.append(" AND F_HIDDEN = ").append(isHidden);
+        }
+        stringBuilder.append(" LIMIT ?,?");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
             return getReviews(offset, preparedStatement);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -34,23 +38,15 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
     }
 
     @Override
-    public List<Review> getNotHiddenReviewsWithOffset(Connection connection, int offset) {
-        String sqlQuery = " SELECT * FROM T_REVIEW AS R LEFT JOIN T_USER AS U ON R.F_USER_ID= U.F_ID" +
-                " WHERE R.F_DELETED = FALSE AND R.F_HIDDEN = FALSE LIMIT ?,?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            return getReviews(offset, preparedStatement);
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new ReviewRepositoryException("error at method get not hidden reviews with offset at repository module|" + e.getMessage(), e);
+    public int getCountOfReviews(Connection connection, Boolean isHidden) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" SELECT COUNT(F_ID) FROM T_REVIEW WHERE F_DELETED = FALSE");
+        if (isHidden != null) {
+            stringBuilder.append(" AND F_HIDDEN = ").append(isHidden);
         }
-    }
-
-    @Override
-    public int getCountOfAllReviews(Connection connection) {
-        String sqlQuery = " SELECT COUNT(F_ID) FROM T_REVIEW WHERE F_DELETED = FALSE";
-        int count = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString());
              ResultSet resultSet = preparedStatement.executeQuery()) {
+            int count = 0;
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
                 logger.info("count of all reviews in database = {}", count);
@@ -77,42 +73,24 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
     }
 
     @Override
-    public int changeHiddenStatus(Connection connection, boolean condition, List<Long> ids) {
+    public int changeIsHiddenStatus(Connection connection, boolean isHidden, List<Long> ids) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("UPDATE T_REVIEW SET F_HIDDEN =? WHERE ");
+        stringBuilder.append("UPDATE T_REVIEW SET F_HIDDEN =? WHERE F_ID IN (");
         for (int i = 0; i < ids.size(); i++) {
-            if (i == 0) {
-                stringBuilder.append(" F_ID = ").append(ids.get(i));
+            if (i == ids.size() - 1) {
+                stringBuilder.append(ids.get(i)).append(")");
             } else {
-                stringBuilder.append(" OR F_ID = ").append(ids.get(i));
+                stringBuilder.append(ids.get(i)).append(",");
             }
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
-            preparedStatement.setBoolean(1, condition);
+            preparedStatement.setBoolean(1, isHidden);
             int rows = preparedStatement.executeUpdate();
-            logger.info("reviews with new hidden status: {} - {}", condition, rows);
+            logger.info("reviews with new hidden status: {} - {}", isHidden, rows);
             return rows;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new ReviewRepositoryException("error at method changeHiddenStatus at repository module" + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public int getCountOfNotHiddenReviews(Connection connection) {
-        String sqlQuery = " SELECT COUNT(F_ID) FROM T_REVIEW WHERE F_DELETED = FALSE AND F_HIDDEN = FALSE ";
-        int count = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            if (resultSet.next()) {
-                count = resultSet.getInt(1);
-                logger.info("count of not hidden reviews in database = {}", count);
-            }
-            return count;
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new ReviewRepositoryException("error at method get count of not hidden reviews at repository module|"
-                    + e.getMessage(), e);
+            throw new ReviewRepositoryException("error at method changeIsHiddenStatus at repository module" + e.getMessage(), e);
         }
     }
 

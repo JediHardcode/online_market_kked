@@ -7,7 +7,6 @@ import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.UserConverter;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.impl.UserServiceImpl;
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 import org.junit.Assert;
@@ -22,7 +21,6 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gmail.derynem.repository.constants.DataBaseConstants.OFFSET_LIMIT;
 import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,16 +35,20 @@ public class UserServiceTest {
     private RandomService randomService;
     @Mock
     Connection connection;
+    @Mock
+    private EncoderService encoderService;
     private UserService userService;
     private UserDTO validUserDTO;
     private RoleDTO validRoleDTO;
     private User validUser;
     private Role validRole;
+    private int countOfPages = 4;
+    private int countOfUsers = 4;
 
     @Before
     public void setUp() {
         Mockito.when(userRepository.getConnection()).thenReturn(connection);
-        userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService);
+        userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService, encoderService);
         validRoleDTO = new RoleDTO(1L, "CUSTOMER");
         validRole = new Role(1L, "CUSTOMER");
         validUser = new User(1L, "test", "test", "test", "mail#mail", "test", validRole);
@@ -102,22 +104,19 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shouldGetPagesDTO() {
-        int count = 4;
-        Mockito.when(userRepository.getCountOfUsers(connection)).thenReturn(count);
-        int countOfPages = (count + OFFSET_LIMIT - 1) / OFFSET_LIMIT;
-        Mockito.when(pageService.getPages(countOfPages)).thenReturn(new PageDTO());
-        PageDTO pageDTO = userService.getPages();
-        Assert.assertNotNull(pageDTO);
+    public void shouldGetPages() {
+        Mockito.when(userRepository.getCountOfUsers(connection)).thenReturn(countOfUsers);
+        Mockito.when(pageService.getPages(countOfPages)).thenReturn(countOfPages);
+        int resultCountOfPages = userService.getCountOfPagesOfUsers();
+        Assert.assertEquals(countOfPages, resultCountOfPages);
     }
 
     @Test
-    public void shouldGetPageDTOifNoUsersInDatabase() {
+    public void shouldGetPagesIfZeroUsersInDatabase() {
         int count = 0;
         Mockito.when(userRepository.getCountOfUsers(connection)).thenReturn(count);
-        int countOfPages = (count + OFFSET_LIMIT - 1) / OFFSET_LIMIT;
-        Mockito.when(pageService.getPages(countOfPages)).thenReturn(new PageDTO());
-        PageDTO pageDTO = userService.getPages();
-        Assert.assertNotNull(pageDTO);
+        Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
+        int resultPages = userService.getCountOfPagesOfUsers();
+        Assert.assertEquals(countOfPages, resultPages);
     }
 }

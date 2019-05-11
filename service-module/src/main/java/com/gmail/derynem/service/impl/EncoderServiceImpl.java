@@ -15,7 +15,7 @@ public class EncoderServiceImpl implements EncoderService {
     }
 
     @Override
-    public String encorePassword(String password) {
+    public String encodePassword(String password) {
         return encoder.encode(password);
     }
 }

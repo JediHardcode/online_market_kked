@@ -6,7 +6,6 @@ import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
 import com.gmail.derynem.service.converter.ReviewConverter;
 import com.gmail.derynem.service.exception.ReviewServiceException;
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,34 +33,39 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public PageDTO getNotHiddenReviewPages() {
+    public int getCountOfPagesOfReviews(Boolean isHidden) {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int countOfReviews = reviewRepository.getCountOfNotHiddenReviews(connection);
-                PageDTO pages = pageService.getPages(countOfReviews);
+                int countOfReviews = reviewRepository.getCountOfReviews(connection, isHidden);
+                int countOfPages = pageService.getPages(countOfReviews);
                 connection.commit();
-                logger.info("Count of reviews is {}, count of pages with Offset{} is {}",
-                        countOfReviews, OFFSET_LIMIT, pages.getCount().size());
-                return pages;
+                if (isHidden != null) {
+                    logger.info("Count of available reviews is {} with isHidden status {}, count of pages with Offset {} is {}",
+                            countOfReviews, isHidden, OFFSET_LIMIT, countOfPages);
+                } else {
+                    logger.info("Count of available reviews is {}, count of pages with Offset {} is {}",
+                            countOfReviews, OFFSET_LIMIT, countOfPages);
+                }
+                return countOfPages;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method getNotHiddenReviewPages at service module|" + e.getMessage(), e);
+                throw new ReviewServiceException("error at method getCountOfPagesOfReviews at service module|" + e.getMessage(), e);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method getNotHiddenReviewPages at service module|" + e.getMessage(), e);
+            throw new ReviewServiceException("error at method getCountOfPagesOfReviews at service module|" + e.getMessage(), e);
         }
     }
 
     @Override
-    public List<ReviewDTO> getListOfAllReviews(Integer page) {
+    public List<ReviewDTO> getListOfReviews(Integer page, Boolean isHidden) {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
                 int offset = pageService.getOffset(page);
-                List<Review> reviewList = reviewRepository.getReviewsWithOffset(connection, offset);
+                List<Review> reviewList = reviewRepository.getReviewsWithOffset(connection, offset, isHidden);
                 if (reviewList == null || reviewList.isEmpty()) {
                     logger.info("no available reviews");
                     connection.commit();
@@ -70,7 +74,11 @@ public class ReviewServiceImpl implements ReviewService {
                 List<ReviewDTO> reviews = reviewList.stream()
                         .map(reviewConverter::toDTO)
                         .collect(Collectors.toList());
-                logger.info("List of reviews received , list size is {}", reviews.size());
+                if (isHidden != null) {
+                    logger.info("List of reviews with isHidden status:{} received , list size is {}", isHidden, reviews.size());
+                } else {
+                    logger.info("List of reviews received , list size is {}", reviews.size());
+                }
                 connection.commit();
                 return reviews;
             } catch (SQLException e) {
@@ -81,35 +89,6 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ReviewServiceException("error at method get list of all Reviews at service module|" + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<ReviewDTO> getListOfNotHiddenReviews(Integer page) {
-        try (Connection connection = reviewRepository.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                int offset = pageService.getOffset(page);
-                List<Review> reviewList = reviewRepository.getNotHiddenReviewsWithOffset(connection, offset);
-                if (reviewList == null || reviewList.isEmpty()) {
-                    logger.info("no available reviews or all is hidden");
-                    connection.commit();
-                    return Collections.emptyList();
-                }
-                List<ReviewDTO> reviews = reviewList.stream()
-                        .map(reviewConverter::toDTO)
-                        .collect(Collectors.toList());
-                logger.info("List of not hidden reviews received , list size is {}", reviews.size());
-                connection.commit();
-                return reviews;
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method get list of not hidden Reviews at service module|" + e.getMessage(), e);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method get list of not hidden Reviews at service module|" + e.getMessage(), e);
         }
     }
 
@@ -137,7 +116,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void changeHiddenStatus(List<ReviewDTO> reviews) {
+    public void changeIsHiddenStatus(List<ReviewDTO> reviews) {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
@@ -147,14 +126,14 @@ public class ReviewServiceImpl implements ReviewService {
                     logger.info("No reviews is hidden");
                 } else {
                     int countOfIsHiddenReviews =
-                            reviewRepository.changeHiddenStatus(connection, true, reviewsIdIsHidden);
+                            reviewRepository.changeIsHiddenStatus(connection, true, reviewsIdIsHidden);
                     logger.info(" hidden status  now have {} ids", countOfIsHiddenReviews);
                 }
                 if (reviewsIdIsNotHidden == null || reviewsIdIsNotHidden.isEmpty()) {
                     logger.info("No reviews become visible ");
                 } else {
                     int countOfIsNotHiddenReviews =
-                            reviewRepository.changeHiddenStatus(connection, false, reviewsIdIsNotHidden);
+                            reviewRepository.changeIsHiddenStatus(connection, false, reviewsIdIsNotHidden);
                     logger.info(" not hidden status now have {} ids", countOfIsNotHiddenReviews);
                 }
                 connection.commit();
@@ -166,28 +145,6 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ReviewServiceException("error at method change hidden status at service module" + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public PageDTO getAllReviewPages() {
-        try (Connection connection = reviewRepository.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                int countOfReviews = reviewRepository.getCountOfAllReviews(connection);
-                PageDTO pages = pageService.getPages(countOfReviews);
-                connection.commit();
-                logger.info("Count of reviews is {}, count of pages with Offset{} is {}",
-                        countOfReviews, OFFSET_LIMIT, pages.getCount().size());
-                return pages;
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method getAllHiddenReviewPages at service module|" + e.getMessage(), e);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method getAllReviewPages at service module|" + e.getMessage(), e);
         }
     }
 

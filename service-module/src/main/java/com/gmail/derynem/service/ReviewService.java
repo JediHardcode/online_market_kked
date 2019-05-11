@@ -1,20 +1,15 @@
 package com.gmail.derynem.service;
 
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 
 import java.util.List;
 
 public interface ReviewService {
-    PageDTO getNotHiddenReviewPages();
+    int getCountOfPagesOfReviews(Boolean isHidden);
 
-    PageDTO getAllReviewPages();
-
-    List<ReviewDTO> getListOfAllReviews(Integer page);
-
-    List<ReviewDTO> getListOfNotHiddenReviews(Integer page);
+    List<ReviewDTO> getListOfReviews(Integer page,Boolean isHidden);
 
     void deleteReview(Long id);
 
-    void changeHiddenStatus(List<ReviewDTO> reviews);
+    void changeIsHiddenStatus(List<ReviewDTO> reviews);
 }

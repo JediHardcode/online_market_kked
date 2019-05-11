@@ -1,6 +1,5 @@
 package com.gmail.derynem.service;
 
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
@@ -16,7 +15,7 @@ public interface UserService {
 
     void deleteUsers(int[] ids);
 
-    PageDTO getPages();
+    int getCountOfPagesOfUsers();
 
     void addUser(AddUserDTO userDTO);
 

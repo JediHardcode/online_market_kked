@@ -7,16 +7,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-<!--    <changeSet author="derynem@gmail" id="dropTableROLE">-->
-<!--        <dropTable-->
-<!--                tableName="T_ROLE"/>-->
-<!--    </changeSet>-->
-
-<!--    <changeSet author="derynem@gmail" id="dropTableUser">-->
-<!--        <dropTable-->
-<!--                tableName="T_USER"/>-->
-<!--    </changeSet>-->
-
     <changeSet id="ROLE TABLE" author="derynem@gmail.com">
         <createTable tableName="T_ROLE">
             <column name="F_ID" type="BIGINT" autoIncrement="true">

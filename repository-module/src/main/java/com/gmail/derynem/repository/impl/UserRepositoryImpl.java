@@ -106,12 +106,12 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     @Override
     public int deleteUsers(Connection connection, int[] ids) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("UPDATE T_USER SET F_DELETED= TRUE WHERE ");
+        stringBuilder.append("UPDATE T_USER SET F_DELETED= TRUE WHERE F_ID IN (");
         for (int i = 0; i < ids.length; i++) {
-            if (i == 0) {
-                stringBuilder.append("F_ID = ").append(ids[i]);
+            if (i == ids.length - 1) {
+                stringBuilder.append(ids[i]).append(")");
             } else {
-                stringBuilder.append(" OR F_ID = ").append(ids[i]);
+                stringBuilder.append(ids[i]).append(",");
             }
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
@@ -127,19 +127,18 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     @Override
     public int getCountOfUsers(Connection connection) {
         String sqlQuery = "SELECT COUNT(F_ID) FROM T_USER WHERE F_DELETED = FALSE";
-        int countOfUsers = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
              ResultSet resultSet = preparedStatement.executeQuery()) {
+            int countOfUsers = 0;
             if (resultSet.next()) {
                 countOfUsers = resultSet.getInt(1);
                 logger.info("Count of users in database is {}", countOfUsers);
-                return countOfUsers;
             }
+            return countOfUsers;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new UserRepositoryException("error at method getCountOfUsers at repository module|" + e.getMessage(), e);
         }
-        return countOfUsers;
     }
 
     @Override

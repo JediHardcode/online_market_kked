@@ -10,6 +10,4 @@ public interface UserConverter {
     User toUser(UserDTO userDTO);
 
     User fromAddUserToUser(AddUserDTO userDTO);
-
-    String convertUserPassword(String password);
 }

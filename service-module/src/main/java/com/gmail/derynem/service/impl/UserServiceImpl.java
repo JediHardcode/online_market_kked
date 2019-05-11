@@ -2,12 +2,12 @@ package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.User;
+import com.gmail.derynem.service.EncoderService;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.UserConverter;
 import com.gmail.derynem.service.exception.UserServiceException;
-import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
@@ -28,12 +28,16 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final PageService pageService;
     private final RandomService randomService;
+    private final EncoderService encoderService;
 
-    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter, PageService pageService, RandomService randomService) {
+    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter,
+                           PageService pageService, RandomService randomService,
+                           EncoderService encoderService) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.pageService = pageService;
         this.randomService = randomService;
+        this.encoderService = encoderService;
     }
 
     @Override
@@ -100,7 +104,7 @@ public class UserServiceImpl implements UserService {
                     logger.info("User role successfully updated , user id{} , new role id {}",
                             updateRoleDTO.getId(), updateRoleDTO.getRoleId());
                 } else {
-                    logger.info("сan not find user with this id in database ");
+                    logger.info("сan not find user with this id {} in database ", updateRoleDTO.getId());
                 }
                 connection.commit();
             } catch (SQLException e) {
@@ -138,23 +142,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageDTO getPages() {
+    public int getCountOfPagesOfUsers() {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
                 int countOfUsers = userRepository.getCountOfUsers(connection);
-                PageDTO pages = pageService.getPages(countOfUsers);
+                int countOfPages = pageService.getPages(countOfUsers);
                 connection.commit();
-                logger.info("count of users in database:{}, count of pages:{}", countOfUsers, pages.getCount().size());
-                return pages;
+                logger.info("count of users in database:{}, count of pages:{}", countOfUsers, countOfPages);
+                return countOfPages;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new UserServiceException("error at method getPages at service module|" + e.getMessage(), e);
+                throw new UserServiceException("error at method getCountOfPagesOfUsers at service module|" + e.getMessage(), e);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new UserServiceException("error at method getPages at service module|" + e.getMessage(), e);
+            throw new UserServiceException("error at method getCountOfPagesOfUsers at service module|" + e.getMessage(), e);
         }
     }
 
@@ -169,6 +173,7 @@ public class UserServiceImpl implements UserService {
                     return;
                 }
                 User user = userConverter.fromAddUserToUser(userDTO);
+                user.setPassword(encoderService.encodePassword(randomService.generatePassword()));
                 User savedUser = userRepository.add(user, connection);
                 logger.info("user saved , user name :{}, user id is {}", savedUser.getName(), savedUser.getId());
                 connection.commit();
@@ -189,7 +194,7 @@ public class UserServiceImpl implements UserService {
             connection.setAutoCommit(false);
             try {
                 String password = randomService.generatePassword();
-                int row = userRepository.changePassword(connection, userConverter.convertUserPassword(password), id);
+                int row = userRepository.changePassword(connection, encoderService.encodePassword(password), id);
                 if (row == 0) {
                     logger.info(" no user with this id{} in database ", id);
                 } else {
@@ -207,4 +212,3 @@ public class UserServiceImpl implements UserService {
         }
     }
 }
-
