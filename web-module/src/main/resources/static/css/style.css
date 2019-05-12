@@ -1,0 +1,316 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    color: #353535;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    background: rgba(3, 183, 255, 0.4);
+}
+
+a {
+    color: #353535;
+    text-decoration: none;
+    transition: color .3s;
+}
+
+a:hover {
+    color: #3590d6;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+.btn-default {
+    border: 0;
+    background-color: rgba(255, 19, 89, 0.82);
+    padding: 10px 20px;
+    border-radius: 20px;
+    color: #fff;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+    background-color: #353535;
+    color: #fff;
+    outline: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+}
+
+.header {
+    flex: 0 0 auto;
+    background: #353535;
+    color: #fff;
+    padding: 0 15px;
+}
+
+.header a {
+    color: #fff;
+}
+
+.header a:hover {
+    color: #3590d6;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+.content-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1140px;
+    width: 100%;
+    padding: 15px 30px;
+    margin: 0 auto;
+    background: #fbfbfb;
+}
+
+.container section {
+    margin-bottom: 30px;
+}
+
+.block-desc {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.review-item {
+    margin-bottom: 15px;
+}
+
+.review-item form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-content {
+    flex: 1 1;
+    border: 4px groove #000000; /* Параметры границы */
+    background: #f5e1ff; /* Цвет фона */
+    padding: 10px; /* Поля вокруг текста */
+}
+
+.review-content p {
+    margin-bottom: 5px;
+}
+
+.review-date {
+    font-weight: 700;
+}
+
+.review-control {
+    flex: auto 0 0;
+}
+
+.review-control input[type=checkbox] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.custom-form {
+    margin: 0 auto
+}
+
+.custom-form input {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    width: 200px;
+}
+
+.class-form {
+    display: flex;
+    justify-content: center;
+}
+
+.class-form button {
+    margin: 0 auto;
+    padding: 5px 20px;
+}
+
+.fio {
+    display: flex;
+    flex-direction: column
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-form-with-error {
+    display: flex;
+    flex-direction: column;
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+}
+
+#button .btn-default {
+    align-self: stretch;
+    border-radius: 0;
+    border: 4px groove #ec40ff; /* Параметры границы */
+}
+
+.delete-form {
+    margin-bottom: 15px;
+}
+
+.pagination-item {
+    padding: 7px 15px;
+    margin: 0 15px;
+    background: #000;
+    color: #fff;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.pagination-item:hover,
+.pagination-item-current {
+    background: #3590d6;
+    color: #fff;
+}
+
+footer {
+    flex: 0 0 auto;
+    background: #353535;
+    color: #fff;
+    padding: 30px 15px;
+    text-align: center;
+}
+
+footer a {
+    color: #fff;
+}
+
+.section-title {
+    margin-bottom: 30px;
+}
+
+/*** users ***/
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-info {
+    flex: 1 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-info h4 {
+    flex: 1 1;
+}
+
+.user-info .user-email {
+    flex: 300px 0 0;
+}
+
+.user-info select {
+    flex: 150px 0 0;
+}
+
+.user-info .btn-default {
+    margin: 0 30px;
+}
+
+.user-control {
+    flex: auto 0 0;
+    display: flex;
+}
+
+.user-control input[type=checkbox] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.button-wrapper {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/*** end users ***/

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section class="content-wrapper">
+        <div class="container">
+            <section id="aboutus">
+                <h2>ABOUT US</h2>
+                <p class="block-desc">jd2 online market, very good site </p>
+                <div class="block-content">
+                    <p>Site description</p>
+                </div>
+            </section>
+            <section id="reviews">
+                <h2>Reviews</h2>
+                <p class="block-desc">Our customers</p>
+                <div class="reviews-list">
+                    <div id="button" class="review-item">
+                        <th:block  th:each="review, itemStat : ${reviews.reviews}">
+                            <form class="delete-form" method="post" action="/private/review">
+                                <div class="review-content">
+                                    <h4><span th:text="*{reviews.reviews[__${itemStat.index}__].user.name}"/>|
+                                        <span th:text="*{reviews.reviews[__${itemStat.index}__].user.middleName}"/>|
+                                        <span th:text="*{reviews.reviews[__${itemStat.index}__].user.surName}"/>
+                                    </h4>
+                                    <p><span th:text="*{review.description}"/></p>
+                                    <span class="review-date" th:text="*{review.created}"/>
+                                    <input hidden value="#"
+                                           th:value="*{reviews.reviews[__${itemStat.index}__].id}" th:name="id"/>
+                                    <div class="user-control">
+                                        <input hidden value="#" form="review-change-hidden"
+                                               th:field="*{reviews.reviews[__${itemStat.index}__].id}"
+                                               th:value="*{review.id}"/>
+                                        <input type="checkbox"
+                                               th:field="*{reviews.reviews[__${itemStat.index}__].hidden}"
+                                               th:checked="*{review.id}"
+                                               form="review-change-hidden">
+                                    </div>
+                                </div>
+                                <button class="btn-default" >delete
+                                </button>
+                            </form>
+                        </th:block>
+                    </div>
+                </div>
+                <form  id="review-change-hidden" method="post" action="/private/reviews"
+                       th:object="${reviews}"/>
+                <div class="button-wrapper">
+                    <button th:form="review-change-hidden" class="btn-default">Change hidden status of selected
+                        reviews
+                    </button>
+                </div>
+            </section>
+        </div>
+        <div id="pagination" th:if="${pages > 1}">
+            <th:block  th:each="i : ${#numbers.sequence( 1,pages)}">
+                <a class="pagination-item "
+                   th:href="@{/private/reviews(page=${i})}"><span th:text="${i}"/></a>
+            </th:block>
+        </div>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>
