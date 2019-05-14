@@ -20,18 +20,13 @@ public class PageServiceImpl implements PageService {
     }
 
     @Override
-    public int getValidPage(Integer page, int countOfPages) {
+    public int getOffset(Integer page, int countOfPages) {
         if (page <= 0) {
             page = 1;
         } else if (page > countOfPages && countOfPages != 0) {
             page = countOfPages;
         }
         logger.info("page is {}", page);
-        return page;
-    }
-
-    @Override
-    public int getOffset(int page) {
         return (page * OFFSET_LIMIT) - OFFSET_LIMIT;
     }
 }

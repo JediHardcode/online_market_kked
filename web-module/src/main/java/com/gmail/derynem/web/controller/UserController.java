@@ -3,6 +3,7 @@ package com.gmail.derynem.web.controller;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RoleService;
 import com.gmail.derynem.service.UserService;
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
@@ -42,12 +43,10 @@ public class UserController {
     public String showUsers(Model model,
                             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                             UpdateRoleDTO roleUpdate) {
-        int pages = userService.getCountOfPagesOfUsers();
-        Integer validPage = pageService.getValidPage(page, pages);
-        model.addAttribute("pages", pages);
+        PageDTO<UserDTO> usersPage = userService.getUsersPageInfo(page);
+        model.addAttribute("pages", usersPage.getCountOfPages());
         List<RoleDTO> roles = roleService.getRoles();
-        List<UserDTO> users = userService.getUsers(validPage);
-        model.addAttribute("users", users);
+        model.addAttribute("users", usersPage.getObjects());
         model.addAttribute("roles", roles);
         model.addAttribute("userRoleUpdate", roleUpdate);
         return USERS_PAGE;
@@ -64,7 +63,7 @@ public class UserController {
         return REDIRECT_PRIVATE_USERS;
     }
 
-    @PostMapping("/private/users")
+    @PostMapping("/private/users/delete")
     public String deleteUsers(@RequestParam(value = "ids", required = false) int[] ids) {
         if (ids == null) {
             logger.info("no selected users for delete");
@@ -75,7 +74,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/private/user")
+    @GetMapping("/private/user/new")
     public String showAddUserPage(AddUserDTO user, Model model) {
         List<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("user", user);
@@ -83,7 +82,7 @@ public class UserController {
         return ADD_USER_PAGE;
     }
 
-    @PostMapping("/private/user")
+    @PostMapping("/private/user/new")
     public String addUser(@ModelAttribute(value = "user")
                           @Valid AddUserDTO user,
                           BindingResult bindingResult,

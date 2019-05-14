@@ -1,5 +1,6 @@
 package com.gmail.derynem.service;
 
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
@@ -9,13 +10,11 @@ import java.util.List;
 public interface UserService {
     UserDTO getUserByEmail(String email);
 
-    List<UserDTO> getUsers(Integer page);
+    PageDTO<UserDTO> getUsersPageInfo(Integer page);
 
     void updateUserRole(UpdateRoleDTO updateRoleDTO);
 
     void deleteUsers(int[] ids);
-
-    int getCountOfPagesOfUsers();
 
     void addUser(AddUserDTO userDTO);
 

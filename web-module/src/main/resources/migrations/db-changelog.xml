@@ -185,6 +185,7 @@
             <column name="F_USER_ID" type="BIGINT" value='2'/>
         </insert>
     </changeSet>
+
     <changeSet author="derynem@gmail.com" id="insert test4 review">
         <insert tableName="T_REVIEW">
             <column name="F_ID" type="BIGINT" value='4'/>
@@ -194,4 +195,16 @@
         </insert>
     </changeSet>
 
+    <changeSet author="derynem@gmail.com" id="addColumn-inviolable at user pable ">
+        <addColumn tableName="T_USER">
+            <column name="F_INVIOLABLE" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="update-root-inviolable">
+        <update tableName="T_USER">
+            <column name="F_INVIOLABLE" type="BOOLEAN" valueBoolean="true"/>
+            <where>F_EMAIL ='root@root'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

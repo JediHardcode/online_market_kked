@@ -2,6 +2,7 @@ package com.gmail.derynem.web.controller;
 
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import com.gmail.derynem.service.model.review.ReviewsDTO;
 import org.slf4j.Logger;
@@ -34,12 +35,10 @@ public class ReviewController {
     @GetMapping("private/reviews")
     public String managementReviews(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                     Model model) {
-        int countOfPages = reviewService.getCountOfPagesOfReviews(null);
-        Integer validPage = pageService.getValidPage(page, countOfPages);
-        List<ReviewDTO> reviewDTO = reviewService.getListOfReviews(validPage, null);
-        ReviewsDTO reviews = new ReviewsDTO(reviewDTO);
+        PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, null);
+        ReviewsDTO reviews = new ReviewsDTO(reviewsPageInfo.getObjects());
         model.addAttribute("reviews", reviews);
-        model.addAttribute("pages", countOfPages);
+        model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
         return PRIVATE_HOME_PAGE;
     }
 

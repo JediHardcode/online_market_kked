@@ -10,7 +10,7 @@ public interface ReviewRepository extends GenericRepository {
 
     int getCountOfReviews(Connection connection, Boolean isHidden);
 
-    int deleteReview(Connection connection, Long id);
+    int deleteById(Connection connection, Long id);
 
     int changeIsHiddenStatus(Connection connection, boolean isHidden, List<Long> ids);
 }

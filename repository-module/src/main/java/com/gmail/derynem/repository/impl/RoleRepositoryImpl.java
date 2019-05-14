@@ -27,11 +27,11 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRep
             while (resultSet.next()) {
                 roles.add(getRole(resultSet));
             }
-            logger.info("Role name founded, count of roles is:{}", roles.size());
+            logger.info("Roles founded, count of roles is:{}", roles.size());
             return roles;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new RoleRepositoryException("error at Method getListOfRoleName at repository module" + e.getMessage(), e);
+            throw new RoleRepositoryException("error at Method getRoles at repository module" + e.getMessage(), e);
         }
     }
 

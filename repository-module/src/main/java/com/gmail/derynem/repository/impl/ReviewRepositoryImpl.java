@@ -59,7 +59,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
     }
 
     @Override
-    public int deleteReview(Connection connection, Long id) {
+    public int deleteById(Connection connection, Long id) {
         String sqlQuery = "UPDATE T_REVIEW SET F_DELETED = TRUE WHERE F_ID =?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, id);
@@ -68,7 +68,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
             return row;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new ReviewRepositoryException("error at method deleteReview at repository module" + e.getMessage(), e);
+            throw new ReviewRepositoryException("error at method deleteById at repository module" + e.getMessage(), e);
         }
     }
 
@@ -83,8 +83,10 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
                 stringBuilder.append(ids.get(i)).append(",");
             }
         }
+        stringBuilder.append(" AND F_HIDDEN != ? ");
         try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
             preparedStatement.setBoolean(1, isHidden);
+            preparedStatement.setBoolean(2, isHidden);
             int rows = preparedStatement.executeUpdate();
             logger.info("reviews with new hidden status: {} - {}", isHidden, rows);
             return rows;

@@ -17,7 +17,7 @@
                 <h2 class="section-title">Users</h2>
                 <div class="block-content">
                     <div class="users-list">
-                        <form id="users-delete-form" method="post" th:action="@{/private/users}"></form>
+                        <form id="users-delete-form" method="post" th:action="@{/private/users/delete}"></form>
                         <th:block th:each="user : ${users}">
                             <div id="button" class="review-content">
                                 <div class="user-info">
@@ -31,22 +31,18 @@
                                     <span class="user-email">email:<span th:text="*{user.email}"/></span>
                                     <form class="user-list-form" method="post" th:action="@{/private/users/role}"
                                           th:object="${userRoleUpdate}">
-                                        <th:block th:if="${user.name !='ROOT'}">
-                                            <td><input hidden value="#"
-                                                       th:attr="value=${user.id}" th:name="id"/></td>
-                                            <select name="role" th:name="roleId">
-                                                <option th:each="role,stat:${roles}"
-                                                        th:value="${roles[__${stat.index}__].id}"
-                                                        th:text="${roles[__${stat.index}__].name}"
-                                                        th:selected="${user.role.name == roles[__${stat.index}__].name}"
-                                                        th:disabled="${user.role.name == roles[__${stat.index}__].name}">
-                                                </option>
-                                            </select>
-                                        </th:block>
-                                        <th:block th:if="${user.name !='ROOT'}">
-                                            <button class="btn-default">Change privilege
-                                            </button>
-                                        </th:block>
+                                        <td><input hidden value="#"
+                                                   th:attr="value=${user.id}" th:name="id"/></td>
+                                        <select name="role" th:name="roleId">
+                                            <option th:each="role,stat:${roles}"
+                                                    th:value="${roles[__${stat.index}__].id}"
+                                                    th:text="${roles[__${stat.index}__].name}"
+                                                    th:selected="${user.role.name == roles[__${stat.index}__].name}"
+                                                    th:disabled="${user.role.name == roles[__${stat.index}__].name}">
+                                            </option>
+                                        </select>
+                                        <button class="btn-default">Change privilege
+                                        </button>
                                     </form>
                                 </div>
                                 <form th:action="@{/private/user/{id}/password(id=${user.id})}" method="post">
@@ -54,14 +50,11 @@
                                         <button class="btn-default">Change password</button>
                                     </div>
                                 </form>
-                                <th:block th:if="${user.name !='ROOT'}">
-                                    <div class="user-control">
-                                        <input type="checkbox" name="ids" th:value="${user.id}"
-                                               form="users-delete-form">
-                                    </div>
-                                </th:block>
+                                <div class="user-control">
+                                    <input type="checkbox" name="ids" th:value="${user.id}"
+                                           form="users-delete-form">
+                                </div>
                             </div>
-                        </th:block>
                         </th:block>
                         <div class="button-wrapper">
                             <button th:form="users-delete-form" class="btn-default">Delete selected users</button>
@@ -71,7 +64,7 @@
             </section>
         </div>
         <div id="pagination" th:if="${pages > 1}">
-            <th:block  th:each="i : ${#numbers.sequence( 1,pages)}">
+            <th:block th:each="i : ${#numbers.sequence( 1,pages)}">
                 <a class="pagination-item "
                    th:href="@{/private/users(page=${i})}"><span th:text="${i}"/></a>
             </th:block>

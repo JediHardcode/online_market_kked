@@ -6,6 +6,7 @@ import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
 import com.gmail.derynem.service.converter.ReviewConverter;
 import com.gmail.derynem.service.exception.ReviewServiceException;
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.gmail.derynem.repository.constants.DataBaseConstants.OFFSET_LIMIT;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -33,62 +32,43 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public int getCountOfPagesOfReviews(Boolean isHidden) {
+    public PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Boolean isHidden) {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
+                PageDTO<ReviewDTO> reviewPageDTO = new PageDTO<>();
                 int countOfReviews = reviewRepository.getCountOfReviews(connection, isHidden);
                 int countOfPages = pageService.getPages(countOfReviews);
-                connection.commit();
-                if (isHidden != null) {
-                    logger.info("Count of available reviews is {} with isHidden status {}, count of pages with Offset {} is {}",
-                            countOfReviews, isHidden, OFFSET_LIMIT, countOfPages);
-                } else {
-                    logger.info("Count of available reviews is {}, count of pages with Offset {} is {}",
-                            countOfReviews, OFFSET_LIMIT, countOfPages);
-                }
-                return countOfPages;
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method getCountOfPagesOfReviews at service module|" + e.getMessage(), e);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method getCountOfPagesOfReviews at service module|" + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<ReviewDTO> getListOfReviews(Integer page, Boolean isHidden) {
-        try (Connection connection = reviewRepository.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                int offset = pageService.getOffset(page);
+                int offset = pageService.getOffset(page, countOfPages);
+                reviewPageDTO.setCountOfPages(countOfPages);
                 List<Review> reviewList = reviewRepository.getReviewsWithOffset(connection, offset, isHidden);
                 if (reviewList == null || reviewList.isEmpty()) {
                     logger.info("no available reviews");
                     connection.commit();
-                    return Collections.emptyList();
+                    reviewPageDTO.setObjects(Collections.emptyList());
+                    return reviewPageDTO;
                 }
                 List<ReviewDTO> reviews = reviewList.stream()
                         .map(reviewConverter::toDTO)
                         .collect(Collectors.toList());
+                reviewPageDTO.setObjects(reviews);
                 if (isHidden != null) {
-                    logger.info("List of reviews with isHidden status:{} received , list size is {}", isHidden, reviews.size());
+                    logger.info("List of reviews with isHidden status:{} received , list size is {}, count of pages of reviews is {}",
+                            isHidden, reviewPageDTO.getObjects().size(), reviewPageDTO.getCountOfPages());
                 } else {
-                    logger.info("List of reviews received , list size is {}", reviews.size());
+                    logger.info("List of reviews received , list size is {}, count of pages of reviews is {}",
+                            reviewPageDTO.getObjects().size(), reviewPageDTO.getCountOfPages());
                 }
                 connection.commit();
-                return reviews;
+                return reviewPageDTO;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method get list of all Reviews at service module|" + e.getMessage(), e);
+                throw new ReviewServiceException("error at method getReviewsPageInfo at service module|" + e.getMessage(), e);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method get list of all Reviews at service module|" + e.getMessage(), e);
+            throw new ReviewServiceException("error at method getReviewsPageInfo at service module|" + e.getMessage(), e);
         }
     }
 
@@ -97,7 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
         try (Connection connection = reviewRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int row = reviewRepository.deleteReview(connection, id);
+                int row = reviewRepository.deleteById(connection, id);
                 if (row != 0) {
                     logger.info("review with id {} successfully deleted", id);
                 } else {
@@ -107,11 +87,11 @@ public class ReviewServiceImpl implements ReviewService {
             } catch (Exception e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new ReviewServiceException("error at method deleteReview at service module" + e.getMessage(), e);
+                throw new ReviewServiceException("error at method deleteById at service module" + e.getMessage(), e);
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new ReviewServiceException("error at method deleteReview at service module" + e.getMessage(), e);
+            throw new ReviewServiceException("error at method deleteById at service module" + e.getMessage(), e);
         }
     }
 

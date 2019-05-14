@@ -10,7 +10,7 @@ public class UserDTO {
     private String email;
     private String password;
     private RoleDTO role;
-    private Boolean deleted;
+    private boolean deleted;
 
     public UserDTO() {
         deleted = false;

@@ -49,7 +49,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     }
 
     @Override
-    public User getUserByEmail(String email, Connection connection) {
+    public User getByEmail(String email, Connection connection) {
         String sqlQuery = "SELECT * FROM T_USER AS U LEFT JOIN T_ROLE AS R ON U.F_ROLE_ID = R.F_ID" +
                 "  WHERE F_EMAIL =?"; //TODO CHANGE LATER FOR LIST OF PERMISSIONS LATER
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
@@ -63,7 +63,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new UserRepositoryException("error at Method getUserByEmail at repository level" + e.getMessage(), e);
+            throw new UserRepositoryException("error at Method getByEmail at repository level" + e.getMessage(), e);
         }
         return null;
     }
@@ -90,7 +90,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
 
     @Override
     public int updateUserRole(Connection connection, Long roleId, Long id) {
-        String sqlQuery = "UPDATE T_USER SET F_ROLE_ID=? WHERE F_ID=?";
+        String sqlQuery = "UPDATE T_USER SET F_ROLE_ID=? WHERE F_ID=? AND F_INVIOLABLE = FALSE";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, roleId);
             preparedStatement.setLong(2, id);
@@ -114,6 +114,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
                 stringBuilder.append(ids[i]).append(",");
             }
         }
+        stringBuilder.append(" AND F_INVIOLABLE = FALSE");
         try (PreparedStatement preparedStatement = connection.prepareStatement(stringBuilder.toString())) {
             int rows = preparedStatement.executeUpdate();
             logger.info(" users deleted , count of deleted users is:{}", rows);
@@ -156,6 +157,26 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         }
     }
 
+    @Override
+    public String getUserEmailById(Long id, Connection connection) {
+        String sqlQuery = "SELECT F_EMAIL FROM T_USER WHERE F_ID =?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String email = resultSet.getString("F_EMAIL");
+                    logger.info("user with id {} have email {}", id, email);
+                    return email;
+                }
+                logger.info("no user in database with this id {}", id);
+                return null;
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new UserRepositoryException("Error at method getUserEmailById" + e.getMessage(), e);
+        }
+    }
+
     private User getUserWithId(ResultSet resultSet, User user) throws SQLException {
         User savedUser = new User();
         savedUser.setId(resultSet.getLong(1));
@@ -180,7 +201,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         user.setDeleted(resultSet.getBoolean("F_DELETED"));
         Role role = new Role();
         role.setId(resultSet.getLong("F_ROLE_ID"));
-        role.setName(resultSet.getString(10));
+        role.setName(resultSet.getString(11));
         user.setRole(role);
         return user;
     }

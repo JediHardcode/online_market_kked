@@ -31,7 +31,7 @@ public class AddUserDTO {
     private String email;
     @NotNull
     private Long roleId;
-    private Boolean deleted;
+    private boolean deleted;
 
     public AddUserDTO() {
         deleted = false;

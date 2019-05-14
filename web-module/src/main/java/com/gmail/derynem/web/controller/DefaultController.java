@@ -2,6 +2,7 @@ package com.gmail.derynem.web.controller;
 
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,11 +26,9 @@ public class DefaultController {
     @GetMapping("/home")
     public String home(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                        Model model) {
-        int countOfPages = reviewService.getCountOfPagesOfReviews(false);
-        Integer validPage = pageService.getValidPage(page, countOfPages);
-        List<ReviewDTO> reviews = reviewService.getListOfReviews(validPage, false);
-        model.addAttribute("pages", countOfPages);
-        model.addAttribute("reviews", reviews);
+        PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, false);
+        model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
+        model.addAttribute("reviews", reviewsPageInfo.getObjects());
         return HOME_PAGE;
     }
 

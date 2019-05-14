@@ -8,6 +8,7 @@ import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.UserConverter;
 import com.gmail.derynem.service.exception.UserServiceException;
+import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                User user = userRepository.getUserByEmail(email, connection);
+                User user = userRepository.getByEmail(email, connection);
                 if (user == null) {
                     logger.info("not found user with this email");
                     return null;
@@ -57,40 +58,47 @@ public class UserServiceImpl implements UserService {
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new UserServiceException("Error at method getUserByEmail at Service module:" + e.getMessage(), e);
+                throw new UserServiceException("Error at method getByEmail at Service module:" + e.getMessage(), e);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new UserServiceException("Error at method getUserByEmail at Service module:" + e.getMessage(), e);
+            throw new UserServiceException("Error at method getByEmail at Service module:" + e.getMessage(), e);
         }
     }
 
     @Override
-    public List<UserDTO> getUsers(Integer page) {
+    public PageDTO<UserDTO> getUsersPageInfo(Integer page) {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                int offset = pageService.getOffset(page);
+                PageDTO<UserDTO> userPageDTO = new PageDTO<>();
+                int countOfUsers = userRepository.getCountOfUsers(connection);
+                int countOfPages = pageService.getPages(countOfUsers);
+                userPageDTO.setCountOfPages(countOfPages);
+                int offset = pageService.getOffset(page, countOfPages);
                 List<User> userList = userRepository.getUsersWithOffset(connection, offset);
                 if (userList == null || userList.isEmpty()) {
                     logger.info("no available users in database");
                     connection.commit();
-                    return Collections.emptyList();
+                    userPageDTO.setObjects(Collections.emptyList());
+                    return userPageDTO;
                 }
                 List<UserDTO> users = userList.stream()
                         .map(userConverter::toDTO)
                         .collect(Collectors.toList());
-                logger.info("List of users found, list size is {}", users.size());
+                userPageDTO.setObjects(users);
+                logger.info("Users found, list size is {}, count of pages of users is {}",
+                        userPageDTO.getObjects().size(), userPageDTO.getCountOfPages());
                 connection.commit();
-                return users;
+                return userPageDTO;
             } catch (SQLException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
-                throw new UserServiceException("Error at Method getUsers at service module" + e.getMessage(), e);
+                throw new UserServiceException("Error at Method getUsersPageInfo at service module" + e.getMessage(), e);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new UserServiceException("Error at Method getUsers at service module" + e.getMessage(), e);
+            throw new UserServiceException("Error at Method getUsersPageInfo at service module" + e.getMessage(), e);
         }
     }
 
@@ -142,32 +150,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int getCountOfPagesOfUsers() {
-        try (Connection connection = userRepository.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                int countOfUsers = userRepository.getCountOfUsers(connection);
-                int countOfPages = pageService.getPages(countOfUsers);
-                connection.commit();
-                logger.info("count of users in database:{}, count of pages:{}", countOfUsers, countOfPages);
-                return countOfPages;
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new UserServiceException("error at method getCountOfPagesOfUsers at service module|" + e.getMessage(), e);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new UserServiceException("error at method getCountOfPagesOfUsers at service module|" + e.getMessage(), e);
-        }
-    }
-
-    @Override
     public void addUser(AddUserDTO userDTO) {
         try (Connection connection = userRepository.getConnection()) {
             connection.setAutoCommit(false);
             try {
-                User userWithThisEmail = userRepository.getUserByEmail(userDTO.getEmail(), connection);
+                User userWithThisEmail = userRepository.getByEmail(userDTO.getEmail(), connection);
                 if (userWithThisEmail != null) {
                     logger.info("user with this email {} already exist in database", userDTO.getEmail());
                     return;
@@ -195,10 +182,11 @@ public class UserServiceImpl implements UserService {
             try {
                 String password = randomService.generatePassword();
                 int row = userRepository.changePassword(connection, encoderService.encodePassword(password), id);
+                String userEmail = userRepository.getUserEmailById(id, connection);
                 if (row == 0) {
                     logger.info(" no user with this id{} in database ", id);
                 } else {
-                    logger.info(" new password {} have user with id {}", password, id);
+                    logger.info(" new password {} have user with id {} and email {}", password, id, userEmail);
                 }
                 connection.commit();
             } catch (Exception e) {

@@ -3,6 +3,8 @@ package com.gmail.derynem.service;
 import com.gmail.derynem.repository.ReviewRepository;
 import com.gmail.derynem.service.converter.ReviewConverter;
 import com.gmail.derynem.service.impl.ReviewServiceImpl;
+import com.gmail.derynem.service.model.PageDTO;
+import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +40,8 @@ public class ReviewServiceTest {
     public void shouldGetPagesOfNotHiddenReviews() {
         Mockito.when(reviewRepository.getCountOfReviews(connection, false)).thenReturn(count);
         Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
-        int resultCountOfPages = reviewService.getCountOfPagesOfReviews(false);
-        Assert.assertEquals(countOfPages, resultCountOfPages);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
+        Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 
     @Test
@@ -47,7 +49,7 @@ public class ReviewServiceTest {
         count = 0;
         Mockito.when(reviewRepository.getCountOfReviews(connection, false)).thenReturn(count);
         Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
-        int resultCountOfPages = reviewService.getCountOfPagesOfReviews(null);
-        Assert.assertEquals(countOfPages, resultCountOfPages);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
+        Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 }

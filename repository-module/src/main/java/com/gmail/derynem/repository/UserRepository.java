@@ -8,9 +8,9 @@ import java.util.List;
 public interface UserRepository extends GenericRepository {
     User add(User user, Connection connection);
 
-    User getUserByEmail(String email, Connection connection);
+    User getByEmail(String email, Connection connection);
 
-    List<User> getUsersWithOffset(Connection connection,Integer page);
+    List<User> getUsersWithOffset(Connection connection, Integer page);
 
     int updateUserRole(Connection connection, Long roleId, Long id);
 
@@ -18,5 +18,7 @@ public interface UserRepository extends GenericRepository {
 
     int getCountOfUsers(Connection connection);
 
-    int changePassword(Connection connection, String password,Long id);
+    int changePassword(Connection connection, String password, Long id);
+
+    String getUserEmailById(Long id, Connection connection);
 }
