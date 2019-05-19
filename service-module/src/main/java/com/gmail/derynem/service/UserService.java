@@ -1,22 +1,25 @@
 package com.gmail.derynem.service;
 
+import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
-
-import java.util.List;
 
 public interface UserService {
     UserDTO getUserByEmail(String email);
 
     PageDTO<UserDTO> getUsersPageInfo(Integer page);
 
-    void updateUserRole(UpdateRoleDTO updateRoleDTO);
+    void updateUserRole(UpdateRoleDTO updateRoleDTO) throws UserServiceException;
 
-    void deleteUsers(int[] ids);
+    void deleteUsers(Long[] ids) throws UserServiceException;
 
-    void addUser(AddUserDTO userDTO);
+    void saveUser(AddUserDTO userDTO) throws UserServiceException;
 
-    void changePassword(Long id);
+    void changePassword(Long id) throws UserServiceException;
+
+    void updateUserInfo(UserDTO userDTO);
+
+    UserDTO getById(Long id);
 }

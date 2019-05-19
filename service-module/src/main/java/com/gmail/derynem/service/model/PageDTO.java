@@ -4,18 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PageDTO<T> {
-    private List<T> objects = new ArrayList<>();
+    private List<T> entities = new ArrayList<>();
     private int countOfPages;
+    private int limit;
+    private int page;
 
     public PageDTO() {
     }
 
-    public List<T> getObjects() {
-        return objects;
+    public int getLimit() {
+        return limit;
     }
 
-    public void setObjects(List<T> objects) {
-        this.objects = objects;
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public List<T> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<T> entities) {
+        this.entities = entities;
     }
 
     public int getCountOfPages() {

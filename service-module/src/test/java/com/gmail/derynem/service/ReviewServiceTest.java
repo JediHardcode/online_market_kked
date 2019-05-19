@@ -15,6 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Connection;
 
+import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ReviewServiceTest {
     @Mock
@@ -31,15 +33,15 @@ public class ReviewServiceTest {
 
     @Before
     public void setUp() {
-        Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
+        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
         Mockito.when(reviewRepository.getConnection()).thenReturn(connection);
         reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService);
     }
 
     @Test
     public void shouldGetPagesOfNotHiddenReviews() {
-        Mockito.when(reviewRepository.getCountOfReviews(connection, false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
+        Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
+        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
@@ -47,8 +49,8 @@ public class ReviewServiceTest {
     @Test
     public void shouldGetPagesIfAllReviewsAreHidden() {
         count = 0;
-        Mockito.when(reviewRepository.getCountOfReviews(connection, false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
+        Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
+        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }

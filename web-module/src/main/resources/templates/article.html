@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Article №: <span th:text="${article.id}"/></h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block>
+                        <form class="custom-form">
+                            <div class="review-content">
+                                <h4>Author name: <span th:text="*{article.user.name}"/>
+                                    <p>Author surName: <span th:text="${article.user.surName}"/></p>
+                                </h4>
+                                <p>Name: <span th:text="${article.name}"/></p>
+                                <p>Date: <span th:text="${article.created}"/></p>
+                                <p>Content: <span th:text="${article.content}"/></p>
+                            </div>
+                        </form>
+                    </th:block>
+                    <h2>Comments</h2>
+                    <th:block th:each="comment: ${article.comments}">
+                        <form class="delete-form" method="post" th:action="@{/public/article/comment}">
+                            <input hidden value="#"
+                                   th:attr="value=${comment.id}" th:name="id"/>
+                            <input hidden value="#"
+                                   th:attr="value=${article.id}" th:name="articleId"/>
+                            <div class="review-content">
+                                <h4>User name: <span th:text="${comment.user.name}"/>
+                                    <p>user surName: <span th:text="${comment.user.surName}"/></p>
+                                </h4>
+                                <p>Date: <span th:text="${comment.created}"/></p>
+                                <p>Text: <span th:text="${comment.content}"/></p>
+                            </div>
+                            <th:block th:if="${userId==comment.user.id}">
+                                <button class="btn-default">delete
+                                </button>
+                            </th:block>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

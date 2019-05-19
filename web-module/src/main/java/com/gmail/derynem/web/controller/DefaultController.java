@@ -1,6 +1,5 @@
 package com.gmail.derynem.web.controller;
 
-import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
@@ -9,18 +8,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 import static com.gmail.derynem.web.constants.PageNamesConstant.*;
 
 @Controller
 public class DefaultController {
     private final ReviewService reviewService;
-    private final PageService pageService;
 
-    public DefaultController(ReviewService reviewService, PageService pageService) {
+    public DefaultController(ReviewService reviewService) {
         this.reviewService = reviewService;
-        this.pageService = pageService;
     }
 
     @GetMapping("/home")
@@ -28,7 +23,7 @@ public class DefaultController {
                        Model model) {
         PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, false);
         model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
-        model.addAttribute("reviews", reviewsPageInfo.getObjects());
+        model.addAttribute("reviews", reviewsPageInfo.getEntities());
         return HOME_PAGE;
     }
 

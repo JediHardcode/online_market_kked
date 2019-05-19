@@ -1,7 +1,7 @@
 package com.gmail.derynem.web.controller;
 
-import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
+import com.gmail.derynem.service.exception.ReviewServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import com.gmail.derynem.service.model.review.ReviewsDTO;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.gmail.derynem.web.constants.PageNamesConstant.PRIVATE_HOME_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_REVIEWS;
@@ -24,11 +23,9 @@ import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_
 @Controller
 public class ReviewController {
     private final static Logger logger = LoggerFactory.getLogger(ReviewController.class);
-    private final PageService pageService;
     private final ReviewService reviewService;
 
-    public ReviewController(PageService pageService, ReviewService reviewService) {
-        this.pageService = pageService;
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
@@ -36,7 +33,7 @@ public class ReviewController {
     public String managementReviews(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                     Model model) {
         PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, null);
-        ReviewsDTO reviews = new ReviewsDTO(reviewsPageInfo.getObjects());
+        ReviewsDTO reviews = new ReviewsDTO(reviewsPageInfo.getEntities());
         model.addAttribute("reviews", reviews);
         model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
         return PRIVATE_HOME_PAGE;
@@ -48,8 +45,13 @@ public class ReviewController {
             logger.info("redirect at reviews cause review id is null");
             return REDIRECT_PRIVATE_REVIEWS;
         }
-        reviewService.deleteReview(id);
-        return REDIRECT_PRIVATE_REVIEWS;
+        try {
+            reviewService.deleteReview(id);
+            return REDIRECT_PRIVATE_REVIEWS;
+        } catch (ReviewServiceException e) {
+            logger.error(e.getMessage(), e);
+            return REDIRECT_PRIVATE_REVIEWS;
+        }
     }
 
     @PostMapping("/private/reviews")

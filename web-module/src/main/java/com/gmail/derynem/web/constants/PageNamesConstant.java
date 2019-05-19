@@ -8,6 +8,9 @@ public class PageNamesConstant {
     public static final String ERROR_PAGE_FORBIDDEN = "error403";
     public static final String ERROR_PAGE_NOT_FOUND = "error404";
     public static final String PRIVATE_HOME_PAGE = "reviews";
+    public static final String USER_PROFILE_PAGE = "profile";
+    public static final String ARTICLES_PAGE = "articles";
+    public static final String ARTICLE_PAGE = "article";
 
     private PageNamesConstant() {
     }

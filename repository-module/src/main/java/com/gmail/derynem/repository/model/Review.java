@@ -1,11 +1,36 @@
 package com.gmail.derynem.repository.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.util.Objects;
+
+@Entity
+@Table(name = "T_REVIEW")
+@SQLDelete(sql = "UPDATE T_REVIEW SET F_DELETED = 1 WHERE F_ID =? ")
+@Where(clause = "F_DELETED = 0")
 public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "F_ID")
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "F_USER_ID", nullable = false)
     private User user;
-    private Long userId;
+    @Column(name = "F_HIDDEN")
     private boolean hidden;
+    @Column(name = "F_DESCRIPTION")
     private String description;
+    @Column(name = "F_CREATED")
     private String created;
 
     public Long getId() {
@@ -22,14 +47,6 @@ public class Review {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public boolean isHidden() {
@@ -54,5 +71,22 @@ public class Review {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return hidden == review.hidden &&
+                Objects.equals(id, review.id) &&
+                Objects.equals(user.getId(), review.user.getId()) &&
+                Objects.equals(description, review.description) &&
+                Objects.equals(created, review.created);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user.getId(), hidden, description, created);
     }
 }

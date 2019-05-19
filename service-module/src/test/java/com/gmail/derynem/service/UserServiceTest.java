@@ -1,7 +1,7 @@
 package com.gmail.derynem.service;
 
+import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.UserRepository;
-import com.gmail.derynem.repository.exception.UserRepositoryException;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.UserConverter;
@@ -9,6 +9,7 @@ import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.impl.UserServiceImpl;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
+import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,10 +22,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.sql.Connection;
 import java.util.Collections;
 
+import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class UserServiceTest {
+    @Mock
+    private RoleRepository roleRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -49,19 +53,19 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         Mockito.when(userRepository.getConnection()).thenReturn(connection);
-        userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService, encoderService);
+        userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService, encoderService, roleRepository);
         validRoleDTO = new RoleDTO(1L, "CUSTOMER");
         validRole = new Role(1L, "CUSTOMER");
         validUser = new User(1L, "test", "test", "test", "mail#mail", "test", validRole);
         validUserDTO = new UserDTO(1L, "test", "test", "test", "mail#mail", "test", validRoleDTO);
         usersPageDTO.setCountOfPages(4);
-        usersPageDTO.setObjects(asList(validUserDTO, validUserDTO));
+        usersPageDTO.setEntities(asList(validUserDTO, validUserDTO));
     }
 
     @Test
     public void shouldGetUserByEmail() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email, connection)).thenReturn(validUser);
+        Mockito.when(userRepository.getByEmail(email)).thenReturn(validUser);
         Mockito.when(userConverter.toDTO(validUser)).thenReturn(validUserDTO);
         UserDTO expectedUser = userService.getUserByEmail(email);
         Assert.assertNotNull(expectedUser);
@@ -70,46 +74,40 @@ public class UserServiceTest {
     @Test
     public void shouldReturnNullIfUserDoesntExist() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email, connection)).thenReturn(null);
+        Mockito.when(userRepository.getByEmail(email)).thenReturn(null);
         UserDTO expectedUser = userService.getUserByEmail(email);
         Assert.assertNull(expectedUser);
-    }
-
-    @Test(expected = UserServiceException.class)
-    public void shouldThrowUSerExceptionAtMethodGetUserByEmailIfSmthDoWrong() {
-        String email = "test";
-        Mockito.when(userRepository.getByEmail(email, connection)).thenThrow(UserRepositoryException.class);
-        userService.getUserByEmail(email);
     }
 
     @Test
     public void shouldGetListOfUsers() {
         int offset = 1;
-        Mockito.when(userRepository.getUsersWithOffset(connection, offset)).thenReturn(asList(validUser, validUser));
+        Mockito.when(userRepository.findAll(offset, 10)).thenReturn(asList(validUser, validUser));
         Mockito.when(userConverter.toDTO(validUser)).thenReturn(validUserDTO);
         PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
-        Assert.assertNotNull(pageDTO.getObjects());
+        Assert.assertNotNull(pageDTO.getEntities());
     }
 
     @Test
     public void shouldGetEmptyList() {
         int offset = 1;
-        Mockito.when(userRepository.getUsersWithOffset(connection, offset)).thenReturn(Collections.emptyList());
+        Mockito.when(userRepository.findAll(offset, 10)).thenReturn(Collections.emptyList());
         PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
-        Assert.assertEquals(Collections.emptyList(), pageDTO.getObjects());
+        Assert.assertEquals(Collections.emptyList(), pageDTO.getEntities());
     }
 
     @Test
-    public void shouldDeleteUsers() {
-        int[] ids = {3, 4};
-        Mockito.when(userRepository.deleteUsers(connection, ids)).thenReturn(2);
+    public void shouldDeleteUsers() throws UserServiceException {
+        Long[] ids = {3L, 4L};
+        Mockito.when(userRepository.getById(3L)).thenReturn(validUser);
+        Mockito.when(userRepository.getById(4L)).thenReturn(validUser);
         userService.deleteUsers(ids);
     }
 
     @Test
     public void shouldGetPages() {
-        Mockito.when(userRepository.getCountOfUsers(connection)).thenReturn(countOfUsers);
-        Mockito.when(pageService.getPages(countOfPages)).thenReturn(countOfPages);
+        Mockito.when(userRepository.getCountOfEntities()).thenReturn(countOfUsers);
+        Mockito.when(pageService.getPages(countOfPages, OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO pageDTO = userService.getUsersPageInfo(1);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
     }
@@ -117,9 +115,25 @@ public class UserServiceTest {
     @Test
     public void shouldGetPagesIfZeroUsersInDatabase() {
         int count = 0;
-        Mockito.when(userRepository.getCountOfUsers(connection)).thenReturn(count);
-        Mockito.when(pageService.getPages(count)).thenReturn(countOfPages);
+        Mockito.when(userRepository.getCountOfEntities()).thenReturn(count);
+        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
+    }
+
+    @Test(expected = UserServiceException.class)
+    public void shouldThrowServiceExceptionIfTryDeleteNotExistUser() throws UserServiceException {
+        Mockito.when(userRepository.getById(3L)).thenReturn(null);
+        Long[] ids = {3L, 4L};
+        userService.deleteUsers(ids);
+    }
+
+    @Test(expected = UserServiceException.class)
+    public void shouldThrowServiceExceptionIfTryToUpdateNotExistUser() throws UserServiceException {
+        UpdateRoleDTO updateRoleDTO = new UpdateRoleDTO();
+        updateRoleDTO.setRoleId(1L);
+        updateRoleDTO.setId(2L);
+        Mockito.when(userRepository.getById(2L)).thenReturn(null);
+        userService.updateUserRole(updateRoleDTO);
     }
 }
