@@ -19,8 +19,6 @@ import java.util.List;
 
 public class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
     private final static Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
-    @Autowired
-    private DataSource dataSource;
     @PersistenceContext
     protected EntityManager entityManager;
     protected Class<T> entityClass;
@@ -29,16 +27,6 @@ public class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
     public GenericRepositoryImpl() {
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
         this.entityClass = (Class<T>) superClass.getActualTypeArguments()[1];
-    }
-
-    @Override
-    public Connection getConnection() {
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new GenericRepositoryException(e.getMessage(), e);
-        }
     }
 
     @Override

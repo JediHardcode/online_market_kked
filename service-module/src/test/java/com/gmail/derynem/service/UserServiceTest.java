@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.Connection;
 import java.util.Collections;
 
 import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
@@ -38,8 +37,6 @@ public class UserServiceTest {
     @Mock
     private RandomService randomService;
     @Mock
-    Connection connection;
-    @Mock
     private EncoderService encoderService;
     private UserService userService;
     private UserDTO validUserDTO;
@@ -52,7 +49,6 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        Mockito.when(userRepository.getConnection()).thenReturn(connection);
         userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService, encoderService, roleRepository);
         validRoleDTO = new RoleDTO(1L, "CUSTOMER");
         validRole = new Role(1L, "CUSTOMER");

@@ -13,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.sql.Connection;
-
 import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,8 +23,6 @@ public class ReviewServiceTest {
     private ReviewConverter reviewConverter;
     @Mock
     private PageService pageService;
-    @Mock
-    public Connection connection;
     private ReviewService reviewService;
     private int countOfPages = 4;
     private int count = 4;
@@ -34,7 +30,6 @@ public class ReviewServiceTest {
     @Before
     public void setUp() {
         Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
-        Mockito.when(reviewRepository.getConnection()).thenReturn(connection);
         reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService);
     }
 
