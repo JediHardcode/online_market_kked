@@ -14,7 +14,8 @@ public class ArticleConverterImpl implements ArticleConverter {
     private final UserConverter userConverter;
     private final CommentConverter commentConverter;
 
-    public ArticleConverterImpl(UserConverter userConverter, CommentConverter commentConverter) {
+    public ArticleConverterImpl(UserConverter userConverter,
+                                CommentConverter commentConverter) {
         this.userConverter = userConverter;
         this.commentConverter = commentConverter;
     }

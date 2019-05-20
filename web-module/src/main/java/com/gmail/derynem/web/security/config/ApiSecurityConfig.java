@@ -6,13 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 @Configuration
 @Order(1)
@@ -20,7 +17,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder encoder;
     private final UserDetailsService userDetailsService;
 
-    public ApiSecurityConfig(PasswordEncoder encoder, UserDetailsService userDetailsService) {
+    public ApiSecurityConfig(PasswordEncoder encoder,
+                             UserDetailsService userDetailsService) {
         this.encoder = encoder;
         this.userDetailsService = userDetailsService;
     }

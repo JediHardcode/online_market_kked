@@ -15,7 +15,8 @@ public class UserConverterImpl implements UserConverter {
     private final RoleConverter roleConverter;
     private final ProfileConverter profileConverter;
 
-    public UserConverterImpl(RoleConverter roleConverter, ProfileConverter profileConverter) {
+    public UserConverterImpl(RoleConverter roleConverter,
+                             ProfileConverter profileConverter) {
         this.roleConverter = roleConverter;
         this.profileConverter = profileConverter;
     }

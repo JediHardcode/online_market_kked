@@ -34,9 +34,12 @@ public class UserServiceImpl implements UserService {
     private final EncoderService encoderService;
     private final RoleRepository roleRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserConverter userConverter,
-                           PageService pageService, RandomService randomService,
-                           EncoderService encoderService, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           UserConverter userConverter,
+                           PageService pageService,
+                           RandomService randomService,
+                           EncoderService encoderService,
+                           RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.pageService = pageService;

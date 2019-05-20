@@ -37,7 +37,9 @@ public class UserController {
     private final RoleService roleService;
     private final UserValidator userValidator;
 
-    public UserController(UserService userService, RoleService roleService, UserValidator userValidator) {
+    public UserController(UserService userService,
+                          RoleService roleService,
+                          UserValidator userValidator) {
         this.userService = userService;
         this.roleService = roleService;
         this.userValidator = userValidator;

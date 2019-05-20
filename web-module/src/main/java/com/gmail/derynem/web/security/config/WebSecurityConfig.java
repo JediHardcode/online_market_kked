@@ -20,7 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder encoder;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, PasswordEncoder encoder) {
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             PasswordEncoder encoder) {
         this.userDetailsService = userDetailsService;
         this.encoder = encoder;
     }

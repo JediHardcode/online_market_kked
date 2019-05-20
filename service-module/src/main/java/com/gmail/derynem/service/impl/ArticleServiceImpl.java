@@ -1,15 +1,15 @@
 package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.repository.ArticleRepository;
+import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Article;
+import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.ArticleService;
 import com.gmail.derynem.service.PageService;
-import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.ArticleConverter;
 import com.gmail.derynem.service.exception.ArticleServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
-import com.gmail.derynem.service.model.user.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,20 +25,23 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleConverter converter;
     private final PageService pageService;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository, ArticleConverter converter, PageService pageService, UserService userService) {
+    public ArticleServiceImpl(ArticleRepository articleRepository,
+                              ArticleConverter converter,
+                              PageService pageService,
+                              UserRepository userRepository) {
         this.articleRepository = articleRepository;
         this.converter = converter;
         this.pageService = pageService;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
     public void saveArticle(ArticleDTO articleDTO) throws ArticleServiceException {
-        UserDTO userDTO = userService.getById(articleDTO.getUser().getId());
-        if (userDTO != null) {
+        User user = userRepository.getById(articleDTO.getUser().getId());
+        if (user != null) {
             Article article = converter.toArticle(articleDTO);
             articleRepository.persist(article);
             logger.info("article with name {} added to database", article.getName());

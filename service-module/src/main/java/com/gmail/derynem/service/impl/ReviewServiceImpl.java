@@ -26,7 +26,9 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewConverter reviewConverter;
     private final PageService pageService;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewConverter reviewConverter, PageService pageService) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository,
+                             ReviewConverter reviewConverter,
+                             PageService pageService) {
         this.reviewRepository = reviewRepository;
         this.reviewConverter = reviewConverter;
         this.pageService = pageService;
