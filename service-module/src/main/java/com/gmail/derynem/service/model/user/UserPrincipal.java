@@ -9,13 +9,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserPrincipal implements UserDetails {
-    private UserDTO userDTO;
+    private UserDTO user;
     private Set<GrantedAuthority> grantedAuthoritySet;
 
-    public UserPrincipal(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public UserPrincipal(UserDTO user) {
+        this.user = user;
         grantedAuthoritySet = new HashSet<>();
-        grantedAuthoritySet.add(new SimpleGrantedAuthority(userDTO.getRole().getName()));
+        grantedAuthoritySet.add(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 
     @Override
@@ -25,12 +25,12 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userDTO.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userDTO.getName();
+        return user.getName();
     }
 
     @Override
@@ -50,6 +50,10 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !userDTO.getDeleted();
+        return !user.getDeleted();
+    }
+
+    public UserDTO getUser() {
+        return user;
     }
 }

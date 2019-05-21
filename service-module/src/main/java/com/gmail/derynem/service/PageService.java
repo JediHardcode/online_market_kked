@@ -1,9 +1,7 @@
 package com.gmail.derynem.service;
 
 public interface PageService {
-    int getPages(int countOfObjects);
+    int getPages(int countOfObjects, int limit);
 
-    int getValidPage(Integer page, int countOfPages);
-
-    int getOffset(int page);
+    int getOffset(Integer page, int countOfPages, int limit);
 }

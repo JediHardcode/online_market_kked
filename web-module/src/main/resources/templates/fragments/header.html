@@ -9,11 +9,17 @@
         <div>
             <ul>
                 <li class="active"><a th:href="@{/home}">Home</a></li>
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="active"><a th:href="@{/public/user/profile}">Profile</a></li>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="active"><a th:href="@{/public/articles}">Articles</a></li>
+                </th:block>
                 <th:block sec:authorize="hasAuthority('ADMINISTRATOR')">
                     <li class="active"><a th:href="@{/private/users}">Users</a></li>
                 </th:block>
                 <th:block sec:authorize="hasAuthority('ADMINISTRATOR')">
-                    <li class="active"><a th:href="@{/private/user}">Add user</a></li>
+                    <li class="active"><a th:href="@{/private/user/new}">Add user</a></li>
                 </th:block>
                 <th:block sec:authorize="hasAuthority('ADMINISTRATOR')">
                     <li class="active"><a th:href="@{/private/reviews}">Manage reviews</a></li>

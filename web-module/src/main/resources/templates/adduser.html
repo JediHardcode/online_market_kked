@@ -13,7 +13,7 @@
         <div th:replace="fragments/header :: header"/>
     </div>
     <section class="content-wrapper">
-        <form class="custom-form" action="#" th:action="@{/private/user}" th:object="${user}" method="post">
+        <form class="custom-form" action="#" th:action="@{/private/user/new}" th:object="${user}" method="post">
             <h1>Add information about user</h1>
             <div class="input-form-with-error">
                 <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</th:block>

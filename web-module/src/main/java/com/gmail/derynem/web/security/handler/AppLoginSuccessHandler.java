@@ -49,7 +49,7 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
             }
         }
         logger.debug("Not found matched roles, check success Handler");
-        throw new IllegalStateException();
+        throw new IllegalStateException("Not found matched roles, check success Handler");
     }
 
     private void clearAuthenticationAttributes(HttpServletRequest request) {

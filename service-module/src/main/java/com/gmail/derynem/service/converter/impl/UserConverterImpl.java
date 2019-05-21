@@ -2,6 +2,7 @@ package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
+import com.gmail.derynem.service.converter.ProfileConverter;
 import com.gmail.derynem.service.converter.RoleConverter;
 import com.gmail.derynem.service.converter.UserConverter;
 import com.gmail.derynem.service.model.role.RoleDTO;
@@ -12,9 +13,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserConverterImpl implements UserConverter {
     private final RoleConverter roleConverter;
+    private final ProfileConverter profileConverter;
 
-    public UserConverterImpl(RoleConverter roleConverter) {
+    public UserConverterImpl(RoleConverter roleConverter,
+                             ProfileConverter profileConverter) {
         this.roleConverter = roleConverter;
+        this.profileConverter = profileConverter;
     }
 
     @Override
@@ -29,6 +33,7 @@ public class UserConverterImpl implements UserConverter {
         userDTO.setName(user.getName());
         userDTO.setSurName(user.getSurName());
         userDTO.setMiddleName(user.getMiddleName());
+        userDTO.setProfile(profileConverter.toDTO(user.getProfile()));
         return userDTO;
     }
 
@@ -44,6 +49,8 @@ public class UserConverterImpl implements UserConverter {
         user.setMiddleName(userDTO.getMiddleName());
         user.setEmail(userDTO.getEmail());
         user.setName(userDTO.getName());
+        user.setProfile(profileConverter.toEntity(userDTO.getProfile()));
+        user.getProfile().setUser(user);
         return user;
     }
 
@@ -58,6 +65,8 @@ public class UserConverterImpl implements UserConverter {
         role.setId(userDTO.getRoleId());
         user.setRole(role);
         user.setName(userDTO.getName());
+        user.setProfile(profileConverter.toEntity(userDTO.getProfile()));
+        user.getProfile().setUser(user);
         return user;
     }
 }

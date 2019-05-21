@@ -1,5 +1,7 @@
 package com.gmail.derynem.service.model.user;
 
+import com.gmail.derynem.service.model.profile.ProfileDTO;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -31,9 +33,11 @@ public class AddUserDTO {
     private String email;
     @NotNull
     private Long roleId;
-    private Boolean deleted;
+    private boolean deleted;
+    private ProfileDTO profile;
 
     public AddUserDTO() {
+        profile = new ProfileDTO();
         deleted = false;
     }
 
@@ -43,6 +47,22 @@ public class AddUserDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public ProfileDTO getProfile() {
+        return profile;
+    }
+
+    public void setProfile(ProfileDTO profile) {
+        this.profile = profile;
     }
 
     public String getSurName() {

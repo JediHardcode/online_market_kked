@@ -117,34 +117,6 @@
         </insert>
     </changeSet>
 
-    <changeSet author="derynem@gmail.com" id="insert test1 user">
-        <insert tableName="T_USER">
-            <column name="F_ID" type="BIGINT" value='3'/>
-            <column name="F_NAME" type="varchar(128)" value="test1"/>
-            <column name="F_EMAIL" type="varchar(128)" value="test1@test1"/>
-            <column name="F_SURNAME" type="varchar(128)" value="test1"/>
-            <column name="F_NAME" type="varchar(128)" value="test2"/>
-            <column name="F_MIDDLE_NAME" type="varchar(128)" value="test2"/>
-            <column name="F_PASSWORD" type="varchar(128)"
-                    value="$2a$10$UkNTNShBeJbKshzwTwPIferaGnv3hoD30pRnzdiRLdeEc3z73coHS"/>
-            <column name="F_ROLE_ID" type="BIGINT" value='2'/>
-        </insert>
-    </changeSet>
-
-    <changeSet author="derynem@gmail.com" id="insert test2 user">
-        <insert tableName="T_USER">
-            <column name="F_ID" type="BIGINT" value='4'/>
-            <column name="F_NAME" type="varchar(128)" value="test2"/>
-            <column name="F_EMAIL" type="varchar(128)" value="test2@test2"/>
-            <column name="F_SURNAME" type="varchar(128)" value="test2"/>
-            <column name="F_NAME" type="varchar(128)" value="test2"/>
-            <column name="F_MIDDLE_NAME" type="varchar(128)" value="test2"/>
-            <column name="F_PASSWORD" type="varchar(128)"
-                    value="$2a$10$UkNTNShBeJbKshzwTwPIferaGnv3hoD30pRnzdiRLdeEc3z73coHS"/>
-            <column name="F_ROLE_ID" type="BIGINT" value='2'/>
-        </insert>
-    </changeSet>
-
     <changeSet author="derynem@gmail.com" id="insert role sale">
         <insert tableName="T_ROLE">
             <column name="F_ID" type="BIGINT" value='3'/>
@@ -168,30 +140,292 @@
         </insert>
     </changeSet>
 
-    <changeSet author="derynem@gmail.com" id="insert test2 review">
-        <insert tableName="T_REVIEW">
-            <column name="F_ID" type="BIGINT" value='2'/>
-            <column name="F_CREATED" type="DATETIME" value="now()"/>
-            <column name="F_DESCRIPTION" type="BLOB" value="bad bad"/>
-            <column name="F_USER_ID" type="BIGINT" value='3'/>
+    <changeSet author="derynem@gmail.com" id="addColumn-inviolable at user pable ">
+        <addColumn tableName="T_USER">
+            <column name="F_INVIOLABLE" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="update-root-inviolable">
+        <update tableName="T_USER">
+            <column name="F_INVIOLABLE" type="BOOLEAN" valueBoolean="true"/>
+            <where>F_EMAIL ='root@root'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="ARTICLE TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_ARTICLE">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_USER_ID" type="BIGINT">
+            </column>
+            <column name="F_CONTENT" type="BLOB"/>
+            <column name="F_CREATED" type="DATETIME"/>
+            <column name="F_NAME" type="varchar(128)"/>
+            <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK USER ARTICLE" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_USER_ID"
+                                 baseTableName="T_ARTICLE"
+                                 constraintName="FK_T_ARTICLE_T_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+
+    <changeSet id="COMMENT TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_COMMENT">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_USER_ID" type="BIGINT">
+            </column>
+            <column name="F_CONTENT" type="BLOB"/>
+            <column name="F_CREATED" type="DATETIME"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"/>
+            <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK COMMENT ARTICLE" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_ARTICLE_ID"
+                                 baseTableName="T_COMMENT"
+                                 constraintName="FK_T_COMMENT_T_ARTICLE"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_ARTICLE"/>
+    </changeSet>
+
+    <changeSet id="FK COMMENT USER" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_USER_ID"
+                                 baseTableName="T_COMMENT"
+                                 constraintName="FK_T_COMMENT_T_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+
+    <changeSet id="PROFILE TABLE" author="derynem@gmail.com">
+        <createTable tableName="T_PROFILE">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_ADDRESS" type="varchar(128)" defaultValue=" "/>
+            <column name="F_TELEPHONE" type="varchar(128)" defaultValue=" "/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK PROFILE USER" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_ID"
+                                 baseTableName="T_PROFILE"
+                                 constraintName="FK_T_PROFILE_T_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+    <!--    pass = secure-->
+    <changeSet author="derynem@gmail.com" id="insert secure api user">
+        <insert tableName="T_USER">
+            <column name="F_NAME" type="varchar(128)" value="SECURE"/>
+            <column name="F_EMAIL" type="varchar(128)" value="secure@secure"/>
+            <column name="F_SURNAME" type="varchar(128)" value="secure"/>
+            <column name="F_NAME" type="varchar(128)" value="secure"/>
+            <column name="F_MIDDLE_NAME" type="varchar(128)" value="secure"/>
+            <column name="F_PASSWORD" type="varchar(128)"
+                    value="$2a$12$zSKHh9vkzUWWSvVyTgVWseBiK8oRqrR7B/s8.p0T0iJnpwbqcPfo6"/>
+            <column name="F_ROLE_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_Role WHERE F_NAME = 'SECURE_API')"/>
+        </insert>
+    </changeSet>
+    <!--    pass = sale-->
+    <changeSet author="derynem@gmail.com" id="insert sale user">
+        <insert tableName="T_USER">
+            <column name="F_NAME" type="varchar(128)" value="SALE"/>
+            <column name="F_EMAIL" type="varchar(128)" value="sale@sale"/>
+            <column name="F_SURNAME" type="varchar(128)" value="sale"/>
+            <column name="F_NAME" type="varchar(128)" value="sale"/>
+            <column name="F_MIDDLE_NAME" type="varchar(128)" value="sale"/>
+            <column name="F_PASSWORD" type="varchar(128)"
+                    value="$2a$12$NCsTsrXqRDkl7N6aspenhOMe96G1CuMflVFB12cWVHN0oaveKGUZu"/>
+            <column name="F_ROLE_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_Role WHERE F_NAME = 'SALE')"/>
         </insert>
     </changeSet>
 
-    <changeSet author="derynem@gmail.com" id="insert test3 review">
-        <insert tableName="T_REVIEW">
-            <column name="F_ID" type="BIGINT" value='3'/>
-            <column name="F_CREATED" type="DATETIME" value="now()"/>
-            <column name="F_DESCRIPTION" type="BLOB" value="so so"/>
-            <column name="F_USER_ID" type="BIGINT" value='2'/>
+    <changeSet author="derynem@gmail.com" id="insert profile for root user">
+        <insert tableName="T_PROFILE">
+            <column name="F_ID" type="varchar(128)"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'ROOT')"/>
+            <column name="F_ADDRESS" type="varchar(128)" value="rootaddress"/>
+            <column name="F_TELEPHONE" type="varchar(128)" value="1234567897"/>
         </insert>
     </changeSet>
-    <changeSet author="derynem@gmail.com" id="insert test4 review">
-        <insert tableName="T_REVIEW">
-            <column name="F_ID" type="BIGINT" value='4'/>
-            <column name="F_CREATED" type="DATETIME" value="now()"/>
-            <column name="F_DESCRIPTION" type="BLOB" value="meh"/>
-            <column name="F_USER_ID" type="BIGINT" value='3'/>
+
+    <changeSet author="derynem@gmail.com" id="insert profile for CUSTOMER user">
+        <insert tableName="T_PROFILE">
+            <column name="F_ID" type="varchar(128)"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'CUSTOMER')"/>
+            <column name="F_ADDRESS" type="varchar(128)" value="CUSTOMERaddress"/>
+            <column name="F_TELEPHONE" type="varchar(128)" value="1234567897"/>
         </insert>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="insert profile for SECURE user">
+        <insert tableName="T_PROFILE">
+            <column name="F_ID" type="varchar(128)"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SECURE')"/>
+            <column name="F_ADDRESS" type="varchar(128)" value="SECUREaddress"/>
+            <column name="F_TELEPHONE" type="varchar(128)" value="1234567897"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="insert profile for SALE user">
+        <insert tableName="T_PROFILE">
+            <column name="F_ID" type="varchar(128)"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_ADDRESS" type="varchar(128)" value="SALEaddress"/>
+            <column name="F_TELEPHONE" type="varchar(128)" value="1234567897"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="add f_deleted to t_profile">
+        <addColumn tableName="T_PROFILE">
+            <column name="F_DELETED" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB"
+                    value="Tiled say decay spoil now walls meant house. My mr interest thoughts screened of outweigh removing. Evening society musical besides inhabit ye my. Lose hill well up will he over on. Increasing sufficient everything men him admiration unpleasing sex. Around really his use uneasy longer him man. His our pulled nature elinor talked now for excuse result. Admitted add peculiar get joy doubtful. Is we miles ready he might going. Own books built put civil fully blind fanny. Projection appearance at of admiration no. As he totally cousins warrant besides ashamed do. Therefore by applauded acuteness supported affection it. Except had sex limits county enough the figure former add. Do sang my he next mr soon. It merely waited do unable"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article one"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 2nd article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB" value="short content"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article two"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add comment at 1st article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_EMAIL = 'customer@customer')">
+            </column>
+            <column name="F_CONTENT" type="BLOB" value="text text"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_ARTICLE WHERE F_NAME = 'article one')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add comment at 2nd article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_EMAIL = 'customer@customer')">
+            </column>
+            <column name="F_CONTENT" type="BLOB" value="text text"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_ARTICLE WHERE F_NAME = 'article two')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 2nd comment at 2nd article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_EMAIL = 'customer@customer')">
+            </column>
+            <column name="F_CONTENT" type="BLOB" value="text text"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_ARTICLE WHERE F_NAME = 'article two')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 3rd article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB"
+                    value="Tiled say decay spoil now walls meant house. My mr interest thoughts screened of outweigh removing. Evening society musical besides inhabit ye my. Lose hill well up will he over on. Increasing sufficient everything men him admiration unpleasing sex. Around really his use uneasy longer him man. His our pulled nature elinor talked now for excuse result. Admitted add peculiar get joy doubtful. Is we miles ready he might going. Own books built put civil fully blind fanny. Projection appearance at of admiration no. As he totally cousins warrant besides ashamed do. Therefore by applauded acuteness supported affection it. Except had sex limits county enough the figure former add. Do sang my he next mr soon. It merely waited do unable"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article one"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 4th article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB"
+                    value="Tiled say decay spoil now walls meant house. My mr interest thoughts screened of outweigh removing. Evening society musical besides inhabit ye my. Lose hill well up will he over on. Increasing sufficient everything men him admiration unpleasing sex. Around really his use uneasy longer him man. His our pulled nature elinor talked now for excuse result. Admitted add peculiar get joy doubtful. Is we miles ready he might going. Own books built put civil fully blind fanny. Projection appearance at of admiration no. As he totally cousins warrant besides ashamed do. Therefore by applauded acuteness supported affection it. Except had sex limits county enough the figure former add. Do sang my he next mr soon. It merely waited do unable"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article one"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 5h article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB"
+                    value="Tiled say decay spoil now walls meant house. My mr interest thoughts screened of outweigh removing. Evening society musical besides inhabit ye my. Lose hill well up will he over on. Increasing sufficient everything men him admiration unpleasing sex. Around really his use uneasy longer him man. His our pulled nature elinor talked now for excuse result. Admitted add peculiar get joy doubtful. Is we miles ready he might going. Own books built put civil fully blind fanny. Projection appearance at of admiration no. As he totally cousins warrant besides ashamed do. Therefore by applauded acuteness supported affection it. Except had sex limits county enough the figure former add. Do sang my he next mr soon. It merely waited do unable"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article one"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 6th article" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" valueComputed="(SELECT F_ID FROM T_USER WHERE F_NAME = 'SALE')"/>
+            <column name="F_CONTENT" type="BLOB"
+                    value="Tiled say decay spoil now walls meant house. My mr interest thoughts screened of outweigh removing. Evening society musical besides inhabit ye my. Lose hill well up will he over on. Increasing sufficient everything men him admiration unpleasing sex. Around really his use uneasy longer him man. His our pulled nature elinor talked now for excuse result. Admitted add peculiar get joy doubtful. Is we miles ready he might going. Own books built put civil fully blind fanny. Projection appearance at of admiration no. As he totally cousins warrant besides ashamed do. Therefore by applauded acuteness supported affection it. Except had sex limits county enough the figure former add. Do sang my he next mr soon. It merely waited do unable"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article one"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 3comment at 2nd article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_USER WHERE F_EMAIL = 'customer@customer')">
+            </column>
+            <column name="F_CONTENT" type="BLOB" value="text text"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    valueComputed="(SELECT F_ID FROM T_ARTICLE WHERE F_NAME = 'article two')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="addColumn-inviolable at profile table ">
+        <addColumn tableName="T_PROFILE">
+            <column name="F_INVIOLABLE" type="BOOLEAN" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="update-root profile-inviolable">
+        <update tableName="T_PROFILE">
+            <column name="F_INVIOLABLE" type="BOOLEAN" valueBoolean="true"/>
+            <where>F_ID =(SELECT F_ID FROM T_USER WHERE F_EMAIL ='root@root')</where>
+        </update>
     </changeSet>
 
 </databaseChangeLog>
