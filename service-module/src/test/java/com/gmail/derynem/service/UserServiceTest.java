@@ -4,12 +4,15 @@ import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.converter.UserConverter;
+import com.gmail.derynem.service.converter.Converter;
+import com.gmail.derynem.service.converter.user.UserConverterAssembler;
+import com.gmail.derynem.service.converter.user.impl.AddUserConverterImpl;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.impl.UserServiceImpl;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
+import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +34,11 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserConverter userConverter;
+    private UserConverterAssembler userConverterAssembler;
+    @Mock
+    private Converter<AddUserDTO, User> addUserDTOUserConverter;
+    @Mock
+    private Converter<UserDTO, User> userDTOUserConverter;
     @Mock
     private PageService pageService;
     @Mock
@@ -49,20 +56,22 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        userService = new UserServiceImpl(userRepository, userConverter, pageService, randomService, encoderService, roleRepository);
+        userService = new UserServiceImpl(userRepository, userConverterAssembler, pageService, randomService, encoderService, roleRepository);
         validRoleDTO = new RoleDTO(1L, "CUSTOMER");
         validRole = new Role(1L, "CUSTOMER");
         validUser = new User(1L, "test", "test", "test", "mail#mail", "test", validRole);
         validUserDTO = new UserDTO(1L, "test", "test", "test", "mail#mail", "test", validRoleDTO);
         usersPageDTO.setCountOfPages(4);
         usersPageDTO.setEntities(asList(validUserDTO, validUserDTO));
+        Mockito.when(userConverterAssembler.getAddUserConverter()).thenReturn(addUserDTOUserConverter);
+        Mockito.when(userConverterAssembler.getUserConverter()).thenReturn(userDTOUserConverter);
+        Mockito.when(userDTOUserConverter.toDTO(validUser)).thenReturn(validUserDTO);
     }
 
     @Test
     public void shouldGetUserByEmail() {
         String email = "test";
         Mockito.when(userRepository.getByEmail(email)).thenReturn(validUser);
-        Mockito.when(userConverter.toDTO(validUser)).thenReturn(validUserDTO);
         UserDTO expectedUser = userService.getUserByEmail(email);
         Assert.assertNotNull(expectedUser);
     }
@@ -79,7 +88,6 @@ public class UserServiceTest {
     public void shouldGetListOfUsers() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(asList(validUser, validUser));
-        Mockito.when(userConverter.toDTO(validUser)).thenReturn(validUserDTO);
         PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
         Assert.assertNotNull(pageDTO.getEntities());
     }

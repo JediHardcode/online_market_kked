@@ -1,7 +1,7 @@
 package com.gmail.derynem.service.model.article;
 
 import com.gmail.derynem.service.model.comment.CommentDTO;
-import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.model.user.UserCommonDTO;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -16,16 +16,16 @@ import static com.gmail.derynem.service.validation.constant.ValidationConstant.O
 
 public class ArticleDTO {
     private Long id;
-    @NotEmpty
-    @NotNull
-    @Pattern(regexp = ONLY_ENG_WITH_SPACE)
+    @NotEmpty(message = "${article.name.empty}")
+    @NotNull(message = "${article.name.empty}")
+    @Pattern(regexp = ONLY_ENG_WITH_SPACE,message = "${article.name}")
     private String name;
-    @NotEmpty
-    @NotNull
-    @Length(max = ARTICLE_CONTENT_LENGTH)
+    @NotEmpty(message = "${article.content.empty}")
+    @NotNull(message = "${article.content.empty}")
+    @Length(max = ARTICLE_CONTENT_LENGTH,message = "${article.content}")
     private String content;
     @NotNull
-    private UserDTO user;
+    private UserCommonDTO user;
     private String created;
     private boolean isDeleted;
     private List<CommentDTO> comments = new ArrayList<>();
@@ -84,11 +84,11 @@ public class ArticleDTO {
         this.content = content;
     }
 
-    public UserDTO getUser() {
+    public UserCommonDTO getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(UserCommonDTO user) {
         this.user = user;
     }
 
@@ -98,5 +98,15 @@ public class ArticleDTO {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", content='" + content + '\'' +
+                ", user=" + user +
+                '}';
     }
 }

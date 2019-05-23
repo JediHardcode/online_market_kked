@@ -1,6 +1,6 @@
 package com.gmail.derynem.service.model.comment;
 
-import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.model.user.UserCommonDTO;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -10,7 +10,7 @@ import static com.gmail.derynem.service.validation.constant.ValidationConstant.C
 
 public class CommentDTO {
     private Long id;
-    private UserDTO user;
+    private UserCommonDTO user;
     private String created;
     private boolean isDeleted;
     @NotEmpty
@@ -30,11 +30,11 @@ public class CommentDTO {
         this.id = id;
     }
 
-    public UserDTO getUser() {
+    public UserCommonDTO getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(UserCommonDTO user) {
         this.user = user;
     }
 

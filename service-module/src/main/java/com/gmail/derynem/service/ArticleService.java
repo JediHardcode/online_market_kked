@@ -13,4 +13,6 @@ public interface ArticleService {
     PageDTO<ArticleDTO> getArticlePageInfo(Integer page, Integer limit);
 
     void deleteArticle(Long id) throws ArticleServiceException;
+
+    void updateArticle(ArticleDTO article) throws ArticleServiceException;
 }

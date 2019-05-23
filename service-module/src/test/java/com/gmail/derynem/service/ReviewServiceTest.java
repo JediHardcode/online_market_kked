@@ -1,7 +1,8 @@
 package com.gmail.derynem.service;
 
 import com.gmail.derynem.repository.ReviewRepository;
-import com.gmail.derynem.service.converter.ReviewConverter;
+import com.gmail.derynem.repository.model.Review;
+import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.impl.ReviewServiceImpl;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
@@ -20,7 +21,7 @@ public class ReviewServiceTest {
     @Mock
     private ReviewRepository reviewRepository;
     @Mock
-    private ReviewConverter reviewConverter;
+    private Converter<ReviewDTO, Review> reviewConverter;
     @Mock
     private PageService pageService;
     private ReviewService reviewService;
@@ -29,14 +30,14 @@ public class ReviewServiceTest {
 
     @Before
     public void setUp() {
-        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
+        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
         reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService);
     }
 
     @Test
     public void shouldGetPagesOfNotHiddenReviews() {
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
+        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
@@ -45,7 +46,7 @@ public class ReviewServiceTest {
     public void shouldGetPagesIfAllReviewsAreHidden() {
         count = 0;
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count,OFFSET_LIMIT)).thenReturn(countOfPages);
+        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
         PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }

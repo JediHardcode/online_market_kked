@@ -8,7 +8,7 @@ import com.gmail.derynem.service.EncoderService;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
-import com.gmail.derynem.service.converter.UserConverter;
+import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
@@ -28,20 +28,20 @@ import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
-    private final UserConverter userConverter;
+    private final UserConverterAssembler userConverterAssembler;
     private final PageService pageService;
     private final RandomService randomService;
     private final EncoderService encoderService;
     private final RoleRepository roleRepository;
 
     public UserServiceImpl(UserRepository userRepository,
-                           UserConverter userConverter,
+                           UserConverterAssembler userConverterAssembler,
                            PageService pageService,
                            RandomService randomService,
                            EncoderService encoderService,
                            RoleRepository roleRepository) {
         this.userRepository = userRepository;
-        this.userConverter = userConverter;
+        this.userConverterAssembler = userConverterAssembler;
         this.pageService = pageService;
         this.randomService = randomService;
         this.encoderService = encoderService;
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             logger.info(" no user with this email {} in database", email);
             return null;
         }
-        UserDTO userDTO = userConverter.toDTO(foundUser);
+        UserDTO userDTO = (UserDTO) userConverterAssembler.getUserConverter().toDTO(foundUser);
         logger.info("user found with current email{} , user name is {} ", email, userDTO.getName());
         return userDTO;
     }
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         int offset = pageService.getOffset(page, countOfPages, OFFSET_LIMIT);
         List<User> users = userRepository.findAll(offset, OFFSET_LIMIT);
         List<UserDTO> userDTOList = users.stream()
-                .map(userConverter::toDTO)
+                .map(user -> userConverterAssembler.getUserConverter().toDTO(user))
                 .collect(Collectors.toList());
         PageDTO<UserDTO> usersPageInfo = new PageDTO<>();
         usersPageInfo.setEntities(userDTOList);
@@ -94,10 +94,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUsers(Long[] ids) throws UserServiceException {
-        for (int i = 0; i < ids.length; i++) {
-            User user = userRepository.getById(ids[i]);
+        for (Long id : ids) {
+            User user = userRepository.getById(id);
             if (user == null) {
-                throw new UserServiceException("user with id " + ids[i] + "n ot found in database");
+                throw new UserServiceException("user with id " + id + "n ot found in database");
             }
             userRepository.remove(user);
             logger.info("user with name {} deleted ", user.getName());
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(AddUserDTO userDTO) throws UserServiceException {
         User matchedUser = userRepository.getByEmail(userDTO.getEmail());
         if (matchedUser == null) {
-            User user = userConverter.fromAddUserToUser(userDTO);
+            User user = userConverterAssembler.getAddUserConverter().toEntity(userDTO);
             user.setPassword(encoderService.encodePassword(randomService.generatePassword()));
             userRepository.persist(user);
             logger.info(" user added to database , user id {}", user.getId());
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
             logger.info("user with id {} doesnt exist in database", id);
             return null;
         }
-        UserDTO userDTO = userConverter.toDTO(user);
+        UserDTO userDTO = userConverterAssembler.getUserConverter().toDTO(user);
         logger.info(" user found , user name {}", userDTO.getName());
         return userDTO;
     }

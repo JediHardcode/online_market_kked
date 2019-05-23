@@ -6,15 +6,17 @@ import com.gmail.derynem.repository.model.Article;
 import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.ArticleService;
 import com.gmail.derynem.service.PageService;
-import com.gmail.derynem.service.converter.ArticleConverter;
+import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.exception.ArticleServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +25,12 @@ public class ArticleServiceImpl implements ArticleService {
     private final static Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
     private final static int PREVIEW_LENGTH = 200;
     private final ArticleRepository articleRepository;
-    private final ArticleConverter converter;
+    private final Converter<ArticleDTO, Article> converter;
     private final PageService pageService;
     private final UserRepository userRepository;
 
     public ArticleServiceImpl(ArticleRepository articleRepository,
-                              ArticleConverter converter,
+                              @Qualifier("articleConverter") Converter<ArticleDTO, Article> converter,
                               PageService pageService,
                               UserRepository userRepository) {
         this.articleRepository = articleRepository;
@@ -42,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
     public void saveArticle(ArticleDTO articleDTO) throws ArticleServiceException {
         User user = userRepository.getById(articleDTO.getUser().getId());
         if (user != null) {
-            Article article = converter.toArticle(articleDTO);
+            Article article = converter.toEntity(articleDTO);
             articleRepository.persist(article);
             logger.info("article with name {} added to database", article.getName());
         } else {
@@ -92,6 +94,21 @@ public class ArticleServiceImpl implements ArticleService {
         }
         articleRepository.remove(article);
         logger.info("article with id {}, name {} , author name {} deleted form database ", article.getId(), article.getName(), article.getUser().getName());
+    }
+
+    @Override
+    @Transactional
+    public void updateArticle(ArticleDTO article) throws ArticleServiceException {
+        Article updatedArticle = articleRepository.getById(article.getId());
+        if (updatedArticle == null) {
+            throw new ArticleServiceException("article with id " + article.getId() + " not found in database");
+        }
+        updatedArticle.setContent(article.getContent());
+        updatedArticle.setName(article.getName());
+        updatedArticle.setCreated(String.valueOf(LocalDateTime.now()));
+        articleRepository.merge(updatedArticle);
+        logger.info("article with id {} was successfully updated, new name : {}, created {}",
+                updatedArticle.getId(), updatedArticle.getName(), updatedArticle.getCreated());
     }
 
     private void setPreview(ArticleDTO articleDTO) {

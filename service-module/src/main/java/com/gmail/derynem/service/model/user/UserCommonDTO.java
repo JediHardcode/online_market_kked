@@ -1,10 +1,21 @@
 package com.gmail.derynem.service.model.user;
 
+import com.gmail.derynem.service.model.profile.ProfileDTO;
+
 public class UserCommonDTO {
     private Long id;
     private String name;
     private String middleName;
     private String surName;
+    private ProfileDTO profileDTO;
+
+    public ProfileDTO getProfileDTO() {
+        return profileDTO;
+    }
+
+    public void setProfileDTO(ProfileDTO profileDTO) {
+        this.profileDTO = profileDTO;
+    }
 
     public Long getId() {
         return id;

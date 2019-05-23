@@ -4,12 +4,13 @@ import com.gmail.derynem.repository.ReviewRepository;
 import com.gmail.derynem.repository.model.Review;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
-import com.gmail.derynem.service.converter.ReviewConverter;
+import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.exception.ReviewServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +24,12 @@ import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 public class ReviewServiceImpl implements ReviewService {
     private final static Logger logger = LoggerFactory.getLogger(ReviewServiceImpl.class);
     private final ReviewRepository reviewRepository;
-    private final ReviewConverter reviewConverter;
+    private final Converter<ReviewDTO, Review> reviewConverter;
     private final PageService pageService;
 
+
     public ReviewServiceImpl(ReviewRepository reviewRepository,
-                             ReviewConverter reviewConverter,
+                             @Qualifier("reviewConverter") Converter<ReviewDTO, Review> reviewConverter,
                              PageService pageService) {
         this.reviewRepository = reviewRepository;
         this.reviewConverter = reviewConverter;

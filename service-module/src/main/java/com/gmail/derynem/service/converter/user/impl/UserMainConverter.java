@@ -1,22 +1,22 @@
-package com.gmail.derynem.service.converter.impl;
+package com.gmail.derynem.service.converter.user.impl;
 
+import com.gmail.derynem.repository.model.Profile;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.converter.ProfileConverter;
-import com.gmail.derynem.service.converter.RoleConverter;
-import com.gmail.derynem.service.converter.UserConverter;
+import com.gmail.derynem.service.converter.Converter;
+import com.gmail.derynem.service.model.profile.ProfileDTO;
 import com.gmail.derynem.service.model.role.RoleDTO;
-import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
-public class UserConverterImpl implements UserConverter {
-    private final RoleConverter roleConverter;
-    private final ProfileConverter profileConverter;
+@Component("userMainConverter")
+public class UserMainConverter implements Converter<UserDTO, User> {
+    private final Converter<RoleDTO, Role> roleConverter;
+    private final Converter<ProfileDTO, Profile> profileConverter;
 
-    public UserConverterImpl(RoleConverter roleConverter,
-                             ProfileConverter profileConverter) {
+    public UserMainConverter(@Qualifier("roleConverter") Converter<RoleDTO, Role> roleConverter,
+                             @Qualifier("profileConverter") Converter<ProfileDTO, Profile> profileConverter) {
         this.roleConverter = roleConverter;
         this.profileConverter = profileConverter;
     }
@@ -38,8 +38,8 @@ public class UserConverterImpl implements UserConverter {
     }
 
     @Override
-    public User toUser(UserDTO userDTO) {
-        Role role = roleConverter.toRole(userDTO.getRole());
+    public User toEntity(UserDTO userDTO) {
+        Role role = roleConverter.toEntity(userDTO.getRole());
         User user = new User();
         user.setRole(role);
         user.setPassword(userDTO.getPassword());
@@ -48,22 +48,6 @@ public class UserConverterImpl implements UserConverter {
         user.setSurName(userDTO.getSurName());
         user.setMiddleName(userDTO.getMiddleName());
         user.setEmail(userDTO.getEmail());
-        user.setName(userDTO.getName());
-        user.setProfile(profileConverter.toEntity(userDTO.getProfile()));
-        user.getProfile().setUser(user);
-        return user;
-    }
-
-    @Override
-    public User fromAddUserToUser(AddUserDTO userDTO) {
-        User user = new User();
-        user.setMiddleName(userDTO.getMiddleName());
-        user.setSurName(userDTO.getSurName());
-        user.setEmail(userDTO.getEmail());
-        user.setDeleted(userDTO.getDeleted());
-        Role role = new Role();
-        role.setId(userDTO.getRoleId());
-        user.setRole(role);
         user.setName(userDTO.getName());
         user.setProfile(profileConverter.toEntity(userDTO.getProfile()));
         user.getProfile().setUser(user);

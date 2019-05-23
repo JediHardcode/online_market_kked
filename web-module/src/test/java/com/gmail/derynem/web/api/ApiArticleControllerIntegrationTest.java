@@ -3,7 +3,7 @@ package com.gmail.derynem.web.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.derynem.service.model.article.ArticleDTO;
 import com.gmail.derynem.service.model.comment.CommentDTO;
-import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.model.user.UserCommonDTO;
 import com.gmail.derynem.web.controller.api.ApiArticleController;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+
 public class ApiArticleControllerIntegrationTest {
     @Autowired
     private WebApplicationContext context;
@@ -35,7 +38,7 @@ public class ApiArticleControllerIntegrationTest {
     private ApiArticleController apiArticleController;
     private MockMvc mvc;
     private ArticleDTO articleDTO = new ArticleDTO();
-    private UserDTO userDTO = new UserDTO();
+    private UserCommonDTO userDTO = new UserCommonDTO();
     private CommentDTO commentDTO = new CommentDTO();
     private List<CommentDTO> comments = new ArrayList<>();
     private ObjectMapper mapper = new ObjectMapper();

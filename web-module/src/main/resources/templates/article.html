@@ -17,20 +17,43 @@
             <div class="reviews-list">
                 <div id="button" class="review-item">
                     <th:block>
-                        <form class="custom-form">
+                        <form class="custom-form" method="post" action="#" th:action="@{/private/article/update}"
+                              th:object="${article}">
                             <div class="review-content">
-                                <h4>Author name: <span th:text="*{article.user.name}"/>
+                                <input hidden value="#"
+                                       th:attr="value=${article.id}" th:field="*{id}"/>
+                                <input hidden value="#"
+                                       th:attr="value=${article.user.id}" th:field="*{user.id}"/>
+                                <h4>Author name: <span th:text="${article.user.name}"/>
                                     <p>Author surName: <span th:text="${article.user.surName}"/></p>
                                 </h4>
-                                <p>Name: <span th:text="${article.name}"/></p>
+                                <div class="input-form-with-error">
+                                    <label>Name</label>
+                                    <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                        name error
+                                    </th:block>
+                                    <input type="text" name="name" id="name" th:value="${article.name}"
+                                           th:required="true" th:field="*{name}"/>
+                                </div>
+                                <div class="input-form-with-error">
+                                    <label>Content</label>
+                                    <th:block th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                                        content error
+                                    </th:block>
+                                    <textarea rows="4" name="content" id="content" th:value="${article.content}"
+                                              th:required="true" th:field="*{content}"/>
+                                </div>
                                 <p>Date: <span th:text="${article.created}"/></p>
-                                <p>Content: <span th:text="${article.content}"/></p>
                             </div>
+                            <th:block th:if="${userId==article.user.id}">
+                                <button class="btn-default">update
+                                </button>
+                            </th:block>
                         </form>
                     </th:block>
                     <h2>Comments</h2>
                     <th:block th:each="comment: ${article.comments}">
-                        <form class="delete-form" method="post" th:action="@{/public/article/comment}">
+                        <form class="delete-form" method="post" th:action="@{/public/article/comment/delete}">
                             <input hidden value="#"
                                    th:attr="value=${comment.id}" th:name="id"/>
                             <input hidden value="#"
@@ -42,8 +65,10 @@
                                 <p>Date: <span th:text="${comment.created}"/></p>
                                 <p>Text: <span th:text="${comment.content}"/></p>
                             </div>
-                            <th:block th:if="${userId==comment.user.id}">
-                                <button class="btn-default">delete
+                            <th:block th:switch="${userId}">
+                                <button th:case="${comment.user.id}" class="btn-default">delete
+                                </button>
+                                <button th:case="${article.user.id}" class="btn-default">delete
                                 </button>
                             </th:block>
                         </form>

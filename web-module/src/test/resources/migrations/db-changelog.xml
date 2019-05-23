@@ -329,4 +329,45 @@
             <where>F_ID =(SELECT F_ID FROM T_USER WHERE F_EMAIL ='root@root')</where>
         </update>
     </changeSet>
+
+    <changeSet id="add article2" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" value="1"/>
+            <column name="F_CONTENT" type="BLOB" value=" "/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add article3" author="derynem@gmail.com">
+        <insert tableName="T_ARTICLE">
+            <column name="F_USER_ID" type="BIGINT" value="1"/>
+            <column name="F_CONTENT" type="BLOB" value=" "/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_NAME" type="varchar(128)" value="article"/>
+        </insert>
+    </changeSet>
+    <changeSet id="add comment at 1st article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    value='2'>
+            </column>
+            <column name="F_CONTENT" type="BLOB" value=" "/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    value='1'/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 2nd comment at 1st article" author="derynem@gmail.com">
+        <insert tableName="T_COMMENT">
+            <column name="F_USER_ID" type="BIGINT"
+                    value='2'>
+            </column>
+            <column name="F_CONTENT" type="BLOB" value=" "/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+            <column name="F_ARTICLE_ID" type="BIGINT"
+                    value='1'/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

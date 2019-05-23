@@ -1,33 +1,41 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Article;
+import com.gmail.derynem.repository.model.Comment;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.converter.ArticleConverter;
-import com.gmail.derynem.service.converter.CommentConverter;
-import com.gmail.derynem.service.converter.UserConverter;
+import com.gmail.derynem.service.converter.Converter;
+import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.model.article.ArticleDTO;
-import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.model.comment.CommentDTO;
+import com.gmail.derynem.service.model.user.UserCommonDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
-public class ArticleConverterImpl implements ArticleConverter {
-    private final UserConverter userConverter;
-    private final CommentConverter commentConverter;
+import java.util.stream.Collectors;
 
-    public ArticleConverterImpl(UserConverter userConverter,
-                                CommentConverter commentConverter) {
-        this.userConverter = userConverter;
+@Component("articleConverter")
+public class ArticleConverterImpl implements Converter<ArticleDTO, Article> {
+    private final UserConverterAssembler userConverterAssembler;
+    private final Converter<CommentDTO, Comment> commentConverter;
+
+    public ArticleConverterImpl(UserConverterAssembler userConverterAssembler,
+                                @Qualifier("commentConverter") Converter<CommentDTO, Comment> commentConverter) {
+        this.userConverterAssembler = userConverterAssembler;
         this.commentConverter = commentConverter;
     }
 
     @Override
-    public Article toArticle(ArticleDTO articleDTO) {
+    public Article toEntity(ArticleDTO articleDTO) {
         Article article = new Article();
         article.setContent(articleDTO.getContent());
         article.setCreated(articleDTO.getCreated());
         article.setName(articleDTO.getName());
         article.setDeleted(articleDTO.isDeleted());
-        article.setComments(commentConverter.toEntityList(articleDTO.getComments()));
+        if (articleDTO.getComments() != null || !articleDTO.getComments().isEmpty()) {
+            article.setComments(articleDTO.getComments().stream()
+                    .map(commentConverter::toEntity)
+                    .collect(Collectors.toList()));
+        }
         User user = new User();
         user.setId(articleDTO.getUser().getId());
         article.setUser(user);
@@ -42,8 +50,12 @@ public class ArticleConverterImpl implements ArticleConverter {
         articleDTO.setDeleted(article.isDeleted());
         articleDTO.setId(article.getId());
         articleDTO.setName(article.getName());
-        articleDTO.setComments(commentConverter.toDTOList(article.getComments()));
-        UserDTO userDTO = userConverter.toDTO(article.getUser());
+        if (article.getComments() != null || !article.getComments().isEmpty()) {
+            articleDTO.setComments(article.getComments().stream()
+                    .map(commentConverter::toDTO)
+                    .collect(Collectors.toList()));
+        }
+        UserCommonDTO userDTO = userConverterAssembler.getUserCommonConverter().toDTO(article.getUser());
         articleDTO.setUser(userDTO);
         return articleDTO;
     }

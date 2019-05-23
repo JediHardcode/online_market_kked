@@ -21,7 +21,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("from ").append(entityClass.getName()).append(" e");
         if (isHidden != null) {
-            stringBuilder.append(" WHERE F_HIDDEN = ").append(isHidden);
+            stringBuilder.append(" where e.hidden = ").append(isHidden);
         }
         Query q = entityManager.createQuery(stringBuilder.toString())
                 .setFirstResult(offset)
@@ -38,11 +38,11 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
     @Override
     public int getCountOfReviews(Boolean isHidden) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT COUNT(*) FROM ")
+        stringBuilder.append("select count(*) from ")
                 .append(entityClass.getName())
                 .append(" e");
         if (isHidden != null) {
-            stringBuilder.append(" WHERE F_HIDDEN = ").append(isHidden);
+            stringBuilder.append(" where e.hidden = ").append(isHidden);
         }
         Query q = entityManager.createQuery(stringBuilder.toString());
         try {
@@ -56,7 +56,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
 
     @Override
     public int changeIsHiddenStatus(boolean isHidden, List<Long> ids) {
-        String queryString = "UPDATE " + entityClass.getName() + " e" + " SET e.hidden = :condition WHERE e.id IN (:ids) AND e.hidden = :currentStatus";
+        String queryString = "update " + entityClass.getName() + " e" + " set e.hidden = :condition where e.id in (:ids) and e.hidden = :currentStatus";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("ids", ids);
         query.setParameter("condition", isHidden);
