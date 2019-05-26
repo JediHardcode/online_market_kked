@@ -1,6 +1,7 @@
 package com.gmail.derynem.service.model.user;
 
 import com.gmail.derynem.service.model.profile.ProfileDTO;
+import com.gmail.derynem.service.validation.UniqueEmail;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class AddUserDTO {
     @NotEmpty(message = "{user.email.empty}")
     @Size(max = EMAIL_LENGTH)
     @Pattern(regexp = EMAIL_PATTERN, message = "{user.email.not.valid}")
+    @UniqueEmail
     private String email;
     @NotNull
     private Long roleId;

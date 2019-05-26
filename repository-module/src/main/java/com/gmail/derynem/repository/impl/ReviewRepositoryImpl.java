@@ -56,7 +56,8 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> im
 
     @Override
     public int changeIsHiddenStatus(boolean isHidden, List<Long> ids) {
-        String queryString = "update " + entityClass.getName() + " e" + " set e.hidden = :condition where e.id in (:ids) and e.hidden = :currentStatus";
+        String queryString = "update " + entityClass.getName() + " e" +
+                " set e.hidden = :condition where e.id in (:ids) and e.hidden = :currentStatus";
         Query query = entityManager.createQuery(queryString);
         query.setParameter("ids", ids);
         query.setParameter("condition", isHidden);

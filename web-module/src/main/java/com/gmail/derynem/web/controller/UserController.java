@@ -144,12 +144,10 @@ public class UserController {
     }
 
     @PostMapping("/public/user/profile")
-    public String updateProfile(@ModelAttribute UserDTO user,
-                                BindingResult bindingResult,
-                                Model model) {
+    public String updateProfile(@ModelAttribute(value = "user") UserDTO user,
+                                BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", user);
             logger.info("User not valid ,errors {}", Arrays.toString(bindingResult.getAllErrors().toArray()));
             return USER_PROFILE_PAGE;
         }

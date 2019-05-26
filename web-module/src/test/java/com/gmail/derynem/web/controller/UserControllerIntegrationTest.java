@@ -167,7 +167,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void shouldUpdateUserInformation() {
-        String url = userController.updateProfile(user, bindingResult, model);
+        String url = userController.updateProfile(user, bindingResult);
         Assert.assertEquals(REDIRECT_USER_PROFILE, url);
     }
 
@@ -175,8 +175,7 @@ public class UserControllerIntegrationTest {
     public void shouldReturnProfilePageIfUserNotValid() {
         user.setName("2233");
         Mockito.when(bindingResult.hasErrors()).thenReturn(true);
-        String url = userController.updateProfile(user, bindingResult, model);
-        Assert.assertThat(model.asMap(), IsMapContaining.hasKey("user"));
+        String url = userController.updateProfile(user, bindingResult);
         Assert.assertEquals(USER_PROFILE_PAGE, url);
     }
 }

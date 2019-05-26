@@ -5,7 +5,6 @@ import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
 
 public interface ArticleService {
-
     void saveArticle(ArticleDTO articleDTO) throws ArticleServiceException;
 
     ArticleDTO getArticleById(Long id);
