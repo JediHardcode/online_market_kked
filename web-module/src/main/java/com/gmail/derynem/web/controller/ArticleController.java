@@ -3,6 +3,7 @@ package com.gmail.derynem.web.controller;
 import com.gmail.derynem.service.ArticleService;
 import com.gmail.derynem.service.CommentService;
 import com.gmail.derynem.service.exception.ArticleServiceException;
+import com.gmail.derynem.service.exception.CommentServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
 import com.gmail.derynem.service.model.user.UserPrincipal;
@@ -70,7 +71,7 @@ public class ArticleController {
         try {
             commentService.deleteComment(id);
             return String.format(REDIRECT_ARTICLE_PAGE, articleId);
-        } catch (ArticleServiceException e) {
+        } catch (CommentServiceException e) {
             logger.error(e.getMessage(), e);
             return REDIRECT_NOT_FOUND;
         }

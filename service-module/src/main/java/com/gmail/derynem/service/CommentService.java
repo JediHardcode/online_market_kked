@@ -1,7 +1,7 @@
 package com.gmail.derynem.service;
 
-import com.gmail.derynem.service.exception.ArticleServiceException;
+import com.gmail.derynem.service.exception.CommentServiceException;
 
 public interface CommentService {
-    void deleteComment(Long id) throws ArticleServiceException;
+    void deleteComment(Long id) throws CommentServiceException;
 }
