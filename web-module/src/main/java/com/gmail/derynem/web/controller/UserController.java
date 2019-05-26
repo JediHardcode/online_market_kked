@@ -133,7 +133,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/public/user/profile")
+    @GetMapping("/private/profile")
     public String showUserProfile(Authentication authentication,
                                   Model model) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -143,7 +143,7 @@ public class UserController {
         return USER_PROFILE_PAGE;
     }
 
-    @PostMapping("/public/user/profile")
+    @PostMapping("/private/profile")
     public String updateProfile(@ModelAttribute(value = "user") UserDTO user,
                                 BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);

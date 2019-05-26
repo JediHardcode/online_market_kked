@@ -44,8 +44,10 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
             if (grantedAuthority.getAuthority().equalsIgnoreCase("ADMINISTRATOR")) {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
                 return "/private/reviews";
-            } else {
+            } else if (grantedAuthority.getAuthority().equalsIgnoreCase("CUSTOMER")) {
                 return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
+            } else if (grantedAuthority.getAuthority().equalsIgnoreCase("SALE")) {
+                return "/public/articles";
             }
         }
         logger.debug("Not found matched roles, check success Handler");

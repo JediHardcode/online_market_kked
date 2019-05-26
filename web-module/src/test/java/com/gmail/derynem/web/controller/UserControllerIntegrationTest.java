@@ -159,13 +159,6 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails("root@root")
-    public void shouldShowUserProfile() throws Exception {
-        this.mockMvc.perform(get("/public/user/profile"))
-                .andExpect(model().attributeExists("user"));
-    }
-
-    @Test
     public void shouldUpdateUserInformation() {
         String url = userController.updateProfile(user, bindingResult);
         Assert.assertEquals(REDIRECT_USER_PROFILE, url);

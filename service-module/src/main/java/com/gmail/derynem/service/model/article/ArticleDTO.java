@@ -17,7 +17,7 @@ import static com.gmail.derynem.service.validation.constant.ValidationConstant.O
 public class ArticleDTO {
     private Long id;
     @NotEmpty(message = "{article.name.empty}")
-    @NotNull(message = "${article.name.empty}")
+    @NotNull(message = "{article.name.empty}")
     @Pattern(regexp = ONLY_ENG_WITH_SPACE, message = "{article.name}")
     private String name;
     @NotEmpty(message = "{article.content.empty}")
