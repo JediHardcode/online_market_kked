@@ -45,6 +45,7 @@ public class ArticleServiceImpl implements ArticleService {
         User user = userRepository.getById(articleDTO.getUser().getId());
         if (user != null) {
             Article article = converter.toEntity(articleDTO);
+            article.setUser(user);
             articleRepository.persist(article);
             logger.info("article with name {} added to database", article.getName());
         } else {
@@ -60,7 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
             logger.info("not found article with this id {} in database", id);
             return null;
         }
-        ArticleDTO articleDTO = converter.toDTO(article);//
+        ArticleDTO articleDTO = converter.toDTO(article);
         logger.info(" article with id {} author id {} get from database", articleDTO.getId(), articleDTO.getUser().getId());
         return articleDTO;
     }

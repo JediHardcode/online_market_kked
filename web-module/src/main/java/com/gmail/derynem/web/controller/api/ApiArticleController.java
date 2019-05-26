@@ -4,10 +4,12 @@ import com.gmail.derynem.service.ArticleService;
 import com.gmail.derynem.service.exception.ArticleServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
+import com.gmail.derynem.service.model.user.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,12 +35,16 @@ public class ApiArticleController {
     }
 
     @PostMapping("/articles")
-    public ResponseEntity addArticle(@RequestBody @Valid ArticleDTO articleDTO, BindingResult bindingResult) {
+    public ResponseEntity addArticle(@RequestBody @Valid ArticleDTO articleDTO,
+                                     BindingResult bindingResult,
+                                     Authentication authentication) {
         if (bindingResult.hasErrors()) {
             logger.info(" article from request not valid cause {} ", Arrays.toString(bindingResult.getAllErrors().toArray()));
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         } else {
             try {
+                UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+                articleDTO.getUser().setId(userPrincipal.getUser().getId());
                 articleService.saveArticle(articleDTO);
                 logger.info("article valid and add to database");
                 return new ResponseEntity(HttpStatus.CREATED);

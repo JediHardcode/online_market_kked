@@ -17,4 +17,11 @@ public class RandomServiceImpl implements RandomService {
                 numbers +
                 totalChars;
     }
+
+    @Override
+    public String generateUniqueNum() {
+        String uniquePart = String.valueOf(System.currentTimeMillis());
+        String secondPart = RandomStringUtils.randomNumeric(2);
+        return uniquePart + secondPart;
+    }
 }

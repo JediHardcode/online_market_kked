@@ -16,15 +16,14 @@ import static com.gmail.derynem.service.validation.constant.ValidationConstant.O
 
 public class ArticleDTO {
     private Long id;
-    @NotEmpty(message = "${article.name.empty}")
+    @NotEmpty(message = "{article.name.empty}")
     @NotNull(message = "${article.name.empty}")
-    @Pattern(regexp = ONLY_ENG_WITH_SPACE,message = "${article.name}")
+    @Pattern(regexp = ONLY_ENG_WITH_SPACE, message = "{article.name}")
     private String name;
-    @NotEmpty(message = "${article.content.empty}")
-    @NotNull(message = "${article.content.empty}")
-    @Length(max = ARTICLE_CONTENT_LENGTH,message = "${article.content}")
+    @NotEmpty(message = "{article.content.empty}")
+    @NotNull(message = "{article.content.empty}")
+    @Length(max = ARTICLE_CONTENT_LENGTH, message = "{article.content}")
     private String content;
-    @NotNull
     private UserCommonDTO user;
     private String created;
     private boolean isDeleted;
@@ -40,6 +39,7 @@ public class ArticleDTO {
     }
 
     public ArticleDTO() {
+        user = new UserCommonDTO();
         isDeleted = false;
         created = String.valueOf(LocalDateTime.now());
     }

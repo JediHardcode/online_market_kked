@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ERROR</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section class="content-wrapper">
+        <h1>Oops</h1>
+        <div th:inline="text">Something gone wrong, try again
+        </div>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

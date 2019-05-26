@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_PAGE;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ARTICLES_PAGE;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -151,7 +154,25 @@ public class ArticleControllerIntegrationTest {
         mockMvc.perform(post("/private/article/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .flashAttr("article", validArticleDTO))
-                .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists("userId"));
+    }
+
+    @Test
+    @WithUserDetails(value = SALE_EMAIL)
+    public void shouldSaveArticle() throws Exception {
+        validArticleDTO.setName("validName");
+        validArticleDTO.setContent(" ");
+        mockMvc.perform(post("/private/article/new")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .flashAttr("article", validArticleDTO))
+                .andExpect(redirectedUrl("/public/articles"));
+    }
+
+    @Test
+    @WithUserDetails(value = SALE_EMAIL)
+    public void shouldShowAddArticlePage() throws Exception {
+        mockMvc.perform(get("/private/article/new"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("article"));
     }
 }

@@ -41,4 +41,9 @@ public class DefaultController {
     public String errorNotFound() {
         return ERROR_PAGE_NOT_FOUND;
     }
+
+    @GetMapping("/error")
+    public String customError() {
+        return CUSTOM_ERROR;
+    }
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Item Art.№: <span th:text="${item.uniqueCode}"/></h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block>
+                        <form class="custom-form" method="post" action="#"
+                              th:object="${item}">
+                            <div class="review-content">
+                                <h4>Name: <span th:text="${item.name}"/>
+                                </h4>
+                                <p>Description: <span th:text="${item.description}"></span></p>
+                                <p>Price: <span th:text="${item.price}"></span></p>
+                                <p>Art.№: <span th:text="${item.uniqueCode}"></span></p>
+                            </div>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

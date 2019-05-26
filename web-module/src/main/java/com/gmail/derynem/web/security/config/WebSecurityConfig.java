@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/private/user/**", "/private/users", "/private/user", "/private/users/**", "/private/reviews",
                         "private/review")
                 .hasAuthority("ADMINISTRATOR")     //TODO CHANGE TO PERMISSIONS LATER
-                .antMatchers("/private/article/**", "/private/article")
+                .antMatchers("/private/article/**", "/private/article", "/private/items", "/private/items/**")
                 .hasAuthority("SALE")
                 .antMatchers("/public/**")
                 .hasAnyAuthority("CUSTOMER", "SALE")

@@ -427,5 +427,39 @@
             <where>F_ID =(SELECT F_ID FROM T_USER WHERE F_EMAIL ='root@root')</where>
         </update>
     </changeSet>
+    <changeSet id="create Item table" author="derynem@gmail.com">
+        <createTable tableName="T_ITEM">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_NAME" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_DESCRIPTION" type="varchar(200)" defaultValue=" "/>
+            <column name="F_PRICE" type="DECIMAL(10,2)"/>
+            <column name="F_DELETED" type="BOOLEAN" defaultValue="false"/>
+            <column name="F_UNIQUE_CODE" type="varchar(128)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add 1st items" author="derynem@gmail.com">
+        <insert tableName="T_ITEM">
+            <column name="F_DESCRIPTION" type="varchar(200)" value="kk"/>
+            <column name="F_PRICE" type="DECIMAL(10,2)" value="10.3"/>
+            <column name="F_UNIQUE_CODE" type="varchar(128)" value="dd223ss"/>
+            <column name="F_NAME" type="varchar(128)" value="aaaab"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add 2nd items" author="derynem@gmail.com">
+        <insert tableName="T_ITEM">
+            <column name="F_DESCRIPTION" type="varchar(200)" value="kk"/>
+            <column name="F_PRICE" type="DECIMAL(10,2)" value="10.3"/>
+            <column name="F_UNIQUE_CODE" type="varchar(128)" value="dd2jjkj98ss"/>
+            <column name="F_NAME" type="varchar(128)" value="jkljlk"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

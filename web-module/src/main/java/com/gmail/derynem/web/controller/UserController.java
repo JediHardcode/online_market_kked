@@ -91,7 +91,8 @@ public class UserController {
     }
 
     @GetMapping("/private/user/new")
-    public String showAddUserPage(AddUserDTO user, Model model) {
+    public String showAddUserPage(AddUserDTO user,
+                                  Model model) {
         List<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);

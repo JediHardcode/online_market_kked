@@ -27,22 +27,30 @@
                                 <h4>Author name: <span th:text="${article.user.name}"/>
                                     <p>Author surName: <span th:text="${article.user.surName}"/></p>
                                 </h4>
-                                <div class="input-form-with-error">
-                                    <label>Name</label>
-                                    <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-                                        name error
-                                    </th:block>
-                                    <input type="text" name="name" id="name" th:value="${article.name}"
-                                           th:required="true" th:field="*{name}"/>
-                                </div>
-                                <div class="input-form-with-error">
-                                    <label>Content</label>
-                                    <th:block th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
-                                        content error
-                                    </th:block>
-                                    <textarea rows="4" name="content" id="content" th:value="${article.content}"
-                                              th:required="true" th:field="*{content}"/>
-                                </div>
+                                <th:block th:switch="${userId}">
+                                    <div th:case="${article.user.id}">
+                                        <div class="input-form-with-error">
+                                            <label>Name</label>
+                                            <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                                name error
+                                            </th:block>
+                                            <input type="text" name="name" id="name" th:value="${article.name}"
+                                                   th:required="true" th:field="*{name}"/>
+                                        </div>
+                                        <div class="input-form-with-error">
+                                            <label>Content</label>
+                                            <th:block th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                                                content error
+                                            </th:block>
+                                            <textarea rows="4" name="content" id="content" th:value="${article.content}"
+                                                      th:required="true" th:field="*{content}"/>
+                                        </div>
+                                    </div>
+                                    <div th:case="*">
+                                        <p>Name: <span th:text="${article.name}"/></p>
+                                        <p>Content: <span th:text="${article.content}"/></p>
+                                    </div>
+                                </th:block>
                                 <p>Date: <span th:text="${article.created}"/></p>
                             </div>
                             <th:block th:if="${userId==article.user.id}">

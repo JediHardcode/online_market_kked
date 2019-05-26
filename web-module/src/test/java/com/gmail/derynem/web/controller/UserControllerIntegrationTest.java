@@ -162,7 +162,6 @@ public class UserControllerIntegrationTest {
     @WithUserDetails("root@root")
     public void shouldShowUserProfile() throws Exception {
         this.mockMvc.perform(get("/public/user/profile"))
-                .andExpect(status().isOk())
                 .andExpect(model().attributeExists("user"));
     }
 

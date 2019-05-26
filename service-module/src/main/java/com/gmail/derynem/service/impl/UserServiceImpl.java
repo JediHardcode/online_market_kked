@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             logger.info(" no user with this email {} in database", email);
             return null;
         }
-        UserDTO userDTO = (UserDTO) userConverterAssembler.getUserConverter().toDTO(foundUser);
+        UserDTO userDTO = userConverterAssembler.getUserConverter().toDTO(foundUser);
         logger.info("user found with current email{} , user name is {} ", email, userDTO.getName());
         return userDTO;
     }

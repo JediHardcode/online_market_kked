@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-
 import java.util.Arrays;
 
 import static com.gmail.derynem.web.constants.PageNamesConstant.*;
@@ -106,6 +104,32 @@ public class ArticleController {
         } catch (ArticleServiceException e) {
             logger.error(e.getMessage(), e);
             return REDIRECT_ARTICLES_PAGE;
+        }
+    }
+
+    @GetMapping("/private/article/new")
+    public String addArticlePage(Model model,
+                                 ArticleDTO articleDTO) {
+        model.addAttribute("article", articleDTO);
+        return ARTICLE_ADD_PAGE;
+    }
+
+    @PostMapping("/private/article/new")
+    public String saveArticle(@ModelAttribute(value = "article") @Valid ArticleDTO article,
+                              BindingResult bindingResult,
+                              Authentication authentication) {
+        if (bindingResult.hasErrors()) {
+            logger.info(" article not valid, errors :{}", Arrays.toString(bindingResult.getAllErrors().toArray()));
+            return ARTICLE_ADD_PAGE;
+        }
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        article.getUser().setId(userPrincipal.getUser().getId());
+        try {
+            articleService.saveArticle(article);
+            return REDIRECT_ARTICLES_PAGE;
+        } catch (ArticleServiceException e) {
+            logger.error(e.getMessage(), e);
+            return REDIRECT_CUSTOM_ERROR;
         }
     }
 }
