@@ -13,57 +13,65 @@
     </div>
     <section class="content-wrapper">
         <h1>Profile</h1>
-        <form id="custom-form" action="#" method="post" th:action="@{/public/user/profile}"
+        <form id="custom-form" action="#" method="post" th:action="@{/private/profile}"
               th:object="${user}">
-            <div class="input-form-with-error">
+            <div class="review-content">
                 <label>User name</label>
-                <input hidden value="#"
-                       th:attr="value=*{id}" th:name="id" th:field="*{id}"/>
-                <input hidden value="#"
-                       th:attr="value=*{profile.id}" th:field="*{profile.id}"/>
-                <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
-                    Error
+                <div class="input-form-with-error">
+                    <input hidden value="#" th:field="*{id}"
+                           th:value="${user.id}"/>
+                    <input hidden value="#" th:field="*{profile.id}"
+                           th:value="${user.profile.id}"/>
+                    <input hidden value="#" th:field="*{email}"
+                           th:value="${user.email}"/>
+                    <p> <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name
+                        Error
+                    </span>
+                    </p>
+                    <input type="text" name="name" id="name" th:value="*{name}"
+                           th:required="true" th:field="*{name}"/>
+                </div>
+                <div class="input-form-with-error">
+                    <label>User surname</label>
+                    <p>  <span th:if="${#fields.hasErrors('surName')}" th:errors="*{surName}">
+                        surname Error
+                    </span>
+                    </p>
+                    <input type="text" name="surname" id="surname" th:value="${user.surName}"
+                           th:required="true" th:field="*{surName}"/>
+                </div>
+                <div class="input-form-with-error">
+                    <label>User address</label>
+                    <p>  <span th:if="${#fields.hasErrors('profile.address')}"
+                               th:errors="*{profile.address}">Address Error
+                    </span>
+                    </p>
+                    <input type="text" name="address" id="address"
+                           th:value="${user.profile.address}"
+                           th:required="true" th:field="*{profile.address}"/>
+                </div>
+                <div class="input-form-with-error">
+                    <label>User telephone</label>
+                    <p>  <span th:if="${#fields.hasErrors('profile.telephone')}"
+                               th:errors="*{profile.telephone}">Phone Error
+                    </span>
+                    </p>
+                    <input type="text" name="telephone" id="phone"
+                           th:value="${user.profile.telephone}"
+                           th:required="true"
+                           th:field="*{profile.telephone}"/>
+                </div>
+                <div class="input-form-with-error">
+                    <label>New password</label>
+                    <p> <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                    Password Error</span>
+                    </p>
+                    <input type="text" name="password" id="password" placeholder="new password"
+                           th:placeholder="${'new password'}"
+                           th:required="true" th:name="password"/>
+                </div>
                 </th:block>
-                <input type="text" name="name" id="name" th:value="*{name}"
-                       th:required="true" th:field="*{name}"/>
             </div>
-            <div class="input-form-with-error">
-                <label>User surname</label>
-                <th:block th:if="${#fields.hasErrors('surName')}" th:errors="*{surName}">
-                    surname Error
-                </th:block>
-                <input type="text" name="surname" id="surname" th:value="*{surName}"
-                       th:required="true" th:field="*{surName}"/>
-            </div>
-            <div class="input-form-with-error">
-                <label>User address</label>
-                <th:block th:if="${#fields.hasErrors('profile.address')}"
-                          th:errors="*{profile.address}">Address Error
-                </th:block>
-                <input type="text" name="address" id="address"
-                       th:value="*{profile.address}"
-                       th:required="true" th:field="*{profile.address}"/>
-            </div>
-            <div class="input-form-with-error">
-                <label>User telephone</label>
-                <th:block th:if="${#fields.hasErrors('profile.telephone')}"
-                          th:errors="*{profile.telephone}">Phone Error
-                </th:block>
-                <input type="text" name="telephone" id="phone"
-                       th:value="*{profile.telephone}"
-                       th:required="true"
-                       th:field="*{profile.telephone}"/>
-            </div>
-            <div class="input-form-with-error">
-                <label>New password</label>
-                <th:block th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
-                    Password Error
-                </th:block>
-                <input type="text" name="password" id="password" placeholder="new password"
-                       th:placeholder="${'new password'}"
-                       th:required="true" th:name="password"/>
-            </div>
-            </th:block>
         </form>
         <div class="button-wrapper">
             <button th:form="custom-form" class="btn-default">Update information</button>

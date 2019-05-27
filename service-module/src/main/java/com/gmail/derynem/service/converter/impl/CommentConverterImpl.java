@@ -2,27 +2,17 @@ package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Comment;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.converter.CommentConverter;
-import com.gmail.derynem.service.converter.UserConverter;
+import com.gmail.derynem.service.converter.Converter;
+import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.model.comment.CommentDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@Component("commentConverter")
+public class CommentConverterImpl implements Converter<CommentDTO, Comment> {
+    private final UserConverterAssembler userConverterAssembler;
 
-@Component
-public class CommentConverterImpl implements CommentConverter {
-    private final UserConverter userConverter;
-
-    public CommentConverterImpl(UserConverter userConverter) {
-        this.userConverter = userConverter;
-    }
-
-    @Override
-    public List<CommentDTO> toDTOList(List<Comment> comments) {
-        return comments.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+    public CommentConverterImpl(UserConverterAssembler userConverterAssembler) {
+        this.userConverterAssembler = userConverterAssembler;
     }
 
     @Override
@@ -31,7 +21,7 @@ public class CommentConverterImpl implements CommentConverter {
         commentDTO.setContent(comment.getContent());
         commentDTO.setCreated(comment.getCreated());
         commentDTO.setId(comment.getId());
-        commentDTO.setUser(userConverter.toDTO(comment.getUser()));
+        commentDTO.setUser(userConverterAssembler.getUserCommonConverter().toDTO(comment.getUser()));
         commentDTO.setDeleted(comment.isDeleted());
         return commentDTO;
     }
@@ -46,12 +36,5 @@ public class CommentConverterImpl implements CommentConverter {
         user.setId(commentDTO.getUser().getId());
         comment.setUser(user);
         return comment;
-    }
-
-    @Override
-    public List<Comment> toEntityList(List<CommentDTO> commentDTOS) {
-        return commentDTOS.stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList());
     }
 }

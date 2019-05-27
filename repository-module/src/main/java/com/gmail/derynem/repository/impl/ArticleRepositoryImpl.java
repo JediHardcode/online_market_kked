@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -26,7 +27,7 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
         } catch (NoResultException e) {
             logger.error(e.getMessage(), e);
             logger.info(" no available articles");
-            return null;
+            return Collections.emptyList();
         }
     }
 }

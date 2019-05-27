@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ApiUsersControllerIntegrationTest {
     @Autowired
     private RandomService randomService;
@@ -47,7 +51,7 @@ public class ApiUsersControllerIntegrationTest {
 
     @Test
     public void shouldSaveUserIfUserWithCurrEmailDoesntExist() throws Exception {
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isCreated());
@@ -56,7 +60,7 @@ public class ApiUsersControllerIntegrationTest {
     @Test
     public void shouldReturnBadRequestIfUserNotValid() throws Exception {
         userDTO.setSurName("23234343");
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest());
@@ -65,7 +69,7 @@ public class ApiUsersControllerIntegrationTest {
     @Test
     public void shouldReturnBadRequestIfUserWithCurrEmailAlreadyExistInDatabase() throws Exception {
         userDTO.setEmail("root@root");
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest());

@@ -26,7 +26,9 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ADD_USER_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.USERS_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.USER_PROFILE_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_USERS;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_USER_PROFILE;
 
@@ -91,7 +93,8 @@ public class UserController {
     }
 
     @GetMapping("/private/user/new")
-    public String showAddUserPage(AddUserDTO user, Model model) {
+    public String showAddUserPage(AddUserDTO user,
+                                  Model model) {
         List<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
@@ -132,7 +135,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/public/user/profile")
+    @GetMapping("/private/profile")
     public String showUserProfile(Authentication authentication,
                                   Model model) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -142,13 +145,11 @@ public class UserController {
         return USER_PROFILE_PAGE;
     }
 
-    @PostMapping("/public/user/profile")
-    public String updateProfile(@ModelAttribute UserDTO user,
-                                BindingResult bindingResult,
-                                Model model) {
+    @PostMapping("/private/profile")
+    public String updateProfile(@ModelAttribute(value = "user") UserDTO user,
+                                BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            model.addAttribute("user", user);
             logger.info("User not valid ,errors {}", Arrays.toString(bindingResult.getAllErrors().toArray()));
             return USER_PROFILE_PAGE;
         }

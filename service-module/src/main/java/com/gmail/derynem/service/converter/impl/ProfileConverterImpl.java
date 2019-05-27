@@ -1,12 +1,12 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Profile;
-import com.gmail.derynem.service.converter.ProfileConverter;
+import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.model.profile.ProfileDTO;
 import org.springframework.stereotype.Component;
 
-@Component
-public class ProfileConverterImpl implements ProfileConverter {
+@Component("profileConverter")
+public class ProfileConverterImpl implements Converter<ProfileDTO, Profile> {
     @Override
     public Profile toEntity(ProfileDTO profileDTO) {
         Profile profile = new Profile();

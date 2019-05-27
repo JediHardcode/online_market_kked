@@ -159,10 +159,12 @@ nav ul li {
 }
 
 .review-content {
+    white-space:normal;
     flex: 1 1;
-    border: 4px groove #000000; /* Параметры границы */
-    background: #f5e1ff; /* Цвет фона */
-    padding: 10px; /* Поля вокруг текста */
+    border: 4px groove #000000;
+    background: #f5e1ff;
+    padding: 10px;
+    max-width: 100%
 }
 
 .review-content p {

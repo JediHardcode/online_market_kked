@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
+import static com.gmail.derynem.web.constants.RoleNamesConstant.SECURE_API_ROLE;
+
 @Configuration
 @Order(1)
 public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -39,7 +41,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         http.antMatcher("/api/**")
                 .authorizeRequests()
                 .anyRequest()
-                .hasAuthority("SECURE_API")// TODO CHANGE FOR PERMISSION LATER
+                .hasAuthority(SECURE_API_ROLE)// TODO CHANGE FOR PERMISSION LATER
                 .and()
                 .httpBasic()
                 .and()

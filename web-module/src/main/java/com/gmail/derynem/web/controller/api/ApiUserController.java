@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.Arrays;
 
 @RestController
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 public class ApiUserController {
     private final static Logger logger = LoggerFactory.getLogger(ApiUserController.class);
     private final UserService userService;

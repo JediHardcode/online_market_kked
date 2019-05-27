@@ -1,8 +1,5 @@
 package com.gmail.derynem.repository.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,11 +12,6 @@ import javax.persistence.Table;
 public class Role {
     @Id
     @Column(name = "F_ID")
-    @GenericGenerator(
-            name = "RoleGenerator",
-            strategy = "foreign",
-            parameters = @Parameter(name = "property", value = "role")
-    )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "F_NAME")

@@ -45,8 +45,7 @@ public class UserValidator implements Validator {
         }
         if (userDTO != null) {
             String oldPassword = userDTO.getPassword();
-            String enteredPassword = encoderService.encodePassword(user.getPassword());
-            if (encoderService.comparePasswords(enteredPassword, oldPassword)) {
+            if (encoderService.comparePasswords(user.getPassword(), oldPassword)) {
                 errors.rejectValue("password", "user.password.matched", "password should not match with the old password");
             }
         }
@@ -73,7 +72,7 @@ public class UserValidator implements Validator {
     private void validateSurname(UserDTO user, Errors errors) {
         if (user.getSurName() == null || user.getSurName().isEmpty()) {
             errors.rejectValue("surName", "user.surname.empty", " surname is empty");
-        } else if (user.getSurName().length() > NAME_LENGTH || !user.getSurName().matches(ONLY_ENG_LETTER_PATTERN)) {
+        } else if (user.getSurName().length() > SURNAME_LENGTH || !user.getSurName().matches(ONLY_ENG_LETTER_PATTERN)) {
             errors.rejectValue("surName", "user.surname.not.valid", " surname not valid");
         }
     }
@@ -81,7 +80,7 @@ public class UserValidator implements Validator {
     private void validateName(UserDTO user, Errors errors) {
         if (user.getName() == null || user.getName().isEmpty()) {
             errors.rejectValue("name", "user.name.empty", " name is empty");
-        } else if (user.getName().length() > SURNAME_LENGTH || !user.getName().matches(ONLY_ENG_LETTER_PATTERN)) {
+        } else if (user.getName().length() > NAME_LENGTH || !user.getName().matches(ONLY_ENG_LETTER_PATTERN)) {
             errors.rejectValue("name", "user.not.valid", "name not valid");
         }
     }

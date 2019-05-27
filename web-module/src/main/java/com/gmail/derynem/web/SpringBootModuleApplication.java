@@ -9,9 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
         "com.gmail.derynem.repository",
         "com.gmail.derynem.web"},
         exclude = UserDetailsServiceAutoConfiguration.class)
-@EntityScan(basePackages = {"com.gmail.derynem.service",
-        "com.gmail.derynem.repository",
-        "com.gmail.derynem.web"})
+@EntityScan(basePackages = {"com.gmail.derynem.repository.model"})
 public class SpringBootModuleApplication {
 
     public static void main(String[] args) {

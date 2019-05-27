@@ -9,9 +9,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ReviewControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +43,7 @@ public class ReviewControllerIntegrationTest {
     @Mock
     BindingResult bindingResult;
     private final String ROOT_AUTHORITY = "ADMINISTRATOR";
+    private final String SALE_AUTHORITY = "SALE";
 
     @Before
     public void init() {
@@ -49,7 +54,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = {ROOT_AUTHORITY})
+    @WithMockUser(authorities = ROOT_AUTHORITY)
     public void shouldDeleteReview() {
         Long id = 4L;
         String url = reviewController.deleteReview(id);
@@ -57,7 +62,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = {ROOT_AUTHORITY})
+    @WithMockUser(authorities = ROOT_AUTHORITY)
     public void shouldGetReviewPageWithAllReviews() throws Exception {
         this.mockMvc.perform(get("/private/reviews"))
                 .andExpect(status().isOk())
@@ -66,7 +71,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = "SALE")
+    @WithMockUser(authorities = SALE_AUTHORITY)
     public void shouldRedirectAtErrorPageIfAuthorityWrong() throws Exception {
         this.mockMvc.perform(get("/private/reviews"))
                 .andExpect(redirectedUrl("/403"));
