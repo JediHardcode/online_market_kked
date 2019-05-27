@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 public class ApiArticleController {
     private final static Logger logger = LoggerFactory.getLogger(ApiArticleController.class);
     private final ArticleService articleService;

@@ -29,6 +29,6 @@ public class ReviewConverterImpl implements Converter<ReviewDTO, Review> {
 
     @Override
     public Review toEntity(ReviewDTO ObjectDTO) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

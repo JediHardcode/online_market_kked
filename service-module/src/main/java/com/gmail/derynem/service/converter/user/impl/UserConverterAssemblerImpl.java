@@ -23,7 +23,6 @@ public class UserConverterAssemblerImpl implements UserConverterAssembler {
         this.addUserConverter = addUserConverter;
     }
 
-
     @Override
     public Converter<UserDTO, User> getUserConverter() {
         return userConverter;

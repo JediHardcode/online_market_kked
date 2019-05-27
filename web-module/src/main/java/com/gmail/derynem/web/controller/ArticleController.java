@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.Arrays;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLES_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_ADD_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.*;
 
 @Controller

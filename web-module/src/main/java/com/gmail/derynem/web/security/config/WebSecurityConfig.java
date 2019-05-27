@@ -14,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import static com.gmail.derynem.web.constants.RoleNamesConstant.ADMINISTRATOR_ROLE;
+import static com.gmail.derynem.web.constants.RoleNamesConstant.CUSTOMER_ROLE;
+import static com.gmail.derynem.web.constants.RoleNamesConstant.SALE_ROLE;
+
 @Configuration
 @Order(2)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -47,13 +51,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/private/user/**", "/private/users", "/private/user", "/private/users/**", "/private/reviews",
                         "private/review")
-                .hasAuthority("ADMINISTRATOR")     //TODO CHANGE TO PERMISSIONS LATER
+                .hasAuthority(ADMINISTRATOR_ROLE)     //TODO CHANGE TO PERMISSIONS LATER
                 .antMatchers("/private/article/**", "/private/article", "/private/items", "/private/items/**")
-                .hasAuthority("SALE")
+                .hasAuthority(SALE_ROLE)
                 .antMatchers("/private/profile")
-                .hasAuthority("CUSTOMER")
+                .hasAuthority(CUSTOMER_ROLE)
                 .antMatchers("/public/**")
-                .hasAnyAuthority("CUSTOMER", "SALE")
+                .hasAnyAuthority(CUSTOMER_ROLE, SALE_ROLE)
                 .antMatchers("/403", "/login", "/home", "/404")
                 .permitAll()
                 .and()

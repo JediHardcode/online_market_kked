@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.Arrays;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEMS_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEM_COPY_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEM_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ITEMS_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_NOT_FOUND;
 

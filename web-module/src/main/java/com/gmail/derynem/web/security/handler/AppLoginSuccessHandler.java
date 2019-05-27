@@ -15,6 +15,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Collection;
 
+import static com.gmail.derynem.web.constants.RoleNamesConstant.ADMINISTRATOR_ROLE;
+import static com.gmail.derynem.web.constants.RoleNamesConstant.CUSTOMER_ROLE;
+import static com.gmail.derynem.web.constants.RoleNamesConstant.SALE_ROLE;
+
 public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger logger = LoggerFactory.getLogger(AppLoginSuccessHandler.class);
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -41,12 +45,12 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
         Collection<? extends GrantedAuthority> authorities
                 = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
-            if (grantedAuthority.getAuthority().equalsIgnoreCase("ADMINISTRATOR")) {
+            if (grantedAuthority.getAuthority().equalsIgnoreCase(ADMINISTRATOR_ROLE)) {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
                 return "/private/reviews";
-            } else if (grantedAuthority.getAuthority().equalsIgnoreCase("CUSTOMER")) {
+            } else if (grantedAuthority.getAuthority().equalsIgnoreCase(CUSTOMER_ROLE)) {
                 return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
-            } else if (grantedAuthority.getAuthority().equalsIgnoreCase("SALE")) {
+            } else if (grantedAuthority.getAuthority().equalsIgnoreCase(SALE_ROLE)) {
                 return "/public/articles";
             }
         }

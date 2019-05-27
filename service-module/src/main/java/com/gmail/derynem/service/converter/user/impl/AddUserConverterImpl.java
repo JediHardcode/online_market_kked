@@ -19,7 +19,7 @@ public class AddUserConverterImpl implements Converter<AddUserDTO, User> {
 
     @Override
     public AddUserDTO toDTO(User user) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

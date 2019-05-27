@@ -26,7 +26,9 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ADD_USER_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.USERS_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.USER_PROFILE_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_USERS;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_USER_PROFILE;
 

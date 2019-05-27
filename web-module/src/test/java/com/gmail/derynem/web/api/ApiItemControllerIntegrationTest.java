@@ -43,21 +43,21 @@ public class ApiItemControllerIntegrationTest {
     @Test
     @WithUserDetails(SECURE_EMAIL)
     public void shouldShowListOfItems() throws Exception {
-        mvc.perform(get("/api/v1.0/items"))
+        mvc.perform(get("/api/v1/items"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(SECURE_EMAIL)
     public void shouldGetItem() throws Exception {
-        mvc.perform(get("/api/v1.0/items/1"))
+        mvc.perform(get("/api/v1/items/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(SECURE_EMAIL)
     public void shouldGet404IfItemDoesntExist() throws Exception {
-        mvc.perform(get("/api/v1.0/items/999"))
+        mvc.perform(get("/api/v1/items/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -67,7 +67,7 @@ public class ApiItemControllerIntegrationTest {
         itemDTO.setName("valid name1");
         itemDTO.setDescription(" valid desc");
         itemDTO.setPrice("11.2");
-        mvc.perform(post("/api/v1.0/items")
+        mvc.perform(post("/api/v1/items")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(itemDTO)))
                 .andExpect(status().isCreated());
@@ -79,7 +79,7 @@ public class ApiItemControllerIntegrationTest {
         itemDTO.setName("valid name1");
         itemDTO.setDescription(" valid desc");
         itemDTO.setPrice("11,lkjlj2");
-        mvc.perform(post("/api/v1.0/items")
+        mvc.perform(post("/api/v1/items")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(itemDTO)))
                 .andExpect(status().isBadRequest());
@@ -88,14 +88,14 @@ public class ApiItemControllerIntegrationTest {
     @Test
     @WithUserDetails(SECURE_EMAIL)
     public void shouldDeleteItem() throws Exception {
-        mvc.perform(delete("/api/v1.0/items/2"))
+        mvc.perform(delete("/api/v1/items/2"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(SECURE_EMAIL)
     public void shouldReturn404IfOItemNotFound() throws Exception {
-        mvc.perform(delete("/api/v1.0/items/9999"))
+        mvc.perform(delete("/api/v1/items/9999"))
                 .andExpect(status().isNotFound());
     }
 }

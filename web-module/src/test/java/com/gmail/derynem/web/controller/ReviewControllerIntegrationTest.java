@@ -43,6 +43,7 @@ public class ReviewControllerIntegrationTest {
     @Mock
     BindingResult bindingResult;
     private final String ROOT_AUTHORITY = "ADMINISTRATOR";
+    private final String SALE_AUTHORITY = "SALE";
 
     @Before
     public void init() {
@@ -53,7 +54,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = {ROOT_AUTHORITY})
+    @WithMockUser(authorities = ROOT_AUTHORITY)
     public void shouldDeleteReview() {
         Long id = 4L;
         String url = reviewController.deleteReview(id);
@@ -61,7 +62,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = {ROOT_AUTHORITY})
+    @WithMockUser(authorities = ROOT_AUTHORITY)
     public void shouldGetReviewPageWithAllReviews() throws Exception {
         this.mockMvc.perform(get("/private/reviews"))
                 .andExpect(status().isOk())
@@ -70,7 +71,7 @@ public class ReviewControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(authorities = "SALE")
+    @WithMockUser(authorities = SALE_AUTHORITY)
     public void shouldRedirectAtErrorPageIfAuthorityWrong() throws Exception {
         this.mockMvc.perform(get("/private/reviews"))
                 .andExpect(redirectedUrl("/403"));

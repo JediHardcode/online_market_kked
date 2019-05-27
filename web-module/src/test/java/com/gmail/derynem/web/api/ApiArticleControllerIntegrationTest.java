@@ -67,7 +67,7 @@ public class ApiArticleControllerIntegrationTest {
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldSaveArticleAndReturn201StatusCode() throws Exception {
-        mvc.perform(post("/api/v1.0/articles")
+        mvc.perform(post("/api/v1/articles")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(articleDTO)))
                 .andExpect(status().isCreated());
@@ -77,7 +77,7 @@ public class ApiArticleControllerIntegrationTest {
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldReturn400StatusCodeIfArticleNotValid() throws Exception {
         articleDTO.setName("434342323");
-        mvc.perform(post("/api/v1.0/articles")
+        mvc.perform(post("/api/v1/articles")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(articleDTO)))
                 .andExpect(status().isBadRequest());
@@ -86,14 +86,14 @@ public class ApiArticleControllerIntegrationTest {
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldGetArticleAnd200IfIdNotNullAndArticleWithThisIdExistInDatabase() throws Exception {
-        mvc.perform(get("/api/v1.0/articles/2"))
+        mvc.perform(get("/api/v1/articles/2"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldGet404IfIdNotNullAndArticleWithThisIdNotExistInDatabase() throws Exception {
-        mvc.perform(get("/api/v1.0/articles/999"))
+        mvc.perform(get("/api/v1/articles/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -101,7 +101,7 @@ public class ApiArticleControllerIntegrationTest {
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldSaveArticleAndReturn2001IfCommentsAreEmpty() throws Exception {
         articleDTO.setComments(new ArrayList<>());
-        mvc.perform(post("/api/v1.0/articles")
+        mvc.perform(post("/api/v1/articles")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(articleDTO)))
                 .andExpect(status().isCreated());
@@ -110,7 +110,7 @@ public class ApiArticleControllerIntegrationTest {
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldGetListOfArticleWithOffsetAndLimitAndReturn200() throws Exception {
-        mvc.perform(get("/api/v1.0/articles")
+        mvc.perform(get("/api/v1/articles")
                 .param("page", "1")
                 .param("limit", "8"))
                 .andExpect(status().isOk());
@@ -119,14 +119,14 @@ public class ApiArticleControllerIntegrationTest {
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldGetListOfArticleIfRequestParamAreEmptyAndLimitAndReturn200() throws Exception {
-        mvc.perform(get("/api/v1.0/articles"))
+        mvc.perform(get("/api/v1/articles"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldReturnWhenDeleteDoestExistArticleDoesntExist() throws Exception {
-        mvc.perform(delete("/api/v1.0/articles/999"))
+        mvc.perform(delete("/api/v1/articles/999"))
                 .andExpect(status().isNotFound());
     }
 
@@ -134,7 +134,7 @@ public class ApiArticleControllerIntegrationTest {
     @WithUserDetails(value = SECURE_EMAIL)
     public void shouldSaveArticleIfCommentsAreEmpty() throws Exception {
         articleDTO.setComments(new ArrayList<>());
-        mvc.perform(post("/api/v1.0/articles")
+        mvc.perform(post("/api/v1/articles")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(articleDTO)))
                 .andExpect(status().isCreated());

@@ -29,6 +29,6 @@ public class UserCommonConverterImpl implements Converter<UserCommonDTO, User> {
 
     @Override
     public User toEntity(UserCommonDTO userDTO) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

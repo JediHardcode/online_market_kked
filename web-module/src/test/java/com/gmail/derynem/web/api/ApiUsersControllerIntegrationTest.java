@@ -51,7 +51,7 @@ public class ApiUsersControllerIntegrationTest {
 
     @Test
     public void shouldSaveUserIfUserWithCurrEmailDoesntExist() throws Exception {
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isCreated());
@@ -60,7 +60,7 @@ public class ApiUsersControllerIntegrationTest {
     @Test
     public void shouldReturnBadRequestIfUserNotValid() throws Exception {
         userDTO.setSurName("23234343");
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest());
@@ -69,7 +69,7 @@ public class ApiUsersControllerIntegrationTest {
     @Test
     public void shouldReturnBadRequestIfUserWithCurrEmailAlreadyExistInDatabase() throws Exception {
         userDTO.setEmail("root@root");
-        mvc.perform(post("/api/v1.0/users")
+        mvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(mapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest());
