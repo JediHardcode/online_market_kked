@@ -4,9 +4,6 @@ import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.EncoderService;
-import com.gmail.derynem.service.PageService;
-import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.exception.UserServiceException;
@@ -14,6 +11,9 @@ import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
+import com.gmail.derynem.service.EncoderService;
+import com.gmail.derynem.service.PageService;
+import com.gmail.derynem.service.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -85,6 +85,10 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserServiceException(" user with id " + updateRoleDTO.getId() + " not found");
         }
+        if (user.isInviolable()) {
+            logger.info("main administrator cannot be deleted");
+            throw new UserServiceException("main administrator cannot be deleted");
+        }
         Role role = roleRepository.getById(updateRoleDTO.getRoleId());
         user.setRole(role);
         userRepository.merge(user);
@@ -97,7 +101,7 @@ public class UserServiceImpl implements UserService {
         for (Long id : ids) {
             User user = userRepository.getById(id);
             if (user == null) {
-                throw new UserServiceException("user with id " + id + "n ot found in database");
+                throw new UserServiceException("user with id " + id + "not found in database");
             }
             userRepository.remove(user);
             logger.info("user with name {} deleted ", user.getName());
@@ -121,20 +125,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void changePassword(Long id) throws UserServiceException {
-        User user = userRepository.getById(id);
-        if (user != null) {
-            String newPassword = randomService.generatePassword();
-            logger.info("user {} have new password {}", user.getName(), newPassword);
-            user.setPassword(encoderService.encodePassword(newPassword));
-            userRepository.merge(user);
-        } else {
-            throw new UserServiceException("user with id" + id + " not found");
-        }
-    }
-
-    @Override
-    @Transactional
     public void updateUserInfo(UserDTO userDTO) {
         User user = userRepository.getById(userDTO.getId());
         if (user != null) {
@@ -149,18 +139,5 @@ public class UserServiceImpl implements UserService {
         } else {
             logger.info(" not found user with this id {}", userDTO.getId());
         }
-    }
-
-    @Override
-    @Transactional
-    public UserDTO getById(Long id) {
-        User user = userRepository.getById(id);
-        if (user == null) {
-            logger.info("user with id {} doesnt exist in database", id);
-            return null;
-        }
-        UserDTO userDTO = userConverterAssembler.getUserConverter().toDTO(user);
-        logger.info(" user found , user name {}", userDTO.getName());
-        return userDTO;
     }
 }

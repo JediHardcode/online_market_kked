@@ -1,7 +1,6 @@
 package com.gmail.derynem.repository.model;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,14 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "T_ITEM")
 @SQLDelete(sql = "UPDATE T_ITEM SET F_DELETED = 1 WHERE F_ID =?")
-@Where(clause = "F_DELETED = 0")
-public class Item {
+public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "F_ID")

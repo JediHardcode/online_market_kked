@@ -37,10 +37,15 @@
                         </th:block>
                     </div>
                 </div>
+                <div>
+                    <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                        <button class="active"><a th:href="@{/home/review}">Add review</a></button>
+                    </th:block>
+                </div>
             </section>
         </div>
         <div id="pagination" th:if="${pages > 1}">
-            <th:block  th:each="i : ${#numbers.sequence( 1,pages)}">
+            <th:block th:each="i : ${#numbers.sequence( 1,pages)}">
                 <a class="pagination-item "
                    th:href="@{/home(page=${i})}"><span th:text="${i}"/></a>
             </th:block>
@@ -49,4 +54,13 @@
     <div th:replace="fragments/footer :: footer"/>
 </div>
 </body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
 </html>

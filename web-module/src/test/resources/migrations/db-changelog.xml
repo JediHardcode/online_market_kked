@@ -388,7 +388,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="add 1st items" author="derynem@gmail.com">
+    <changeSet id="add 1st item" author="derynem@gmail.com">
         <insert tableName="T_ITEM">
             <column name="F_DESCRIPTION" type="varchar(200)" value="kk"/>
             <column name="F_PRICE" type="DECIMAL(10,2)" value="10.3"/>
@@ -397,7 +397,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="add 2nd items" author="derynem@gmail.com">
+    <changeSet id="add 2nd item" author="derynem@gmail.com">
         <insert tableName="T_ITEM">
             <column name="F_DESCRIPTION" type="varchar(200)" value="kk"/>
             <column name="F_PRICE" type="DECIMAL(10,2)" value="10.3"/>
@@ -406,4 +406,55 @@
         </insert>
     </changeSet>
 
+    <changeSet id="create Order table" author="derynem@gmail.com">
+        <createTable tableName="T_ORDER">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_NUMBER" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="F_STATUS" type="varchar(20)"/>
+            <column name="F_ITEM_ID" type="BIGINT"/>
+            <column name="F_USER_ID" type="BIGINT"/>
+            <column name="F_QUANTITY" type="BIGINT"/>
+            <column name="F_DELETED" type="BOOLEAN" defaultValue="false"/>
+            <column name="F_CREATED" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK ORDER ITEM" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_ITEM_ID"
+                                 baseTableName="T_ORDER"
+                                 constraintName="FK_T_ORDER_T_ITEM"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_ITEM"/>
+    </changeSet>
+
+    <changeSet id="FK ORDER USER" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_USER_ID"
+                                 baseTableName="T_ORDER"
+                                 constraintName="FK_T_ORDER_T_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
+    </changeSet>
+
+    <changeSet id="add order" author="derynem@gmail.com">
+        <insert tableName="T_ORDER">
+            <column name="F_NUMBER" type="BIGINT" value="122343"/>
+            <column name="F_STATUS" type="varchar(20)" value="NEW"/>
+            <column name="F_ITEM_ID" type="BIGINT" value="1"/>
+            <column name="F_USER_ID" type="BIGINT" value="3"/>
+            <column name="F_QUANTITY" type="BIGINT" value="2"/>
+            <column name="F_CREATED" type="DATETIME" value="now()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

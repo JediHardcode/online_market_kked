@@ -55,11 +55,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO getArticleById(Long id) {
+    public ArticleDTO getArticleById(Long id) throws ArticleServiceException {
         Article article = articleRepository.getById(id);
         if (article == null) {
             logger.info("not found article with this id {} in database", id);
-            return null;
+            throw new ArticleServiceException("Article with this id " + id + " doesnt exist in database");
         }
         ArticleDTO articleDTO = converter.toDTO(article);
         logger.info(" article with id {} author id {} get from database", articleDTO.getId(), articleDTO.getUser().getId());

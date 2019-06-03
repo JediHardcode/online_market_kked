@@ -28,7 +28,10 @@ public class ReviewConverterImpl implements Converter<ReviewDTO, Review> {
     }
 
     @Override
-    public Review toEntity(ReviewDTO ObjectDTO) {
-        throw new UnsupportedOperationException();
+    public Review toEntity(ReviewDTO reviewDTO) {
+        Review review = new Review();
+        review.setCreated(reviewDTO.getCreated());
+        review.setDescription(reviewDTO.getDescription());
+        return review;
     }
 }

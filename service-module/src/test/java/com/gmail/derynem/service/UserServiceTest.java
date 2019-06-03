@@ -6,7 +6,6 @@ import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
-import com.gmail.derynem.service.converter.user.impl.AddUserConverterImpl;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.impl.UserServiceImpl;
 import com.gmail.derynem.service.model.PageDTO;

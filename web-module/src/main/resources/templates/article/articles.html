@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Articles</h2>
+            <form id="change-limit" action="#" method="get" th:action="@{/public/articles}">
+                <input hidden value="#"
+                       th:value="${page.page}" th:name="page"/>
+                <select name="limit" th:name="limit">
+                    <option th:each="limit:${T(com.gmail.derynem.service.model.enums.LimitEnum).values()}"
+                            th:value="${limit.limit}"
+                            th:text="${limit.limit}"
+                            th:selected="${limit.limit == page.limit}">
+                    </option>
+                </select>
+                <button class="btn-default">Change limit
+                </button>
+            </form>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block th:each="article:${page.entities}">
+                        <form class="custom-form" method="post" action="#" th:action="@{/private/article/delete}">
+                            <div class="review-content">
+                                <input hidden value="#"
+                                       th:attr="value=${article.id}" th:name="id"/>
+                                <h4>Author name: <span th:text="*{article.user.name}"/>
+                                    <p> Author surName: <span th:text="${article.user.surName}"/></p>
+                                </h4>
+                                <p>Name: <span th:text="${article.name}"/></p>
+                                <p>Date: <span th:text="${article.created}"/></p>
+                                <p>Preview: <span th:text="${article.preview}"/></p>
+                                <p>
+                                <li class="active"><a th:href="@{/public/article/{id}(id=${article.id})}">More...</a>
+                                </li>
+                                </p>
+                            </div>
+                            <th:block sec:authorize="hasAuthority('SALE')">
+                                <th:block th:if="${user.id == article.user.id}">
+                                    <button class="btn-default">delete
+                                    </button>
+                                </th:block>
+                            </th:block>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="pagination" th:if="${page.countOfPages > 1}">
+        <th:block th:each="i : ${#numbers.sequence( 1,page.countOfPages)}">
+            <a class="pagination-item "
+               th:href="@{/public/articles(page=${i},limit=${page.limit})}"><span th:text="${i}"/></a>
+        </th:block>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
+</html>

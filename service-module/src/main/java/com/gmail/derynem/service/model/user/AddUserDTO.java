@@ -11,7 +11,8 @@ import java.util.Objects;
 
 import static com.gmail.derynem.service.validation.constant.ValidationConstant.*;
 
-public class AddUserDTO {
+public class
+AddUserDTO {
     @NotNull(message = "{user.name.empty}")
     @NotEmpty(message = "{user.name.empty}")
     @Size(max = NAME_LENGTH)

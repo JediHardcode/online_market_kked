@@ -12,6 +12,15 @@
                 <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
                     <li class="active"><a th:href="@{/private/profile}">Profile</a></li>
                 </th:block>
+                <th:block sec:authorize="hasAnyAuthority('SALE')">
+                    <li class="active"><a th:href="@{/private/items/upload}">Upload xml</a></li>
+                </th:block>
+                <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                    <li class="active"><a th:href="@{/user/orders}">Orders</a></li>
+                </th:block>
+                <th:block sec:authorize="hasAnyAuthority('SALE')">
+                    <li class="active"><a th:href="@{/private/orders}">Orders</a></li>
+                </th:block>
                 <th:block sec:authorize="hasAnyAuthority('CUSTOMER','SALE')">
                     <li class="active"><a th:href="@{/public/articles}">Articles</a></li>
                 </th:block>
@@ -27,8 +36,11 @@
                 <th:block sec:authorize="hasAuthority('ADMINISTRATOR')">
                     <li class="active"><a th:href="@{/private/reviews}">Manage reviews</a></li>
                 </th:block>
-                <th:block sec:authorize="hasAnyAuthority('SALE')">
+                <th:block sec:authorize="hasAnyAuthority('SALE','CUSTOMER')">
                     <li class="active"><a th:href="@{/public/items}">Items</a></li>
+                </th:block>
+                <th:block sec:authorize="isAnonymous()">
+                    <li class="active"><a th:href="@{/login}">Login</a></li>
                 </th:block>
             </ul>
         </div>

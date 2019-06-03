@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://it-academy.by"
+           xmlns="http://it-academy.by"
+           elementFormDefault="qualified">
+    <xs:complexType name="item">
+        <xs:sequence>
+            <xs:element name="name" type="name"/>
+            <xs:element name="description" type="description"/>
+            <xs:element name="price" type="price">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="price">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:pattern value="[0-9]+([.][0-9]{1,2})?"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="name">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:pattern value="[a-zA-Z0-9\s]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="description">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="200"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="Catalog">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="item" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -6,10 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "T_ROLE")
-public class Role {
+public class Role implements Serializable {
     @Id
     @Column(name = "F_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,9 @@
 package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.repository.ReviewRepository;
+import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Review;
+import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.ReviewService;
 import com.gmail.derynem.service.converter.Converter;
@@ -25,15 +27,18 @@ public class ReviewServiceImpl implements ReviewService {
     private final static Logger logger = LoggerFactory.getLogger(ReviewServiceImpl.class);
     private final ReviewRepository reviewRepository;
     private final Converter<ReviewDTO, Review> reviewConverter;
+    private final UserRepository userRepository;
     private final PageService pageService;
 
 
     public ReviewServiceImpl(ReviewRepository reviewRepository,
                              @Qualifier("reviewConverter") Converter<ReviewDTO, Review> reviewConverter,
-                             PageService pageService) {
+                             PageService pageService,
+                             UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.reviewConverter = reviewConverter;
         this.pageService = pageService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -96,6 +101,17 @@ public class ReviewServiceImpl implements ReviewService {
                     reviewRepository.changeIsHiddenStatus(false, reviewsIdIsNotHidden);
             logger.info(" not hidden status now have {} ids", countOfIsNotHiddenReviews);
         }
+    }
+
+    @Override
+    @Transactional
+    public void save(ReviewDTO reviewDTO) {
+        User user = userRepository.getById(reviewDTO.getUser().getId());
+        Review review = reviewConverter.toEntity(reviewDTO);
+        review.setUser(user);
+        reviewRepository.persist(review);
+        logger.info("review saved, review's author user with name:{} , date {}",
+                review.getUser().getName(), review.getCreated());
     }
 
     private List<Long> getReviewIdNotHidden(List<ReviewDTO> reviews) {

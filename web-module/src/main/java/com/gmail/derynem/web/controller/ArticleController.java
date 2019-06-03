@@ -6,6 +6,8 @@ import com.gmail.derynem.service.exception.ArticleServiceException;
 import com.gmail.derynem.service.exception.CommentServiceException;
 import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.article.ArticleDTO;
+import com.gmail.derynem.service.model.comment.CommentDTO;
+import com.gmail.derynem.service.model.user.UserDTO;
 import com.gmail.derynem.service.model.user.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,9 @@ import java.util.Arrays;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLES_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_ADD_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_PAGE;
+import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
+import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
+import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
 import static com.gmail.derynem.web.constants.RedirectConstant.*;
 
 @Controller
@@ -41,8 +46,8 @@ public class ArticleController {
 
     @GetMapping("/public/articles")
     public String showArticles(Model model,
-                               @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                               @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
+                               @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit,
                                Authentication authentication) {
         PageDTO<ArticleDTO> articlePageInfo = articleService.getArticlePageInfo(page, limit);
         articlePageInfo.setLimit(limit);
@@ -56,15 +61,44 @@ public class ArticleController {
     @GetMapping("/public/article/{id}")
     public String showArticle(Model model,
                               @PathVariable(name = "id") Long id,
-                              Authentication authentication) {
+                              Authentication authentication,
+                              CommentDTO comment) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        ArticleDTO article = articleService.getArticleById(id);
-        if (article == null) {
+        try {
+            ArticleDTO article = articleService.getArticleById(id);
+            model.addAttribute("user", userPrincipal.getUser());
+            model.addAttribute("article", article);
+            model.addAttribute("comment", comment);
+            return ARTICLE_PAGE;
+        } catch (ArticleServiceException e) {
+            logger.error(e.getMessage(), e);
             return REDIRECT_ARTICLES_PAGE;
         }
-        model.addAttribute("userId", userPrincipal.getUser().getId());
-        model.addAttribute("article", article);
-        return ARTICLE_PAGE;
+    }
+
+    @PostMapping("/public/article/{id}/comment")
+    public String addCommentInArticle(@ModelAttribute(value = "comment") @Valid CommentDTO commentDTO,
+                                      @PathVariable(value = "id") Long id,
+                                      BindingResult bindingResult,
+                                      Model model,
+                                      Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserDTO currentUser = userPrincipal.getUser();
+        if (bindingResult.hasErrors()) {
+            try {
+                logger.info("comment not valid , errors :{}", Arrays.toString(bindingResult.getAllErrors().toArray()));
+                model.addAttribute("user", currentUser);
+                ArticleDTO article = articleService.getArticleById(id);
+                model.addAttribute("article", article);
+                return ARTICLE_PAGE;
+            } catch (ArticleServiceException e) {
+                logger.error(e.getMessage(), e);
+                return REDIRECT_ARTICLES_PAGE + "?message=article added";
+            }
+        }
+        commentDTO.getUser().setId(currentUser.getId());
+        commentService.addComment(commentDTO, id);
+        return String.format(REDIRECT_ARTICLE_PAGE, id) + String.format(MESSAGE_PARAM, "comment added");
     }
 
     @PostMapping("/public/article/comment/delete")
@@ -72,7 +106,7 @@ public class ArticleController {
                                            @RequestParam(name = "articleId") Long articleId) {
         try {
             commentService.deleteComment(id);
-            return String.format(REDIRECT_ARTICLE_PAGE, articleId);
+            return String.format(REDIRECT_ARTICLE_PAGE, articleId) + String.format(MESSAGE_PARAM, "comment deleted");
         } catch (CommentServiceException e) {
             logger.error(e.getMessage(), e);
             return REDIRECT_NOT_FOUND;
@@ -83,7 +117,7 @@ public class ArticleController {
     public String deleteArticle(@RequestParam(name = "id") Long id) {
         try {
             articleService.deleteArticle(id);
-            return REDIRECT_ARTICLES_PAGE;
+            return REDIRECT_ARTICLES_PAGE + String.format(MESSAGE_PARAM, "article deleted");
         } catch (ArticleServiceException e) {
             logger.error(e.getMessage(), e);
             return REDIRECT_NOT_FOUND;
@@ -97,16 +131,16 @@ public class ArticleController {
                                 Authentication authentication) {
         if (bindingResult.hasErrors()) {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            model.addAttribute("userId", userPrincipal.getUser().getId());
+            model.addAttribute("user", userPrincipal.getUser());
             logger.info(" article not valid , errors :{}", Arrays.toString(bindingResult.getAllErrors().toArray()));
             return ARTICLE_PAGE;
         }
         try {
             articleService.updateArticle(article);
-            return String.format(REDIRECT_ARTICLE_PAGE, article.getId());
+            return String.format(REDIRECT_ARTICLE_PAGE, article.getId()) + String.format(MESSAGE_PARAM, "article updated");
         } catch (ArticleServiceException e) {
             logger.error(e.getMessage(), e);
-            return REDIRECT_ARTICLES_PAGE;
+            return REDIRECT_ARTICLES_PAGE + String.format(MESSAGE_PARAM, "update fail");
         }
     }
 
@@ -129,7 +163,7 @@ public class ArticleController {
         article.getUser().setId(userPrincipal.getUser().getId());
         try {
             articleService.saveArticle(article);
-            return REDIRECT_ARTICLES_PAGE;
+            return REDIRECT_ARTICLES_PAGE + String.format(MESSAGE_PARAM, "article added");
         } catch (ArticleServiceException e) {
             logger.error(e.getMessage(), e);
             return REDIRECT_CUSTOM_ERROR;

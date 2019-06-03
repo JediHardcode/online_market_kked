@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 
 @Controller
 public class DefaultController {
@@ -19,7 +20,7 @@ public class DefaultController {
     }
 
     @GetMapping("/home")
-    public String home(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public String home(@RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
                        Model model) {
         PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, false);
         model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
@@ -42,8 +43,8 @@ public class DefaultController {
         return ERROR_PAGE_NOT_FOUND;
     }
 
-    @GetMapping("/error")
-    public String customError() {
+    @GetMapping("/500")
+    public String serverEternalError() {
         return CUSTOM_ERROR;
     }
 }

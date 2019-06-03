@@ -3,9 +3,7 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
     <changeSet id="ROLE TABLE" author="derynem@gmail.com">
         <createTable tableName="T_ROLE">
@@ -128,15 +126,6 @@
         <insert tableName="T_ROLE">
             <column name="F_ID" type="BIGINT" value='4'/>
             <column name="F_NAME" type="varchar(50)" value="SECURE_API"/>
-        </insert>
-    </changeSet>
-
-    <changeSet author="derynem@gmail.com" id="insert test1 review">
-        <insert tableName="T_REVIEW">
-            <column name="F_ID" type="BIGINT" value='1'/>
-            <column name="F_CREATED" type="DATETIME" value="now()"/>
-            <column name="F_DESCRIPTION" type="BLOB" value="good good"/>
-            <column name="F_USER_ID" type="BIGINT" value='2'/>
         </insert>
     </changeSet>
 
@@ -320,6 +309,7 @@
             <where>F_ID =(SELECT F_ID FROM T_USER WHERE F_EMAIL ='root@root')</where>
         </update>
     </changeSet>
+
     <changeSet id="create Item table" author="derynem@gmail.com">
         <createTable tableName="T_ITEM">
             <column name="F_ID" type="BIGINT" autoIncrement="true">
@@ -335,5 +325,45 @@
                 <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="create Order table" author="derynem@gmail.com">
+        <createTable tableName="T_ORDER">
+            <column name="F_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="F_NUMBER" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="F_STATUS" type="varchar(20)"/>
+            <column name="F_ITEM_ID" type="BIGINT"/>
+            <column name="F_USER_ID" type="BIGINT"/>
+            <column name="F_QUANTITY" type="BIGINT"/>
+            <column name="F_CREATED" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="FK ORDER ITEM" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_ITEM_ID"
+                                 baseTableName="T_ORDER"
+                                 constraintName="FK_T_ORDER_T_ITEM"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_ITEM"/>
+    </changeSet>
+
+    <changeSet id="FK ORDER USER" author="derynem@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="F_USER_ID"
+                                 baseTableName="T_ORDER"
+                                 constraintName="FK_T_ORDER_T_USER"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="F_ID"
+                                 referencedTableName="T_USER"/>
     </changeSet>
 </databaseChangeLog>

@@ -5,6 +5,7 @@ import com.gmail.derynem.repository.model.Item;
 import com.gmail.derynem.service.ItemService;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RandomService;
+import com.gmail.derynem.service.XmlService;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.exception.ItemServiceException;
 import com.gmail.derynem.service.model.PageDTO;
@@ -13,27 +14,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
     private final static Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
+    private final static String TEMP_DIR = "tmp/";
     private final ItemRepository itemRepository;
     private final PageService pageService;
     private final Converter<ItemDTO, Item> converter;
     private final RandomService randomService;
+    private final XmlService xmlService;
 
     public ItemServiceImpl(ItemRepository itemRepository,
                            PageService pageService,
                            @Qualifier("itemConverter") Converter<ItemDTO, Item> converter,
-                           RandomService randomService) {
+                           RandomService randomService,
+                           XmlService xmlService) {
         this.itemRepository = itemRepository;
         this.pageService = pageService;
         this.converter = converter;
         this.randomService = randomService;
+        this.xmlService = xmlService;
     }
 
     @Override
@@ -86,5 +95,25 @@ public class ItemServiceImpl implements ItemService {
         Item newItem = converter.toEntity(item);
         itemRepository.persist(newItem);
         logger.info("item added, item name is {}", newItem.getName());
+    }
+
+    @Override
+    @Transactional
+    public void addItemsFromFile(MultipartFile file) throws ItemServiceException {
+        Path filepath = Paths.get(TEMP_DIR + file.getOriginalFilename());
+        try {
+            file.transferTo(filepath);
+            if (xmlService.isValidXmlFile(filepath)) {
+                List<ItemDTO> items = xmlService.parseXml(filepath.toFile());
+                items.stream()
+                        .peek(itemDTO -> itemDTO.setUniqueCode(randomService.generateUniqueNum()))
+                        .map(converter::toEntity)
+                        .forEach(itemRepository::persist);
+            } else {
+                throw new ItemServiceException("file not valid");
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

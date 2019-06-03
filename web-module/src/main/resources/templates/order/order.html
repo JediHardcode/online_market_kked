@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Order №: <span th:text="${order.number}"/></h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block>
+                        <form class="custom-form" method="post" action="#"
+                              th:action="@{/private/order/status}"
+                              th:object="${order}">
+                            <div class="review-content">
+                                <input hidden value="#"
+                                       th:attr="value=${order.id}" th:field="*{id}"/>
+                                <p>Status: <span th:text="${order.status}"/></p>
+                                <p>Item name: <span th:text="${order.item.name}"/></p>
+                                <p>Quantity: <span th:text="${order.quantity}"/></p>
+                                <p>Price: <span th:text="${order.totalPrice}"/></p>
+                                <p>User name:<span th:text="${order.user.name}"/></p>
+                                <p>User phone:<span th:text="${order.user.profileDTO.telephone}"/></p>
+                                <select name="status" th:name="status">
+                                    <option th:each="status:${T(com.gmail.derynem.service.model.enums.OrderStatus).values()}"
+                                            th:value="${status}"
+                                            th:text="${status}">
+                                    </option>
+                                </select>
+                            </div>
+                            <button class="btn-default">Change order status
+                            </button>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

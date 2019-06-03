@@ -17,9 +17,5 @@ public interface UserService {
 
     void saveUser(AddUserDTO userDTO) throws UserServiceException;
 
-    void changePassword(Long id) throws UserServiceException;
-
     void updateUserInfo(UserDTO userDTO);
-
-    UserDTO getById(Long id);
 }

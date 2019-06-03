@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.derynem.service.model.article.ArticleDTO;
 import com.gmail.derynem.service.model.comment.CommentDTO;
 import com.gmail.derynem.service.model.user.UserCommonDTO;
-import com.gmail.derynem.web.controller.api.ApiArticleController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +44,7 @@ public class ApiArticleControllerIntegrationTest {
     private CommentDTO commentDTO = new CommentDTO();
     private List<CommentDTO> comments = new ArrayList<>();
     private ObjectMapper mapper = new ObjectMapper();
-    private final String SECURE_EMAIL = "secure@secure";
+    private final String secureEmail = "secure@secure";
     @Mock
     private BindingResult bindingResult;
 
@@ -65,7 +66,7 @@ public class ApiArticleControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldSaveArticleAndReturn201StatusCode() throws Exception {
         mvc.perform(post("/api/v1/articles")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -74,7 +75,7 @@ public class ApiArticleControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldReturn400StatusCodeIfArticleNotValid() throws Exception {
         articleDTO.setName("434342323");
         mvc.perform(post("/api/v1/articles")
@@ -84,21 +85,21 @@ public class ApiArticleControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldGetArticleAnd200IfIdNotNullAndArticleWithThisIdExistInDatabase() throws Exception {
         mvc.perform(get("/api/v1/articles/2"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldGet404IfIdNotNullAndArticleWithThisIdNotExistInDatabase() throws Exception {
         mvc.perform(get("/api/v1/articles/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldSaveArticleAndReturn2001IfCommentsAreEmpty() throws Exception {
         articleDTO.setComments(new ArrayList<>());
         mvc.perform(post("/api/v1/articles")
@@ -108,7 +109,7 @@ public class ApiArticleControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldGetListOfArticleWithOffsetAndLimitAndReturn200() throws Exception {
         mvc.perform(get("/api/v1/articles")
                 .param("page", "1")
@@ -117,21 +118,21 @@ public class ApiArticleControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldGetListOfArticleIfRequestParamAreEmptyAndLimitAndReturn200() throws Exception {
         mvc.perform(get("/api/v1/articles"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldReturnWhenDeleteDoestExistArticleDoesntExist() throws Exception {
         mvc.perform(delete("/api/v1/articles/999"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithUserDetails(value = SECURE_EMAIL)
+    @WithUserDetails(value = secureEmail)
     public void shouldSaveArticleIfCommentsAreEmpty() throws Exception {
         articleDTO.setComments(new ArrayList<>());
         mvc.perform(post("/api/v1/articles")

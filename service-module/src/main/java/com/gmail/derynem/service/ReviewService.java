@@ -12,4 +12,6 @@ public interface ReviewService {
     void deleteReview(Long id) throws ReviewServiceException;
 
     void changeIsHiddenStatus(List<ReviewDTO> reviews);
+
+    void save(ReviewDTO reviewDTO);
 }

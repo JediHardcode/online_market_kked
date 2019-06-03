@@ -32,9 +32,6 @@ public class CommentConverterImpl implements Converter<CommentDTO, Comment> {
         comment.setContent(commentDTO.getContent());
         comment.setCreated(commentDTO.getCreated());
         comment.setDeleted(commentDTO.isDeleted());
-        User user = new User();
-        user.setId(commentDTO.getUser().getId());
-        comment.setUser(user);
         return comment;
     }
 }

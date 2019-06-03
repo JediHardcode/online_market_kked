@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Items</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Items</h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block th:each="item:${page.entities}">
+                        <form class="custom-form" method="post" action="#" th:action="@{/private/items/delete}">
+                            <div class="review-content">
+                                <input hidden value="#"
+                                       th:value="*{item.id}" th:name="id"/>
+                                <h4>name: <span th:text="*{item.name}"/>
+                                </h4>
+                                <p>Art.№: <span th:text="${item.uniqueCode}"/></p>
+                                <p>Price: <span th:text="${item.price}"/></p>
+                                <p>
+                                <li class="active"><a th:href="@{/public/items/{id}(id=${item.id})}">More...</a>
+                                </li>
+                                </p>
+                            </div>
+                            <th:block sec:authorize="hasAuthority('SALE')">
+                                <button class="btn-default">delete
+                                </button>
+                            </th:block>
+                        </form>
+                        <form class="custom-form" method="get" action="#"
+                              th:action="@{/private/items/copy}">
+                            <input hidden value="#"
+                                   th:attr="value=${item.id}" th:name="id"/>
+                            <th:block sec:authorize="hasAuthority('SALE')">
+                                <button class="btn-default">Copy
+                                </button>
+                            </th:block>
+                        </form>
+                        <th:block sec:authorize="hasAuthority('CUSTOMER')">
+                            <form class="custom-form" method="post" action="#"
+                                  th:action="@{/user/orders/new}" th:object="${order}">
+                                <th:block th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">
+                                    quantity error
+                                </th:block>
+                                <input name="quantity" th:field="*{quantity}" th:required="true">
+                                <input hidden value="#" th:name="item.id"
+                                       th:value="${item.id}"/>
+                                <button class="btn-default">Order
+                                </button>
+                            </form>
+                        </th:block>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="pagination" th:if="${page.countOfPages > 1}">
+        <th:block th:each="i : ${#numbers.sequence( 1,page.countOfPages)}">
+            <a class="pagination-item "
+               th:href="@{/public/items(page=${i},limit=${page.limit})}"><span th:text="${i}"/></a>
+        </th:block>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
+</html>

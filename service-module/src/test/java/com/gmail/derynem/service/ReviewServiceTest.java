@@ -1,6 +1,7 @@
 package com.gmail.derynem.service;
 
 import com.gmail.derynem.repository.ReviewRepository;
+import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Review;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.impl.ReviewServiceImpl;
@@ -24,6 +25,8 @@ public class ReviewServiceTest {
     private Converter<ReviewDTO, Review> reviewConverter;
     @Mock
     private PageService pageService;
+    @Mock
+    private UserRepository userRepository;
     private ReviewService reviewService;
     private int countOfPages = 4;
     private int count = 4;
@@ -31,7 +34,7 @@ public class ReviewServiceTest {
     @Before
     public void setUp() {
         Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService);
+        reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService, userRepository);
     }
 
     @Test
