@@ -16,7 +16,7 @@ public class AppAccessDeniedHandler implements AccessDeniedHandler {
     private final static Logger logger = LoggerFactory.getLogger(AppAccessDeniedHandler.class);
 
     @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
