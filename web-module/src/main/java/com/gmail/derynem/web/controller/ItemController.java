@@ -3,6 +3,7 @@ package com.gmail.derynem.web.controller;
 import com.gmail.derynem.service.ItemService;
 import com.gmail.derynem.service.exception.ItemServiceException;
 import com.gmail.derynem.service.model.PageDTO;
+import com.gmail.derynem.service.model.UploadDTO;
 import com.gmail.derynem.service.model.item.ItemDTO;
 import com.gmail.derynem.service.model.order.OrderDTO;
 import com.gmail.derynem.service.model.user.UserPrincipal;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Arrays;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEMS_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEM_COPY_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ITEM_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.UPLOAD_ITEMS_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
@@ -103,18 +106,25 @@ public class ItemController {
     }
 
     @PostMapping("/private/items/upload")
-    public String uploadItem(@RequestParam("file") MultipartFile multipartFile) {
+    public String uploadItem(@ModelAttribute("uploadForm") @Valid UploadDTO uploadDTO,
+                             BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            logger.info("file not valid cause {}", Arrays.toString(bindingResult.getAllErrors().toArray()));
+            return UPLOAD_ITEMS_PAGE;
+        }
         try {
-            itemService.addItemsFromFile(multipartFile);
+            itemService.addItemsFromFile(uploadDTO.getFile());
             return REDIRECT_ITEMS_PAGE + String.format(MESSAGE_PARAM, "items added");
         } catch (ItemServiceException e) {
             logger.error(e.getMessage(), e);
-            return CUSTOM_ERROR;
+            return REDIRECT_ITEMS_PAGE + String.format(MESSAGE_PARAM, "upload fail");
         }
     }
 
     @GetMapping("/private/items/upload")
-    public String showUploadFilePage() {
+    public String showUploadFilePage(UploadDTO uploadDTO,
+                                     Model model) {
+        model.addAttribute("uploadForm", uploadDTO);
         return UPLOAD_ITEMS_PAGE;
     }
 }

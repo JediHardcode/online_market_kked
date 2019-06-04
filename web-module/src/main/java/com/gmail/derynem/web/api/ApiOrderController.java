@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 
@@ -30,11 +28,11 @@ public class ApiOrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> getListOfItems(
+    public ResponseEntity<PageDTO<OrderDTO>> getListOfItems(
             @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit) {
         PageDTO<OrderDTO> pageDTO = orderService.getOrderPageInfo(page, limit, null);
-        return new ResponseEntity<>(pageDTO.getEntities(), HttpStatus.OK);
+        return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
     @GetMapping("/orders/{id}")

@@ -17,7 +17,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,9 +26,9 @@ public class XmlServiceImpl implements XmlService {
     private final static Logger logger = LoggerFactory.getLogger(XmlServiceImpl.class);
 
     @Override
-    public boolean isValidXmlFile(Path filePath) {
+    public boolean isValidXmlFile(InputStream stream) {
         File schemaFile = new File(this.getClass().getResource("/static/xsd/scheme.xsd").getFile());
-        Source xml = new StreamSource(filePath.toFile());
+        Source xml = new StreamSource(stream);
         SchemaFactory schemaFactory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
@@ -44,11 +44,11 @@ public class XmlServiceImpl implements XmlService {
     }
 
     @Override
-    public List<ItemDTO> parseXml(File file) {
+    public List<ItemDTO> parseXml(InputStream stream) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(Catalog.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            Catalog catalog = (Catalog) unmarshaller.unmarshal(file);
+            Catalog catalog = (Catalog) unmarshaller.unmarshal(stream);
             logger.info(" parse successfully finished, count of items {}", catalog.getListOfItems().size());
             return catalog.getListOfItems();
         } catch (JAXBException e) {

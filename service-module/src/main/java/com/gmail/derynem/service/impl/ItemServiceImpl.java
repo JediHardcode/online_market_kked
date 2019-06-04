@@ -18,15 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
     private final static Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
-    private final static String TEMP_DIR = "tmp/";
     private final ItemRepository itemRepository;
     private final PageService pageService;
     private final Converter<ItemDTO, Item> converter;
@@ -60,6 +58,8 @@ public class ItemServiceImpl implements ItemService {
         itemPageInfo.setEntities(articleDTOS);
         logger.info("count of items {}, count of pages {}",
                 itemPageInfo.getEntities().size(), itemPageInfo.getCountOfPages());
+        itemPageInfo.setLimit(limit);
+        itemPageInfo.setPage(page);
         return itemPageInfo;
     }
 
@@ -100,20 +100,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void addItemsFromFile(MultipartFile file) throws ItemServiceException {
-        Path filepath = Paths.get(TEMP_DIR + file.getOriginalFilename());
-        try {
-            file.transferTo(filepath);
-            if (xmlService.isValidXmlFile(filepath)) {
-                List<ItemDTO> items = xmlService.parseXml(filepath.toFile());
-                items.stream()
-                        .peek(itemDTO -> itemDTO.setUniqueCode(randomService.generateUniqueNum()))
-                        .map(converter::toEntity)
-                        .forEach(itemRepository::persist);
-            } else {
-                throw new ItemServiceException("file not valid");
-            }
+        try (InputStream stream = file.getInputStream()) {
+            List<ItemDTO> items = xmlService.parseXml(stream);
+            items.stream()
+                    .peek(itemDTO -> itemDTO.setUniqueCode(randomService.generateUniqueNum()))
+                    .map(converter::toEntity)
+                    .forEach(itemRepository::persist);
+
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+            throw new ItemServiceException(e.getMessage(), e);
         }
     }
 }

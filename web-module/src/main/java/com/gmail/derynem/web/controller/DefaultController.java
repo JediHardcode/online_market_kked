@@ -1,32 +1,15 @@
 package com.gmail.derynem.web.controller;
 
-import com.gmail.derynem.service.ReviewService;
-import com.gmail.derynem.service.model.PageDTO;
-import com.gmail.derynem.service.model.review.ReviewDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.*;
-import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
+import static com.gmail.derynem.web.constants.PageNamesConstant.CUSTOM_ERROR;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ERROR_PAGE_FORBIDDEN;
+import static com.gmail.derynem.web.constants.PageNamesConstant.ERROR_PAGE_NOT_FOUND;
+import static com.gmail.derynem.web.constants.PageNamesConstant.LOGIN_PAGE;
 
 @Controller
 public class DefaultController {
-    private final ReviewService reviewService;
-
-    public DefaultController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
-
-    @GetMapping("/home")
-    public String home(@RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
-                       Model model) {
-        PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, false);
-        model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
-        model.addAttribute("reviews", reviewsPageInfo.getEntities());
-        return HOME_PAGE;
-    }
 
     @GetMapping("/login")
     public String login() {

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Upload Items</title>
@@ -14,11 +13,12 @@
     </div>
     <section class="content-wrapper">
         <form class="custom-form" action="#" th:action="@{/private/items/upload}" enctype="multipart/form-data"
-              method="post">
-            <form method="POST" action="/upload" enctype="multipart/form-data">
-                <input type="file" name="file"/><br/><br/>
-                <input type="submit" value="Submit"/>
-            </form>
+              method="post" th:object="${uploadForm}">
+            <th:block th:if="${#fields.hasErrors('file')}" th:errors="*{file}">
+                file error
+            </th:block>
+            <input type="file" name="file" th:name="file" required/><br/><br/>
+            <input type="submit" value="Submit"/>
         </form>
     </section>
     <div th:replace="fragments/footer :: footer"/>

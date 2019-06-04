@@ -1,6 +1,6 @@
 package com.gmail.derynem.service.validation;
 
-import com.gmail.derynem.service.validation.impl.ValidQuantityValidator;
+import com.gmail.derynem.service.validation.constraint.ValidQuantityValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

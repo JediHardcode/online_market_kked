@@ -106,4 +106,13 @@
 <div th:replace="fragments/footer :: footer"/>
 </div>
 </body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
 </html>

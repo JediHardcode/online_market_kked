@@ -41,7 +41,7 @@ public class ReviewServiceTest {
     public void shouldGetPagesOfNotHiddenReviews() {
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
         Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, OFFSET_LIMIT, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 
@@ -50,7 +50,7 @@ public class ReviewServiceTest {
         count = 0;
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
         Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, false);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, OFFSET_LIMIT, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 }

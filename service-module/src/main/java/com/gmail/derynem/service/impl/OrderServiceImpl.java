@@ -76,6 +76,8 @@ public class OrderServiceImpl implements OrderService {
         ordersPageInfo.setEntities(dtoList);
         logger.info("Orders info page created, count of pages :{}, count of orders: {}",
                 ordersPageInfo.getCountOfPages(), ordersPageInfo.getEntities().size());
+        ordersPageInfo.setPage(page);
+        ordersPageInfo.setLimit(limit);
         return ordersPageInfo;
     }
 

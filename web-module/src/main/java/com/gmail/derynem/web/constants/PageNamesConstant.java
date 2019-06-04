@@ -1,7 +1,6 @@
 package com.gmail.derynem.web.constants;
 
 public class PageNamesConstant {
-    public static final String HOME_PAGE = "index";
     public static final String LOGIN_PAGE = "login";
     public static final String USERS_PAGE = "user/users";
     public static final String ADD_USER_PAGE = "user/adduser";

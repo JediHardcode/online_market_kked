@@ -4,11 +4,9 @@
 </head>
 <body>
 <div th:fragment="header">
-    <!-- this is header -->
     <nav>
         <div>
             <ul>
-                <li class="active"><a th:href="@{/home}">Home</a></li>
                 <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
                     <li class="active"><a th:href="@{/private/profile}">Profile</a></li>
                 </th:block>
@@ -41,6 +39,9 @@
                 </th:block>
                 <th:block sec:authorize="isAnonymous()">
                     <li class="active"><a th:href="@{/login}">Login</a></li>
+                </th:block>
+                <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                    <li class="active"><a th:href="@{/home/review}">Add review</a></li>
                 </th:block>
             </ul>
         </div>

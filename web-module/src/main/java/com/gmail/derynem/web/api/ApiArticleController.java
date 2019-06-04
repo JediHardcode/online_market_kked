@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
@@ -70,11 +69,11 @@ public class ApiArticleController {
     }
 
     @GetMapping("/articles")
-    public ResponseEntity<List<ArticleDTO>> getListOfArticles
+    public ResponseEntity<PageDTO<ArticleDTO>> getListOfArticles
             (@RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
              @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit) {
         PageDTO<ArticleDTO> articlePage = articleService.getArticlePageInfo(page, limit);
-        return new ResponseEntity<>(articlePage.getEntities(), HttpStatus.OK);
+        return new ResponseEntity<>(articlePage, HttpStatus.OK);
     }
 
     @DeleteMapping("/articles/{id}")

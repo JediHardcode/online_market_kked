@@ -9,7 +9,7 @@ import com.gmail.derynem.service.model.user.UserDTO;
 public interface UserService {
     UserDTO getUserByEmail(String email);
 
-    PageDTO<UserDTO> getUsersPageInfo(Integer page);
+    PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit);
 
     void updateUserRole(UpdateRoleDTO updateRoleDTO) throws UserServiceException;
 

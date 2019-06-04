@@ -41,7 +41,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         http.antMatcher("/api/**")
                 .authorizeRequests()
                 .anyRequest()
-                .hasAuthority(SECURE_API_ROLE)// TODO CHANGE FOR PERMISSION LATER
+                .hasAuthority(SECURE_API_ROLE)
                 .and()
                 .httpBasic()
                 .and()

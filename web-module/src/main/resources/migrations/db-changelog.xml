@@ -366,4 +366,13 @@
                                  referencedColumnNames="F_ID"
                                  referencedTableName="T_USER"/>
     </changeSet>
+
+    <changeSet author="derynem@gmail.com" id="createIndex- for user.email">
+        <createIndex indexName="idx_email"
+                     tableName="T_USER"
+                     tablespace="A String"
+                     unique="true">
+            <column name="F_EMAIL" type="varchar(128)"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

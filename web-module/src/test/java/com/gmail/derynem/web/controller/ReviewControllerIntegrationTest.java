@@ -109,6 +109,6 @@ public class ReviewControllerIntegrationTest {
         this.mockMvc.perform(post("/home/review")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .flashAttr("review", reviewDTO))
-                .andExpect(redirectedUrl("/home?message=your review added, Thank you"));
+                .andExpect(redirectedUrl("/public/items?message=your review added, Thank you"));
     }
 }

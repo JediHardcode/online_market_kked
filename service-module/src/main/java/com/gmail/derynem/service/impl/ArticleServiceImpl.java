@@ -82,6 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
         articlePageInfo.setEntities(articleDTOS);
         logger.info("count of articles {}, count of pages {}",
                 articlePageInfo.getEntities().size(), articlePageInfo.getCountOfPages());
+        articlePageInfo.setLimit(limit);
+        articlePageInfo.setPage(page);
         return articlePageInfo;
     }
 

@@ -2,12 +2,11 @@ package com.gmail.derynem.service;
 
 import com.gmail.derynem.service.model.item.ItemDTO;
 
-import java.io.File;
-import java.nio.file.Path;
+import java.io.InputStream;
 import java.util.List;
 
 public interface XmlService {
-    boolean isValidXmlFile(Path file);
+    boolean isValidXmlFile(InputStream stream);
 
-    List<ItemDTO> parseXml(File file);
+    List<ItemDTO> parseXml(InputStream stream);
 }

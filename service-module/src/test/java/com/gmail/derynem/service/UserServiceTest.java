@@ -87,7 +87,7 @@ public class UserServiceTest {
     public void shouldGetListOfUsers() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(asList(validUser, validUser));
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, OFFSET_LIMIT);
         Assert.assertNotNull(pageDTO.getEntities());
     }
 
@@ -95,7 +95,7 @@ public class UserServiceTest {
     public void shouldGetEmptyList() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(Collections.emptyList());
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, OFFSET_LIMIT);
         Assert.assertEquals(Collections.emptyList(), pageDTO.getEntities());
     }
 
@@ -111,7 +111,7 @@ public class UserServiceTest {
     public void shouldGetPages() {
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(countOfUsers);
         Mockito.when(pageService.getPages(countOfPages, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO pageDTO = userService.getUsersPageInfo(1);
+        PageDTO pageDTO = userService.getUsersPageInfo(1, OFFSET_LIMIT);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
     }
 
@@ -120,7 +120,7 @@ public class UserServiceTest {
         int count = 0;
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(count);
         Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1, OFFSET_LIMIT);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
     }
 

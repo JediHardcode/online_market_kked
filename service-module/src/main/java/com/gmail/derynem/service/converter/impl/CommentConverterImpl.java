@@ -1,7 +1,6 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Comment;
-import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.model.comment.CommentDTO;

@@ -24,7 +24,6 @@ public class CommentServiceImpl implements CommentService {
     private final Converter<CommentDTO, Comment> converter;
     private final UserRepository userRepository;
 
-
     public CommentServiceImpl(CommentRepository commentRepository,
                               ArticleRepository articleRepository,
                               @Qualifier("commentConverter") Converter<CommentDTO, Comment> converter,

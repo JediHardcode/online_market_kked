@@ -22,9 +22,10 @@ import java.util.Arrays;
 
 import static com.gmail.derynem.web.constants.PageNamesConstant.NEW_REVIEW_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.PRIVATE_HOME_PAGE;
+import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
-import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_HOME;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ITEMS_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_REVIEWS;
 
 @Controller
@@ -38,8 +39,9 @@ public class ReviewController {
 
     @GetMapping("private/reviews")
     public String managementReviews(@RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
+                                    @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit,
                                     Model model) {
-        PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, null);
+        PageDTO<ReviewDTO> reviewsPageInfo = reviewService.getReviewsPageInfo(page, limit, null);
         ReviewsDTO reviews = new ReviewsDTO(reviewsPageInfo.getEntities());
         model.addAttribute("reviews", reviews);
         model.addAttribute("pages", reviewsPageInfo.getCountOfPages());
@@ -90,6 +92,6 @@ public class ReviewController {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         reviewDTO.getUser().setId(userPrincipal.getUser().getId());
         reviewService.save(reviewDTO);
-        return REDIRECT_HOME + String.format(MESSAGE_PARAM, "your review added, Thank you");
+        return REDIRECT_ITEMS_PAGE + String.format(MESSAGE_PARAM, "your review added, Thank you");
     }
 }

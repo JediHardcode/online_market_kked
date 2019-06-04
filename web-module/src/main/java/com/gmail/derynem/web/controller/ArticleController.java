@@ -30,7 +30,10 @@ import static com.gmail.derynem.web.constants.PageNamesConstant.ARTICLE_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
-import static com.gmail.derynem.web.constants.RedirectConstant.*;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ARTICLES_PAGE;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ARTICLE_PAGE;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_CUSTOM_ERROR;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_NOT_FOUND;
 
 @Controller
 public class ArticleController {

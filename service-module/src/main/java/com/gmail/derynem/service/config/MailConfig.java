@@ -11,7 +11,7 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:email.properties")
-public class  MailConfig {
+public class MailConfig {
     private final MailProperties mailProperties;
 
     public MailConfig(MailProperties mailProperties) {

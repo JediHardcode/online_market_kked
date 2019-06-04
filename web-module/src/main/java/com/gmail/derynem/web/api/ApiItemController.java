@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
@@ -38,11 +36,11 @@ public class ApiItemController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<List<ItemDTO>> getListOfItems(
+    public ResponseEntity<PageDTO<ItemDTO>> getListOfItems(
             @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
             @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit) {
         PageDTO<ItemDTO> itemPageInfo = itemService.getItemPageInfo(page, limit);
-        return new ResponseEntity<>(itemPageInfo.getEntities(), HttpStatus.OK);
+        return new ResponseEntity<>(itemPageInfo, HttpStatus.OK);
     }
 
     @GetMapping("/items/{id}")

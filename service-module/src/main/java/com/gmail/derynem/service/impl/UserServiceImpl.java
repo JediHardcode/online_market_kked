@@ -4,6 +4,9 @@ import com.gmail.derynem.repository.RoleRepository;
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
+import com.gmail.derynem.service.EncoderService;
+import com.gmail.derynem.service.PageService;
+import com.gmail.derynem.service.RandomService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.exception.UserServiceException;
@@ -11,9 +14,6 @@ import com.gmail.derynem.service.model.PageDTO;
 import com.gmail.derynem.service.model.role.UpdateRoleDTO;
 import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
-import com.gmail.derynem.service.EncoderService;
-import com.gmail.derynem.service.PageService;
-import com.gmail.derynem.service.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,11 +61,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public PageDTO<UserDTO> getUsersPageInfo(Integer page) {
+    public PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit) {
         int countOfUsers = userRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfUsers, OFFSET_LIMIT);
-        int offset = pageService.getOffset(page, countOfPages, OFFSET_LIMIT);
-        List<User> users = userRepository.findAll(offset, OFFSET_LIMIT);
+        int countOfPages = pageService.getPages(countOfUsers, limit);
+        int offset = pageService.getOffset(page, countOfPages, limit);
+        List<User> users = userRepository.findAll(offset, limit);
         List<UserDTO> userDTOList = users.stream()
                 .map(user -> userConverterAssembler.getUserConverter().toDTO(user))
                 .collect(Collectors.toList());

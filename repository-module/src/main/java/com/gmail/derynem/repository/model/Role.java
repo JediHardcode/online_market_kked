@@ -16,7 +16,7 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "F_NAME")
-    private String name; //TODO CHANGE FOR LIST OF PERMISSIONS LATER
+    private String name;
 
     public Role() {
     }

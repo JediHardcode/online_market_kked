@@ -1,4 +1,4 @@
-package com.gmail.derynem.service.validation.impl;
+package com.gmail.derynem.service.validation.constraint;
 
 import com.gmail.derynem.service.validation.ValidQuantity;
 

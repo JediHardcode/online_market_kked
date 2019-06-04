@@ -21,7 +21,9 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -83,7 +85,7 @@ public class ArticleControllerIntegrationTest {
     public void shouldDeleteArticle() throws Exception {
         mockMvc.perform(post("/private/article/delete")
                 .param("id", "1"))
-                .andExpect(redirectedUrlTemplate("/public/articles?message=article deleted"));
+                .andExpect(redirectedUrl("/public/articles?message=article deleted"));
     }
 
     @Test

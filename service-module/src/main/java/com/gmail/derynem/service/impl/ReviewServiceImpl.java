@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
-
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final static Logger logger = LoggerFactory.getLogger(ReviewServiceImpl.class);
@@ -29,7 +27,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final Converter<ReviewDTO, Review> reviewConverter;
     private final UserRepository userRepository;
     private final PageService pageService;
-
 
     public ReviewServiceImpl(ReviewRepository reviewRepository,
                              @Qualifier("reviewConverter") Converter<ReviewDTO, Review> reviewConverter,
@@ -43,13 +40,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Boolean isHidden) {
+    public PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Integer limit, Boolean isHidden) {
         PageDTO<ReviewDTO> reviewPageDTO = new PageDTO<>();
         int countOfReviews = reviewRepository.getCountOfReviews(isHidden);
-        int countOfPages = pageService.getPages(countOfReviews, OFFSET_LIMIT);
-        int offset = pageService.getOffset(page, countOfPages, OFFSET_LIMIT);
+        int countOfPages = pageService.getPages(countOfReviews, limit);
+        int offset = pageService.getOffset(page, countOfPages, limit);
         reviewPageDTO.setCountOfPages(countOfPages);
-        List<Review> reviewList = reviewRepository.getReviews(offset, OFFSET_LIMIT, isHidden);
+        List<Review> reviewList = reviewRepository.getReviews(offset, limit, isHidden);
         if (reviewList == null || reviewList.isEmpty()) {
             logger.info("no available reviews");
             reviewPageDTO.setEntities(Collections.emptyList());
@@ -66,6 +63,8 @@ public class ReviewServiceImpl implements ReviewService {
             logger.info("List of reviews received , list size is {}, count of pages of reviews is {}",
                     reviewPageDTO.getEntities().size(), reviewPageDTO.getCountOfPages());
         }
+        reviewPageDTO.setPage(page);
+        reviewPageDTO.setLimit(limit);
         return reviewPageDTO;
     }
 

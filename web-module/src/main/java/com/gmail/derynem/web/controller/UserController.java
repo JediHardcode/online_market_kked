@@ -30,6 +30,7 @@ import java.util.List;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ADD_USER_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.USERS_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.USER_PROFILE_PAGE;
+import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_USERS;
@@ -56,8 +57,9 @@ public class UserController {
     @GetMapping("/private/users")
     public String showUsers(Model model,
                             @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE) Integer page,
+                            @RequestParam(value = "limit", required = false, defaultValue = DEFAULT_LIMIT) Integer limit,
                             UpdateRoleDTO roleUpdate) {
-        PageDTO<UserDTO> usersPage = userService.getUsersPageInfo(page);
+        PageDTO<UserDTO> usersPage = userService.getUsersPageInfo(page, limit);
         model.addAttribute("pages", usersPage.getCountOfPages());
         List<RoleDTO> roles = roleService.getRoles();
         model.addAttribute("users", usersPage.getEntities());

@@ -7,7 +7,7 @@ import com.gmail.derynem.service.model.review.ReviewDTO;
 import java.util.List;
 
 public interface ReviewService {
-    PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Boolean isHidden);
+    PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Integer limit, Boolean isHidden);
 
     void deleteReview(Long id) throws ReviewServiceException;
 

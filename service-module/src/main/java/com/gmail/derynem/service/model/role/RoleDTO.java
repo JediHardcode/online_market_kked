@@ -2,7 +2,7 @@ package com.gmail.derynem.service.model.role;
 
 public class RoleDTO {
     private Long id;
-    private String name; //TODO CHANGE FOR LIST OF PERMISSIONS LATER
+    private String name;
 
     public RoleDTO(long id, String name) {
     }

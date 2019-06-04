@@ -5,9 +5,11 @@ import com.gmail.derynem.service.model.user.UserCommonDTO;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static com.gmail.derynem.service.validation.constant.ValidationConstant.ENG_LETTER_WITH_DIGITS;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.PREVIEW_LENGTH;
 
 public class ReviewDTO {
     private Long id;
@@ -16,6 +18,7 @@ public class ReviewDTO {
     @NotNull
     @NotEmpty
     @Pattern(regexp = ENG_LETTER_WITH_DIGITS, message = "{review.description.not.valid}")
+    @Size(max = PREVIEW_LENGTH)
     private String description;
     private boolean hidden;
 

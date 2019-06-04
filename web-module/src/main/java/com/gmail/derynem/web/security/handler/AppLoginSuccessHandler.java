@@ -49,7 +49,7 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
                 return "/private/reviews";
             } else if (grantedAuthority.getAuthority().equalsIgnoreCase(CUSTOMER_ROLE)) {
-                return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
+                return "/public/items";
             } else if (grantedAuthority.getAuthority().equalsIgnoreCase(SALE_ROLE)) {
                 return "/public/articles";
             }

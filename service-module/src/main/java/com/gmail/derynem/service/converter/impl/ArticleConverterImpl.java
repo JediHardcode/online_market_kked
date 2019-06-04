@@ -31,11 +31,6 @@ public class ArticleConverterImpl implements Converter<ArticleDTO, Article> {
         article.setCreated(articleDTO.getCreated());
         article.setName(articleDTO.getName());
         article.setDeleted(articleDTO.isDeleted());
-        if (articleDTO.getComments() != null || !articleDTO.getComments().isEmpty()) {
-            article.setComments(articleDTO.getComments().stream()
-                    .map(commentConverter::toEntity)
-                    .collect(Collectors.toList()));
-        }
         User user = new User();
         user.setId(articleDTO.getUser().getId());
         article.setUser(user);
