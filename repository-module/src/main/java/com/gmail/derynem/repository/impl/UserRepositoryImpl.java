@@ -16,9 +16,16 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Override
-    public User getByEmail(String email) {
-        String queryString = "select e from " + entityClass.getName() + " e" + " where e.email = :email and e.deleted = false";
-        Query query = entityManager.createQuery(queryString);
+    public User getByEmail(String email, Boolean isDeleted) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("select e from ")
+                .append(entityClass.getName())
+                .append(" e")
+                .append(" where e.email = :email");
+        if (isDeleted != null) {
+            stringBuilder.append(" and e.deleted = false");
+        }
+        Query query = entityManager.createQuery(stringBuilder.toString());
         query.setParameter("email", email);
         try {
             return (User) query.getSingleResult();

@@ -20,7 +20,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        UserDTO userDTO = userService.getUserByEmail(email);
+        UserDTO userDTO = userService.getUserByEmail(email, null);
         return userDTO == null;
     }
 }

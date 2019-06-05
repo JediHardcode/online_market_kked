@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO getUserByEmail(String email) {
-        User foundUser = userRepository.getByEmail(email);
+    public UserDTO getUserByEmail(String email, Boolean isDeleted) {
+        User foundUser = userRepository.getByEmail(email, isDeleted);
         if (foundUser == null) {
             logger.info(" no user with this email {} in database", email);
             return null;
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(AddUserDTO userDTO) throws UserServiceException {
-        User matchedUser = userRepository.getByEmail(userDTO.getEmail());
+        User matchedUser = userRepository.getByEmail(userDTO.getEmail(), null);
         if (matchedUser == null) {
             User user = userConverterAssembler.getAddUserConverter().toEntity(userDTO);
             user.setPassword(encoderService.encodePassword(randomService.generatePassword()));

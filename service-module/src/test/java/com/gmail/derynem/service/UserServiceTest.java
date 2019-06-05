@@ -70,16 +70,16 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserByEmail() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email)).thenReturn(validUser);
-        UserDTO expectedUser = userService.getUserByEmail(email);
+        Mockito.when(userRepository.getByEmail(email, false)).thenReturn(validUser);
+        UserDTO expectedUser = userService.getUserByEmail(email, false);
         Assert.assertNotNull(expectedUser);
     }
 
     @Test
     public void shouldReturnNullIfUserDoesntExist() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email)).thenReturn(null);
-        UserDTO expectedUser = userService.getUserByEmail(email);
+        Mockito.when(userRepository.getByEmail(email, false)).thenReturn(null);
+        UserDTO expectedUser = userService.getUserByEmail(email, false);
         Assert.assertNull(expectedUser);
     }
 

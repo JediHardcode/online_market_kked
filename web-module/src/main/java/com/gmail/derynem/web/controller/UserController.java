@@ -148,7 +148,7 @@ public class UserController {
                                   Model model) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserDTO user = userPrincipal.getUser();
-        UserDTO recentUser = userService.getUserByEmail(user.getEmail());
+        UserDTO recentUser = userService.getUserByEmail(user.getEmail(), false);
         model.addAttribute("user", recentUser);
         return USER_PROFILE_PAGE;
     }

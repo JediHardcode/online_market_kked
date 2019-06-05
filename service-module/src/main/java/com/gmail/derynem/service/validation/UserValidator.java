@@ -43,7 +43,7 @@ public class UserValidator implements Validator {
     }
 
     private void validatePassword(UserDTO user, Errors errors) {
-        UserDTO userDTO = userService.getUserByEmail(user.getEmail());
+        UserDTO userDTO = userService.getUserByEmail(user.getEmail(), false);
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             errors.rejectValue("password", "user.password.empty", "password is empty");
             return;
