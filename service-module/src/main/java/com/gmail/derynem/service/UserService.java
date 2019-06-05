@@ -7,7 +7,7 @@ import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 
 public interface UserService {
-    UserDTO getUserByEmail(String email,Boolean isDeleted);
+    UserDTO getUserByEmail(String email, Boolean isDeleted);
 
     PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit);
 
