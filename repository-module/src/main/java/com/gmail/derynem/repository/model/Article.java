@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,7 @@ import java.util.Objects;
 @Table(name = "T_ARTICLE")
 @SQLDelete(sql = "UPDATE T_ARTICLE SET F_DELETED = 1 WHERE F_ID =?")
 @Where(clause = "F_DELETED = 0")
-public class Article {
+public class Article implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "F_ID")

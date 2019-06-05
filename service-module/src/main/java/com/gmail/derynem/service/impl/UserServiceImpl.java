@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -50,8 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDTO getUserByEmail(String email) {
-        User foundUser = userRepository.getByEmail(email);
+    public UserDTO getUserByEmail(String email, Boolean isDeleted) {
+        User foundUser = userRepository.getByEmail(email, isDeleted);
         if (foundUser == null) {
             logger.info(" no user with this email {} in database", email);
             return null;
@@ -63,17 +61,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public PageDTO<UserDTO> getUsersPageInfo(Integer page) {
+    public PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfUsers = userRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfUsers, OFFSET_LIMIT);
-        int offset = pageService.getOffset(page, countOfPages, OFFSET_LIMIT);
-        List<User> users = userRepository.findAll(offset, OFFSET_LIMIT);
+        int countOfPages = pageService.getPages(countOfUsers, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
+        List<User> users = userRepository.findAll(offset, validLimit);
         List<UserDTO> userDTOList = users.stream()
                 .map(user -> userConverterAssembler.getUserConverter().toDTO(user))
                 .collect(Collectors.toList());
         PageDTO<UserDTO> usersPageInfo = new PageDTO<>();
         usersPageInfo.setEntities(userDTOList);
         usersPageInfo.setCountOfPages(countOfPages);
+        usersPageInfo.setLimit(validLimit);
+        usersPageInfo.setPage(page);
         logger.info(" users found, count of users {}, count of pages {}", usersPageInfo.getEntities().size(), countOfPages);
         return usersPageInfo;
     }
@@ -84,6 +85,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getById(updateRoleDTO.getId());
         if (user == null) {
             throw new UserServiceException(" user with id " + updateRoleDTO.getId() + " not found");
+        }
+        if (user.isInviolable()) {
+            logger.info("main administrator cannot be deleted");
+            throw new UserServiceException("main administrator cannot be deleted");
         }
         Role role = roleRepository.getById(updateRoleDTO.getRoleId());
         user.setRole(role);
@@ -97,7 +102,7 @@ public class UserServiceImpl implements UserService {
         for (Long id : ids) {
             User user = userRepository.getById(id);
             if (user == null) {
-                throw new UserServiceException("user with id " + id + "n ot found in database");
+                throw new UserServiceException("user with id " + id + "not found in database");
             }
             userRepository.remove(user);
             logger.info("user with name {} deleted ", user.getName());
@@ -107,7 +112,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(AddUserDTO userDTO) throws UserServiceException {
-        User matchedUser = userRepository.getByEmail(userDTO.getEmail());
+        User matchedUser = userRepository.getByEmail(userDTO.getEmail(), null);
         if (matchedUser == null) {
             User user = userConverterAssembler.getAddUserConverter().toEntity(userDTO);
             user.setPassword(encoderService.encodePassword(randomService.generatePassword()));
@@ -116,20 +121,6 @@ public class UserServiceImpl implements UserService {
         } else {
             logger.info(" user with email {} already exist in database", userDTO.getEmail());
             throw new UserServiceException(" user already exist in database ");
-        }
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(Long id) throws UserServiceException {
-        User user = userRepository.getById(id);
-        if (user != null) {
-            String newPassword = randomService.generatePassword();
-            logger.info("user {} have new password {}", user.getName(), newPassword);
-            user.setPassword(encoderService.encodePassword(newPassword));
-            userRepository.merge(user);
-        } else {
-            throw new UserServiceException("user with id" + id + " not found");
         }
     }
 
@@ -149,18 +140,5 @@ public class UserServiceImpl implements UserService {
         } else {
             logger.info(" not found user with this id {}", userDTO.getId());
         }
-    }
-
-    @Override
-    @Transactional
-    public UserDTO getById(Long id) {
-        User user = userRepository.getById(id);
-        if (user == null) {
-            logger.info("user with id {} doesnt exist in database", id);
-            return null;
-        }
-        UserDTO userDTO = userConverterAssembler.getUserConverter().toDTO(user);
-        logger.info(" user found , user name {}", userDTO.getName());
-        return userDTO;
     }
 }

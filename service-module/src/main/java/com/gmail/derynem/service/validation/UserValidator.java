@@ -7,7 +7,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import static com.gmail.derynem.service.validation.constant.ValidationConstant.*;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ADDRESS_LENGTH;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.NAME_LENGTH;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ONLY_DIGITS;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ONLY_ENG_LETTER_PATTERN;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ONLY_ENG_WITH_SPACE;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.PASSWORD_LENGTH;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.PASSWORD_PATTERN;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.SURNAME_LENGTH;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.TELEPHONE_LENGTH;
 
 @Component
 public class UserValidator implements Validator {
@@ -35,7 +43,7 @@ public class UserValidator implements Validator {
     }
 
     private void validatePassword(UserDTO user, Errors errors) {
-        UserDTO userDTO = userService.getUserByEmail(user.getEmail());
+        UserDTO userDTO = userService.getUserByEmail(user.getEmail(), false);
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             errors.rejectValue("password", "user.password.empty", "password is empty");
             return;

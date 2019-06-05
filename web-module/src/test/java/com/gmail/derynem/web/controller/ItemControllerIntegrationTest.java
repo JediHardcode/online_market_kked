@@ -19,7 +19,9 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -31,8 +33,8 @@ public class ItemControllerIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext context;
-    private final String USER_EMAIL = "customer@customer";
-    private final String SALE_EMAIL = "sale@sale";
+    private final String userEma = "customer@customer";
+    private final String saleEmail = "sale@sale";
 
     @Before
     public void init() {
@@ -43,7 +45,7 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldShowItemsPage() throws Exception {
         this.mockMvc.perform(get("/public/items"))
                 .andExpect(status().isOk())
@@ -51,15 +53,15 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldDeleteItem() throws Exception {
         this.mockMvc.perform(post("/private/items/delete")
                 .param("id", "2"))
-                .andExpect(redirectedUrl("/public/items"));
+                .andExpect(redirectedUrl("/public/items?message=item deleted"));
     }
 
     @Test
-    @WithUserDetails(USER_EMAIL)
+    @WithUserDetails(userEma)
     public void shouldRedirectAt403WhenCustomerTryDeleteItem() throws Exception {
         this.mockMvc.perform(post("/private/items/delete")
                 .param("id", "2"))
@@ -67,7 +69,7 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldRedirectAt404WhenDeleteNotExistItem() throws Exception {
         this.mockMvc.perform(post("/private/items/delete")
                 .param("id", "99"))
@@ -75,7 +77,7 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldShowItemPage() throws Exception {
         this.mockMvc.perform(get("/public/items/1"))
                 .andExpect(status().isOk())
@@ -83,14 +85,14 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldRedirectAt404WhenItemNotFound() throws Exception {
         this.mockMvc.perform(get("/public/items/8888"))
                 .andExpect(redirectedUrl("/404"));
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldShowCopyItemPage() throws Exception {
         this.mockMvc.perform(get("/private/items/copy")
                 .param("id", "2"))
@@ -99,7 +101,7 @@ public class ItemControllerIntegrationTest {
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldAddCopyItem() throws Exception {
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setPrice("12");
@@ -108,11 +110,11 @@ public class ItemControllerIntegrationTest {
         this.mockMvc.perform(post("/private/items/copy")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .flashAttr("item", itemDTO))
-                .andExpect(redirectedUrl("/public/items"));
+                .andExpect(redirectedUrl("/public/items?message=item copied"));
     }
 
     @Test
-    @WithUserDetails(SALE_EMAIL)
+    @WithUserDetails(saleEmail)
     public void shouldRedirectAt404WhenCopyItemNotFound() throws Exception {
         this.mockMvc.perform(get("/private/items/copy?id=999"))
                 .andExpect(redirectedUrl("/404"));

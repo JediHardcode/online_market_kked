@@ -6,7 +6,6 @@ import com.gmail.derynem.repository.model.Role;
 import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
-import com.gmail.derynem.service.converter.user.impl.AddUserConverterImpl;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.impl.UserServiceImpl;
 import com.gmail.derynem.service.model.PageDTO;
@@ -24,7 +23,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,6 +50,7 @@ public class UserServiceTest {
     private Role validRole;
     private int countOfPages = 4;
     private int countOfUsers = 4;
+    private int limit = 10;
     private PageDTO<UserDTO> usersPageDTO = new PageDTO<>();
 
     @Before
@@ -71,16 +70,16 @@ public class UserServiceTest {
     @Test
     public void shouldGetUserByEmail() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email)).thenReturn(validUser);
-        UserDTO expectedUser = userService.getUserByEmail(email);
+        Mockito.when(userRepository.getByEmail(email, false)).thenReturn(validUser);
+        UserDTO expectedUser = userService.getUserByEmail(email, false);
         Assert.assertNotNull(expectedUser);
     }
 
     @Test
     public void shouldReturnNullIfUserDoesntExist() {
         String email = "test";
-        Mockito.when(userRepository.getByEmail(email)).thenReturn(null);
-        UserDTO expectedUser = userService.getUserByEmail(email);
+        Mockito.when(userRepository.getByEmail(email, false)).thenReturn(null);
+        UserDTO expectedUser = userService.getUserByEmail(email, false);
         Assert.assertNull(expectedUser);
     }
 
@@ -88,7 +87,7 @@ public class UserServiceTest {
     public void shouldGetListOfUsers() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(asList(validUser, validUser));
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, limit);
         Assert.assertNotNull(pageDTO.getEntities());
     }
 
@@ -96,7 +95,7 @@ public class UserServiceTest {
     public void shouldGetEmptyList() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(Collections.emptyList());
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, limit);
         Assert.assertEquals(Collections.emptyList(), pageDTO.getEntities());
     }
 
@@ -111,18 +110,18 @@ public class UserServiceTest {
     @Test
     public void shouldGetPages() {
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(countOfUsers);
-        Mockito.when(pageService.getPages(countOfPages, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO pageDTO = userService.getUsersPageInfo(1);
-        Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
+        Mockito.when(pageService.getPages(countOfPages, limit)).thenReturn(countOfPages);
+        PageDTO pageDTO = userService.getUsersPageInfo(1, limit);
+        Assert.assertNotNull(pageDTO.getEntities());
     }
 
     @Test
     public void shouldGetPagesIfZeroUsersInDatabase() {
         int count = 0;
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(count);
-        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1);
-        Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
+        Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1, limit);
+        Assert.assertNotNull(pageDTO.getEntities());
     }
 
     @Test(expected = UserServiceException.class)

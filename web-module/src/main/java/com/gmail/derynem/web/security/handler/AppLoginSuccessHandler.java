@@ -18,6 +18,7 @@ import java.util.Collection;
 import static com.gmail.derynem.web.constants.RoleNamesConstant.ADMINISTRATOR_ROLE;
 import static com.gmail.derynem.web.constants.RoleNamesConstant.CUSTOMER_ROLE;
 import static com.gmail.derynem.web.constants.RoleNamesConstant.SALE_ROLE;
+import static com.gmail.derynem.web.constants.RoleNamesConstant.SECURE_API_ROLE;
 
 public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger logger = LoggerFactory.getLogger(AppLoginSuccessHandler.class);
@@ -49,9 +50,11 @@ public class AppLoginSuccessHandler implements AuthenticationSuccessHandler {
                 logger.info("{} role detected, return  ", grantedAuthority.toString());
                 return "/private/reviews";
             } else if (grantedAuthority.getAuthority().equalsIgnoreCase(CUSTOMER_ROLE)) {
-                return "/home";// TODO ADD LATER ALL URL FOR 4 ROLES
+                return "/public/items";
             } else if (grantedAuthority.getAuthority().equalsIgnoreCase(SALE_ROLE)) {
                 return "/public/articles";
+            } else if (grantedAuthority.getAuthority().equalsIgnoreCase(SECURE_API_ROLE)) {
+                return "/403";
             }
         }
         logger.debug("Not found matched roles, check success Handler");

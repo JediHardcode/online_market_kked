@@ -55,11 +55,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO getArticleById(Long id) {
+    public ArticleDTO getArticleById(Long id) throws ArticleServiceException {
         Article article = articleRepository.getById(id);
         if (article == null) {
             logger.info("not found article with this id {} in database", id);
-            return null;
+            throw new ArticleServiceException("Article with this id " + id + " doesnt exist in database");
         }
         ArticleDTO articleDTO = converter.toDTO(article);
         logger.info(" article with id {} author id {} get from database", articleDTO.getId(), articleDTO.getUser().getId());
@@ -69,19 +69,19 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public PageDTO<ArticleDTO> getArticlePageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfArticles = articleRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfArticles, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfArticles, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         PageDTO<ArticleDTO> articlePageInfo = new PageDTO<>();
         articlePageInfo.setCountOfPages(countOfPages);
-        List<Article> articles = articleRepository.findAll(offset, limit);
-        List<ArticleDTO> articleDTOS = articles.stream()
-                .map(converter::toDTO)
-                .peek(this::setPreview)
-                .collect(Collectors.toList());
+        List<Article> articles = articleRepository.findAll(offset, validLimit);
+        List<ArticleDTO> articleDTOS = getArticlesWithPreviews(articles);
         articlePageInfo.setEntities(articleDTOS);
         logger.info("count of articles {}, count of pages {}",
                 articlePageInfo.getEntities().size(), articlePageInfo.getCountOfPages());
+        articlePageInfo.setLimit(validLimit);
+        articlePageInfo.setPage(page);
         return articlePageInfo;
     }
 
@@ -118,5 +118,12 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             articleDTO.setPreview(articleDTO.getContent());
         }
+    }
+
+    private List<ArticleDTO> getArticlesWithPreviews(List<Article> articles) {
+        return articles.stream()
+                .map(converter::toDTO)
+                .peek(this::setPreview)
+                .collect(Collectors.toList());
     }
 }

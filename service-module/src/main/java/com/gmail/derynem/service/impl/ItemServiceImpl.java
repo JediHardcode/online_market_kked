@@ -5,6 +5,7 @@ import com.gmail.derynem.repository.model.Item;
 import com.gmail.derynem.service.ItemService;
 import com.gmail.derynem.service.PageService;
 import com.gmail.derynem.service.RandomService;
+import com.gmail.derynem.service.XmlService;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.exception.ItemServiceException;
 import com.gmail.derynem.service.model.PageDTO;
@@ -13,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,32 +29,36 @@ public class ItemServiceImpl implements ItemService {
     private final PageService pageService;
     private final Converter<ItemDTO, Item> converter;
     private final RandomService randomService;
+    private final XmlService xmlService;
 
     public ItemServiceImpl(ItemRepository itemRepository,
                            PageService pageService,
                            @Qualifier("itemConverter") Converter<ItemDTO, Item> converter,
-                           RandomService randomService) {
+                           RandomService randomService,
+                           XmlService xmlService) {
         this.itemRepository = itemRepository;
         this.pageService = pageService;
         this.converter = converter;
         this.randomService = randomService;
+        this.xmlService = xmlService;
     }
 
     @Override
     @Transactional
     public PageDTO<ItemDTO> getItemPageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfItems = itemRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfItems, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfItems, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         PageDTO<ItemDTO> itemPageInfo = new PageDTO<>();
         itemPageInfo.setCountOfPages(countOfPages);
-        List<Item> items = itemRepository.findAll(offset, limit);
-        List<ItemDTO> articleDTOS = items.stream()
-                .map(converter::toDTO)
-                .collect(Collectors.toList());
+        List<Item> items = itemRepository.findAll(offset, validLimit);
+        List<ItemDTO> articleDTOS = getItems(items);
         itemPageInfo.setEntities(articleDTOS);
         logger.info("count of items {}, count of pages {}",
                 itemPageInfo.getEntities().size(), itemPageInfo.getCountOfPages());
+        itemPageInfo.setLimit(validLimit);
+        itemPageInfo.setPage(page);
         return itemPageInfo;
     }
 
@@ -86,5 +94,27 @@ public class ItemServiceImpl implements ItemService {
         Item newItem = converter.toEntity(item);
         itemRepository.persist(newItem);
         logger.info("item added, item name is {}", newItem.getName());
+    }
+
+    @Override
+    @Transactional
+    public void addItemsFromFile(MultipartFile file) throws ItemServiceException {
+        try (InputStream stream = file.getInputStream()) {
+            List<ItemDTO> items = xmlService.parseXml(stream);
+            items.stream()
+                    .peek(itemDTO -> itemDTO.setUniqueCode(randomService.generateUniqueNum()))
+                    .map(converter::toEntity)
+                    .forEach(itemRepository::persist);
+
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new ItemServiceException(e.getMessage(), e);
+        }
+    }
+
+    private List<ItemDTO> getItems(List<Item> items) {
+        return items.stream()
+                .map(converter::toDTO)
+                .collect(Collectors.toList());
     }
 }

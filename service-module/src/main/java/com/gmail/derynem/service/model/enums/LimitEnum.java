@@ -1,7 +1,7 @@
 package com.gmail.derynem.service.model.enums;
 
 public enum LimitEnum {
-    LIMIT_FIRST(5), LIMIT_SECOND(10), LIMIT_TRIRD(15);
+    LIMIT_FIRST(5), LIMIT_SECOND(10), LIMIT_THIRD(15);
 
     private int limit;
 

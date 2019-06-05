@@ -18,6 +18,7 @@ public class ValidationConstant {
     public static final int COMMENT_LENGTH = 200;
     public static final int ITEM_DESCRIPTION_LENGTH = 200;
     public static final String PRICE_PATTERN = "^[0-9]+([.][0-9]{1,2})?";
+    public static final int PREVIEW_LENGTH = 200;
 
     private ValidationConstant() {
     }

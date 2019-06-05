@@ -3,7 +3,6 @@ package com.gmail.derynem.repository.model;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,13 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "T_PROFILE")
 @SQLDelete(sql = "UPDATE T_PROFILE SET F_DELETED = 1 WHERE F_ID =? AND F_INVIOLABLE = 0")
-@Where(clause = "F_DELETED = 0")
-public class Profile {
+public class Profile implements Serializable {
     @Id
     @GenericGenerator(
             name = "ProfileGenerator",

@@ -13,6 +13,10 @@
             </ul>
         </div>
     </footer>
+    <div th:if="${param.message}" id="status-message" class="active">
+        <p><span th:text="${param.message}"></span></p>
+        <span href="#" id="close-popup-btn">&#x2716;</span>
+    </div>
 </div>
 </body>
 </html>

@@ -18,6 +18,7 @@ public class CommentDTO {
     private String content;
 
     public CommentDTO() {
+        user = new UserCommonDTO();
         isDeleted = false;
         created = String.valueOf(LocalDateTime.now());
     }

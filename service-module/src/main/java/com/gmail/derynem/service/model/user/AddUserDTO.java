@@ -1,7 +1,7 @@
 package com.gmail.derynem.service.model.user;
 
 import com.gmail.derynem.service.model.profile.ProfileDTO;
-import com.gmail.derynem.service.validation.UniqueEmail;
+import com.gmail.derynem.service.validation.annotation.UniqueEmail;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,7 +11,8 @@ import java.util.Objects;
 
 import static com.gmail.derynem.service.validation.constant.ValidationConstant.*;
 
-public class AddUserDTO {
+public class
+AddUserDTO {
     @NotNull(message = "{user.name.empty}")
     @NotEmpty(message = "{user.name.empty}")
     @Size(max = NAME_LENGTH)

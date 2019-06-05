@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Orders</h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block th:each="order:${page.entities}">
+                        <form class="custom-form" action="#">
+                            <div class="review-content">
+                                <h4>Order # <span th:text="*{order.number}"/>
+                                </h4>
+                                <p>Status: <span th:text="*{order.status}"/></p>
+                                <p>Item name: <span th:text="*{order.item.name}"/></p>
+                                <p>Quantity: <span th:text="*{order.quantity}"/></p>
+                                <p>Price: <span th:text="*{order.totalPrice}"/></p>
+                                <p>
+                                    <th:block sec:authorize="hasAuthority('SALE')">
+                                        <li class="active"><a
+                                                th:href="@{/private/orders/{id}(id=${order.id})}">More...</a>
+                                        </li>
+                                    </th:block>
+                                </p>
+                            </div>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="pagination" th:if="${page.countOfPages > 1}">
+        <th:block th:each="i : ${#numbers.sequence( 1,page.countOfPages)}">
+            <th:block sec:authorize="hasAnyAuthority('SALE')">
+                <a class="pagination-item "
+                   th:href="@{/private/orders(page=${i},limit=${page.limit})}"><span th:text="${i}"/></a>
+            </th:block>
+            <th:block sec:authorize="hasAnyAuthority('CUSTOMER')">
+                <a class="pagination-item "
+                   th:href="@{/user/orders(page=${i},limit=${page.limit})}"><span th:text="${i}"/></a>
+            </th:block>
+        </th:block>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
+</html>

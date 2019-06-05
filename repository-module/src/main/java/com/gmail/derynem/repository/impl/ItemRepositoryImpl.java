@@ -16,8 +16,9 @@ public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implem
     private final static Logger logger = LoggerFactory.getLogger(ItemRepositoryImpl.class);
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Item> findAll(int offset, int limit) {
-        String query = "from " + entityClass.getName() + " e" + " order by e.name asc";
+        String query = "from " + entityClass.getName() + " e where e.isDeleted = false order by e.name asc";
         Query q = entityManager.createQuery(query)
                 .setFirstResult(offset)
                 .setMaxResults(limit);
@@ -27,6 +28,19 @@ public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implem
             logger.error(e.getMessage(), e);
             logger.info(" no available items");
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public int getCountOfEntities() {
+        String query = "select count(*) from " + entityClass.getName() + " e where e.isDeleted= false";
+        Query q = entityManager.createQuery(query);
+        try {
+            return ((Number) q.getSingleResult()).intValue();
+        } catch (NoResultException e) {
+            logger.error(e.getMessage(), e);
+            logger.info("no available entities");
+            return 0;
         }
     }
 }

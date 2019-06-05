@@ -1,7 +1,6 @@
 package com.gmail.derynem.service.converter.impl;
 
 import com.gmail.derynem.repository.model.Comment;
-import com.gmail.derynem.repository.model.User;
 import com.gmail.derynem.service.converter.Converter;
 import com.gmail.derynem.service.converter.user.UserConverterAssembler;
 import com.gmail.derynem.service.model.comment.CommentDTO;
@@ -32,9 +31,6 @@ public class CommentConverterImpl implements Converter<CommentDTO, Comment> {
         comment.setContent(commentDTO.getContent());
         comment.setCreated(commentDTO.getCreated());
         comment.setDeleted(commentDTO.isDeleted());
-        User user = new User();
-        user.setId(commentDTO.getUser().getId());
-        comment.setUser(user);
         return comment;
     }
 }

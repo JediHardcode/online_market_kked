@@ -46,15 +46,6 @@ public class DefaultControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser
-    public void shouldShowHomePageWithReviews() throws Exception {
-        this.mockMvc.perform(get("/home"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("reviews"))
-                .andExpect(model().attributeExists("pages"));
-    }
-
-    @Test
     public void shouldReturnForbiddenErrorRage() throws Exception {
         this.mockMvc.perform(get("/403"))
                 .andExpect(status().isOk());
@@ -69,5 +60,4 @@ public class DefaultControllerIntegrationTest {
         String url = defaultController.errorNotFound();
         Assert.assertEquals(ERROR_PAGE_NOT_FOUND, url);
     }
-
 }

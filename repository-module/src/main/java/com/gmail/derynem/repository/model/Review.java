@@ -12,13 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "T_REVIEW")
 @SQLDelete(sql = "UPDATE T_REVIEW SET F_DELETED = 1 WHERE F_ID =? ")
 @Where(clause = "F_DELETED = 0")
-public class Review {
+public class Review implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "F_ID")

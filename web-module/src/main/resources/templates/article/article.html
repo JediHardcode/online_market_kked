@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="header">
+    <div th:replace="fragments/header :: header"/>
+</div>
+<section class="content-wrapper">
+    <div class="container">
+        <section id="reviews">
+            <h2>Article №: <span th:text="${article.id}"/></h2>
+            <div class="reviews-list">
+                <div id="button" class="review-item">
+                    <th:block>
+                        <form class="custom-form" method="post" action="#" th:action="@{/private/article/update}"
+                              th:object="${article}">
+                            <div class="review-content">
+                                <input hidden value="#"
+                                       th:attr="value=${article.id}" th:field="*{id}"/>
+                                <input hidden value="#"
+                                       th:attr="value=${article.user.id}" th:field="*{user.id}"/>
+                                <h4>Author name: <span th:text="${article.user.name}"/>
+                                    <p>Author surName: <span th:text="${article.user.surName}"/></p>
+                                </h4>
+                                <th:block th:switch="${user.id}">
+                                    <div th:case="${article.user.id}">
+                                        <div class="input-form-with-error">
+                                            <label>Name</label>
+                                            <th:block th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                                name error
+                                            </th:block>
+                                            <input type="text" name="name" id="name" th:value="${article.name}"
+                                                   th:required="true" th:field="*{name}"/>
+                                        </div>
+                                        <div class="input-form-with-error">
+                                            <label>Content</label>
+                                            <th:block th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                                                content error
+                                            </th:block>
+                                            <textarea rows="4" name="content" id="content" th:value="${article.content}"
+                                                      th:required="true" th:field="*{content}"/>
+                                        </div>
+                                    </div>
+                                    <div th:case="*">
+                                        <p>Name: <span th:text="${article.name}"/></p>
+                                        <p>Content: <span th:text="${article.content}"/></p>
+                                    </div>
+                                </th:block>
+                                <p>Date: <span th:text="${article.created}"/></p>
+                            </div>
+                            <th:block th:if="${user.id == article.user.id}">
+                                <button class="btn-default">update
+                                </button>
+                            </th:block>
+                        </form>
+                    </th:block>
+                    <th:block sec:authorize="hasAuthority('CUSTOMER')">
+                        <form class="custom-form" action="#"
+                              th:action="@{/public/article/{id}/comment(id=${article.id})}"
+                              th:object="${comment}"
+                              method="post">
+                            <span>Enter your comment: </span>
+                            <div class="input-form-with-error">
+                                <th:block th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
+                                    content error
+                                </th:block>
+                                <input name="quantity" th:field="*{content}" th:required="true">
+                            </div>
+                            <div>
+                                <input class="btn-default" type="submit" value="Confirm"/>
+                            </div>
+                        </form>
+                    </th:block>
+                    <h2>Comments</h2>
+                    <th:block th:each="comment: ${article.comments}">
+                        <form class="delete-form" method="post" th:action="@{/public/article/comment/delete}">
+                            <input hidden value="#"
+                                   th:attr="value=${comment.id}" th:name="id"/>
+                            <input hidden value="#"
+                                   th:attr="value=${article.id}" th:name="articleId"/>
+                            <div class="review-content">
+                                <h4>User name: <span th:text="${comment.user.name}"/>
+                                    <p>user surName: <span th:text="${comment.user.surName}"/></p>
+                                </h4>
+                                <p>Date: <span th:text="${comment.created}"/></p>
+                                <p>Text: <span th:text="${comment.content}"/></p>
+                            </div>
+                            <th:block th:switch="${user.id}">
+                                <button th:case="${comment.user.id}" class="btn-default">delete
+                                </button>
+                                <button th:case="${article.user.id}" class="btn-default">delete
+                                </button>
+                            </th:block>
+                        </form>
+                    </th:block>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+<script>
+    var btnClose = document.getElementById("close-popup-btn");
+    var popupMessage = document.getElementById("status-message");
+    btnClose.onclick = handleButtonClick;
+
+    function handleButtonClick() {
+        popupMessage.classList.remove("active");
+    };
+</script>
+</html>

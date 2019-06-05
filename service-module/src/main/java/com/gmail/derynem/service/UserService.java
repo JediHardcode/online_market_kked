@@ -7,9 +7,9 @@ import com.gmail.derynem.service.model.user.AddUserDTO;
 import com.gmail.derynem.service.model.user.UserDTO;
 
 public interface UserService {
-    UserDTO getUserByEmail(String email);
+    UserDTO getUserByEmail(String email, Boolean isDeleted);
 
-    PageDTO<UserDTO> getUsersPageInfo(Integer page);
+    PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit);
 
     void updateUserRole(UpdateRoleDTO updateRoleDTO) throws UserServiceException;
 
@@ -17,9 +17,5 @@ public interface UserService {
 
     void saveUser(AddUserDTO userDTO) throws UserServiceException;
 
-    void changePassword(Long id) throws UserServiceException;
-
     void updateUserInfo(UserDTO userDTO);
-
-    UserDTO getById(Long id);
 }

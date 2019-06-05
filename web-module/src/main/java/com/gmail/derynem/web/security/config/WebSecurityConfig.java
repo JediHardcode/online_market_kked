@@ -51,10 +51,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/private/user/**", "/private/users", "/private/user", "/private/users/**", "/private/reviews",
                         "private/review")
-                .hasAuthority(ADMINISTRATOR_ROLE)     //TODO CHANGE TO PERMISSIONS LATER
-                .antMatchers("/private/article/**", "/private/article", "/private/items", "/private/items/**")
+                .hasAuthority(ADMINISTRATOR_ROLE)
+                .antMatchers("/private/article/**", "/private/article", "/private/items", "/private/items/**",
+                        "/private/orders", "/private/order", "/private/order/**", "/private/orders/**")
                 .hasAuthority(SALE_ROLE)
-                .antMatchers("/private/profile")
+                .antMatchers("/private/profile", "/home/review", "/user/orders", "/user/orders/**")
                 .hasAuthority(CUSTOMER_ROLE)
                 .antMatchers("/public/**")
                 .hasAnyAuthority(CUSTOMER_ROLE, SALE_ROLE)

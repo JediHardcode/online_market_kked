@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Items</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section class="content-wrapper">
+        <form class="custom-form" action="#" th:action="@{/private/items/upload}" enctype="multipart/form-data"
+              method="post" th:object="${uploadForm}">
+            <th:block th:if="${#fields.hasErrors('file')}" th:errors="*{file}">
+                file error
+            </th:block>
+            <input type="file" name="file" th:name="file" accept="text/xml" required/><br/><br/>
+            <input type="submit" value="Submit"/>
+        </form>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

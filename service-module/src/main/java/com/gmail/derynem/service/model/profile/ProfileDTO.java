@@ -4,12 +4,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ENG_LETTER_WITH_DIGITS;
 import static com.gmail.derynem.service.validation.constant.ValidationConstant.ONLY_DIGITS;
-import static com.gmail.derynem.service.validation.constant.ValidationConstant.ONLY_ENG_LETTER_PATTERN;
 
 public class ProfileDTO {
     private Long id;
-    @Pattern(regexp = ONLY_ENG_LETTER_PATTERN, message = "{profile.address.not.valid}")
+    @Pattern(regexp = ENG_LETTER_WITH_DIGITS, message = "{profile.address.not.valid}")
     @NotNull(message = "{profile.address.empty}")
     @NotEmpty(message = "{profile.address.empty}")
     private String address;

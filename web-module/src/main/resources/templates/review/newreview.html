@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>new review</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section class="content-wrapper">
+        <form class="custom-form" action="#" th:action="@{/home/review}" th:object="${review}" method="post">
+            <h1>How do you like our site ? </h1>
+            <div class="input-form-with-error">
+                <th:block th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
+                    description error
+                </th:block>
+                <textarea rows="4" name="content" id="content" th:value="${review.description}"
+                          th:required="true" th:field="*{description}"/>
+            </div>
+            <div>
+                <input class="btn-default" type="submit" value="Confirm"/>
+            </div>
+        </form>
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

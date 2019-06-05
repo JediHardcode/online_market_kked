@@ -1,7 +1,6 @@
 package com.gmail.derynem.repository.model;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,21 +11,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "T_USER")
 @SQLDelete(sql = "UPDATE T_USER SET F_DELETED = 1 WHERE F_ID =? AND F_INVIOLABLE = 0")
-@Where(clause = "F_DELETED = 0")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "F_ID")
     private Long id;
     @Column(name = "F_NAME")
     private String name;
+    @Column(name = "F_INVIOLABLE")
+    private boolean inviolable;
     @Column(name = "F_SURNAME")
     private String surName;
     @Column(name = "F_MIDDLE_NAME")
@@ -45,6 +49,11 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     private Profile profile;
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
 
     public User() {
     }
@@ -137,6 +146,22 @@ public class User {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public boolean isInviolable() {
+        return inviolable;
+    }
+
+    public void setInviolable(boolean inviolable) {
+        this.inviolable = inviolable;
     }
 
     @Override

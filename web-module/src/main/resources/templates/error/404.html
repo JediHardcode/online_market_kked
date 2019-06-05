@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ERROR 404</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div>
+    <div class="header">
+        <div th:replace="fragments/header :: header"/>
+    </div>
+    <section>
+        <h1>404 - not found</h1>
+        <img th:src="@{/images/doge.jpg}" class="center-image"  />
+    </section>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

@@ -4,9 +4,14 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import static com.gmail.derynem.service.validation.constant.ValidationConstant.*;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ENG_LETTER_WITH_DIGITS;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.ITEM_DESCRIPTION_LENGTH;
+import static com.gmail.derynem.service.validation.constant.ValidationConstant.PRICE_PATTERN;
 
+@XmlRootElement(name = "item")
 public class ItemDTO {
     private Long id;
     @NotNull
@@ -40,6 +45,7 @@ public class ItemDTO {
         return name;
     }
 
+    @XmlElement(name = "name")
     public void setName(String name) {
         this.name = name;
     }
@@ -60,6 +66,7 @@ public class ItemDTO {
         this.uniqueCode = uniqueCode;
     }
 
+    @XmlElement(name = "description")
     public String getDescription() {
         return description;
     }
@@ -72,6 +79,7 @@ public class ItemDTO {
         return price;
     }
 
+    @XmlElement(name = "price")
     public void setPrice(String price) {
         this.price = price;
     }
