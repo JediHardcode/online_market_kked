@@ -73,6 +73,8 @@ public class UserServiceImpl implements UserService {
         PageDTO<UserDTO> usersPageInfo = new PageDTO<>();
         usersPageInfo.setEntities(userDTOList);
         usersPageInfo.setCountOfPages(countOfPages);
+        usersPageInfo.setLimit(validLimit);
+        usersPageInfo.setPage(page);
         logger.info(" users found, count of users {}, count of pages {}", usersPageInfo.getEntities().size(), countOfPages);
         return usersPageInfo;
     }

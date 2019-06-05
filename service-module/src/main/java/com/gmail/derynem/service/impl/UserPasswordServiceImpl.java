@@ -2,7 +2,7 @@ package com.gmail.derynem.service.impl;
 
 import com.gmail.derynem.repository.UserRepository;
 import com.gmail.derynem.repository.model.User;
-import com.gmail.derynem.service.UserMailService;
+import com.gmail.derynem.service.UserPasswordService;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.EncoderService;
 import com.gmail.derynem.service.MailService;
@@ -13,17 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserMailServiceImpl implements UserMailService {
-    private final static Logger logger = LoggerFactory.getLogger(UserMailServiceImpl.class);
+public class UserPasswordServiceImpl implements UserPasswordService {
+    private final static Logger logger = LoggerFactory.getLogger(UserPasswordServiceImpl.class);
     private final UserRepository userRepository;
     private final MailService mailService;
     private final RandomService randomService;
     private final EncoderService encoderService;
 
-    public UserMailServiceImpl(UserRepository userRepository,
-                               MailService mailService,
-                               RandomService randomService,
-                               EncoderService encoderService) {
+    public UserPasswordServiceImpl(UserRepository userRepository,
+                                   MailService mailService,
+                                   RandomService randomService,
+                                   EncoderService encoderService) {
         this.userRepository = userRepository;
         this.mailService = mailService;
         this.randomService = randomService;

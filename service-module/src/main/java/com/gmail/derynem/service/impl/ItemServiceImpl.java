@@ -53,9 +53,7 @@ public class ItemServiceImpl implements ItemService {
         PageDTO<ItemDTO> itemPageInfo = new PageDTO<>();
         itemPageInfo.setCountOfPages(countOfPages);
         List<Item> items = itemRepository.findAll(offset, validLimit);
-        List<ItemDTO> articleDTOS = items.stream()
-                .map(converter::toDTO)
-                .collect(Collectors.toList());
+        List<ItemDTO> articleDTOS = getItems(items);
         itemPageInfo.setEntities(articleDTOS);
         logger.info("count of items {}, count of pages {}",
                 itemPageInfo.getEntities().size(), itemPageInfo.getCountOfPages());
@@ -112,5 +110,11 @@ public class ItemServiceImpl implements ItemService {
             logger.error(e.getMessage(), e);
             throw new ItemServiceException(e.getMessage(), e);
         }
+    }
+
+    private List<ItemDTO> getItems(List<Item> items) {
+        return items.stream()
+                .map(converter::toDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,7 @@
 package com.gmail.derynem.web.controller;
 
 import com.gmail.derynem.service.RoleService;
-import com.gmail.derynem.service.UserMailService;
+import com.gmail.derynem.service.UserPasswordService;
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.exception.UserServiceException;
 import com.gmail.derynem.service.model.PageDTO;
@@ -42,16 +42,16 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final UserValidator userValidator;
-    private final UserMailService userMailService;
+    private final UserPasswordService userPasswordService;
 
     public UserController(UserService userService,
                           RoleService roleService,
                           UserValidator userValidator,
-                          UserMailService userMailService) {
+                          UserPasswordService userPasswordService) {
         this.userService = userService;
         this.roleService = roleService;
         this.userValidator = userValidator;
-        this.userMailService = userMailService;
+        this.userPasswordService = userPasswordService;
     }
 
     @GetMapping("/private/users")
@@ -135,7 +135,7 @@ public class UserController {
             return REDIRECT_PRIVATE_USERS + String.format(MESSAGE_PARAM, "fail");
         }
         try {
-            userMailService.changePassword(id);
+            userPasswordService.changePassword(id);
             return REDIRECT_PRIVATE_USERS + String.format(MESSAGE_PARAM, "password changed");
         } catch (UserServiceException e) {
             logger.error(e.getMessage(), e);

@@ -112,7 +112,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(countOfUsers);
         Mockito.when(pageService.getPages(countOfPages, limit)).thenReturn(countOfPages);
         PageDTO pageDTO = userService.getUsersPageInfo(1, limit);
-        Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
+        Assert.assertNotNull(pageDTO.getEntities());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(count);
         Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
         PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1, limit);
-        Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
+        Assert.assertNotNull(pageDTO.getEntities());
     }
 
     @Test(expected = UserServiceException.class)

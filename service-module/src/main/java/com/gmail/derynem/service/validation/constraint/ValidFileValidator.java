@@ -19,9 +19,6 @@ public class ValidFileValidator implements ConstraintValidator<ValidFile, Multip
         this.xmlService = xmlService;
     }
 
-    public void initialize(ValidFile constraint) {
-    }
-
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         if (file.getSize() == 0) {
             logger.info(" file is empty");

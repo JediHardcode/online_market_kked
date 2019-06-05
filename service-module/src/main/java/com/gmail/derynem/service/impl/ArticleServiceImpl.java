@@ -76,10 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
         PageDTO<ArticleDTO> articlePageInfo = new PageDTO<>();
         articlePageInfo.setCountOfPages(countOfPages);
         List<Article> articles = articleRepository.findAll(offset, validLimit);
-        List<ArticleDTO> articleDTOS = articles.stream()
-                .map(converter::toDTO)
-                .peek(this::setPreview)
-                .collect(Collectors.toList());
+        List<ArticleDTO> articleDTOS = getArticlesWithPreviews(articles);
         articlePageInfo.setEntities(articleDTOS);
         logger.info("count of articles {}, count of pages {}",
                 articlePageInfo.getEntities().size(), articlePageInfo.getCountOfPages());
@@ -121,5 +118,12 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             articleDTO.setPreview(articleDTO.getContent());
         }
+    }
+
+    private List<ArticleDTO> getArticlesWithPreviews(List<Article> articles) {
+        return articles.stream()
+                .map(converter::toDTO)
+                .peek(this::setPreview)
+                .collect(Collectors.toList());
     }
 }

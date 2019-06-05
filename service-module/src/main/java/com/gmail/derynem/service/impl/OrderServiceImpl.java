@@ -48,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         this.randomService = randomService;
     }
 
-
     @Override
     @Transactional
     public PageDTO<OrderDTO> getOrderPageInfo(Integer page, Integer limit, UserDTO user) {
@@ -67,11 +66,7 @@ public class OrderServiceImpl implements OrderService {
         } else {
             orders = orderRepository.getOrders(offset, validLimit, user.getId());
         }
-        List<OrderDTO> dtoList = orders.stream()
-                .map(converter::toDTO)
-                .peek(orderDTO -> orderDTO.setTotalPrice
-                        (countPrice(Integer.valueOf(orderDTO.getQuantity()), orderDTO.getItem().getPrice())))
-                .collect(Collectors.toList());
+        List<OrderDTO> dtoList = getOrdersWithPrice(orders);
         PageDTO<OrderDTO> ordersPageInfo = new PageDTO<>();
         ordersPageInfo.setCountOfPages(countOfPages);
         ordersPageInfo.setEntities(dtoList);
@@ -126,5 +121,13 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal countPrice(Integer quantity, String price) {
         BigDecimal itemPrice = new BigDecimal(price);
         return itemPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    private List<OrderDTO> getOrdersWithPrice(List<Order> orders) {
+        return orders.stream()
+                .map(converter::toDTO)
+                .peek(orderDTO -> orderDTO.setTotalPrice
+                        (countPrice(Integer.valueOf(orderDTO.getQuantity()), orderDTO.getItem().getPrice())))
+                .collect(Collectors.toList());
     }
 }

@@ -53,9 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewPageDTO.setEntities(Collections.emptyList());
             return reviewPageDTO;
         }
-        List<ReviewDTO> reviews = reviewList.stream()
-                .map(reviewConverter::toDTO)
-                .collect(Collectors.toList());
+        List<ReviewDTO> reviews = getReviews(reviewList);
         reviewPageDTO.setEntities(reviews);
         if (isHidden != null) {
             logger.info("List of reviews with isHidden status:{} received , list size is {}, count of pages of reviews is {}",
@@ -125,6 +123,12 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream()
                 .filter(ReviewDTO::isHidden)
                 .map(ReviewDTO::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<ReviewDTO> getReviews(List<Review> reviewList) {
+        return reviewList.stream()
+                .map(reviewConverter::toDTO)
                 .collect(Collectors.toList());
     }
 }
