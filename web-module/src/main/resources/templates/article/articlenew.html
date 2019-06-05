@@ -32,7 +32,7 @@
                           th:required="true" th:field="*{content}"/>
             </div>
             <div class="input-form-with-error">
-                <label>Date Time: </label><input type="datetime-local" th:field="*{created}"/>
+                <label>Date Time: </label><input type="datetime-local" max="2100-01-01T23:59" th:field="*{created}"/>
             </div>
             <div>
                 <input class="btn-default" type="submit" value="Confirm"/>

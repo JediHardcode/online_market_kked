@@ -20,11 +20,4 @@ public class AppExceptionHandler {
         logger.error(e.getMessage(), e);
         return REDIRECT_CUSTOM_ERROR;
     }
-
-    @ExceptionHandler(NoHandlerFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String notFoundException(Exception e) {
-        logger.error(e.getMessage(), e);
-        return REDIRECT_NOT_FOUND;
-    }
 }
