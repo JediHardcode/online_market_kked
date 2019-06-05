@@ -20,10 +20,9 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("select e from ")
                 .append(entityClass.getName())
-                .append(" e")
-                .append(" where e.email = :email");
+                .append(" e where e.email = :email");
         if (isDeleted != null) {
-            stringBuilder.append(" and e.deleted = false");
+            stringBuilder.append(" and e.deleted = ").append(isDeleted);
         }
         Query query = entityManager.createQuery(stringBuilder.toString());
         query.setParameter("email", email);
