@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 
-import static com.gmail.derynem.web.constants.PageNamesConstant.ITEMS_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ORDERS_PAGE;
 import static com.gmail.derynem.web.constants.PageNamesConstant.ORDER_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_LIMIT;
 import static com.gmail.derynem.web.constants.PageParamConstant.DEFAULT_PAGE;
 import static com.gmail.derynem.web.constants.PageParamConstant.MESSAGE_PARAM;
+import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ITEMS_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_NOT_FOUND;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_ORDERS_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_USER_ORDERS;
@@ -79,16 +80,12 @@ public class OrderController {
     @PostMapping("/user/orders/new")
     public String addOrder(@ModelAttribute(value = "order") @Valid OrderDTO orderDTO,
                            BindingResult bindingResult,
-                           Model model,
                            Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         UserDTO currentUser = userPrincipal.getUser();
         if (bindingResult.hasErrors()) {
-            logger.info(" order quantity not valid");
-            model.addAttribute("user", currentUser);
-            model.addAttribute("page",
-                    itemService.getItemPageInfo(Integer.valueOf(DEFAULT_PAGE), Integer.valueOf(DEFAULT_LIMIT)));
-            return ITEMS_PAGE;
+            logger.info(" quantity not valid cause:{}", Arrays.toString(bindingResult.getAllErrors().toArray()));
+            return REDIRECT_ITEMS_PAGE + String.format(MESSAGE_PARAM, "quantity must contains only digits and be more then zero");
         }
         orderDTO.getUser().setId(currentUser.getId());
         orderService.save(orderDTO);

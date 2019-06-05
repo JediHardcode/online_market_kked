@@ -95,6 +95,19 @@ public class OrderControllerIntegrationTest {
 
     @Test
     @WithUserDetails(value = customerEmail)
+    public void shouldRedirectAtItemsPageIfQuantityNoValid() throws Exception {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setQuantity("khjhj");
+        orderDTO.getItem().setId(1L);
+        orderDTO.getUser().setId(1L);
+        this.mockMvc.perform(post("/user/orders/new")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .flashAttr("order", orderDTO))
+                .andExpect(redirectedUrl("/public/items?message=quantity must contains only digits and be more then zero"));
+    }
+
+    @Test
+    @WithUserDetails(value = customerEmail)
     public void shouldShowUserOrdersPage() throws Exception {
         this.mockMvc.perform(get("/user/orders"))
                 .andExpect(status().isOk())

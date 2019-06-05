@@ -47,9 +47,6 @@
                         <th:block sec:authorize="hasAuthority('CUSTOMER')">
                             <form class="custom-form" method="post" action="#"
                                   th:action="@{/user/orders/new}" th:object="${order}">
-                                <th:block th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}">
-                                    quantity error
-                                </th:block>
                                 <input name="quantity" th:field="*{quantity}" th:required="true">
                                 <input hidden value="#" th:name="item.id"
                                        th:value="${item.id}"/>
