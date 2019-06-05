@@ -36,7 +36,7 @@ public class UserMailServiceImpl implements UserMailService {
         User user = userRepository.getById(id);
         if (user != null) {
             String newPassword = randomService.generatePassword();
-//            mailService.sendMessage(user.getEmail(), newPassword);
+            mailService.sendMessage(user.getEmail(), newPassword);
             logger.info("user with email {} have new password {}", user.getEmail(), newPassword);
             user.setPassword(encoderService.encodePassword(newPassword));
             userRepository.merge(user);
