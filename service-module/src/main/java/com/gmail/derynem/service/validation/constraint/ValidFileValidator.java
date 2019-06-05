@@ -1,7 +1,7 @@
 package com.gmail.derynem.service.validation.constraint;
 
 import com.gmail.derynem.service.XmlService;
-import com.gmail.derynem.service.validation.ValidFile;
+import com.gmail.derynem.service.validation.annotation.ValidFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;

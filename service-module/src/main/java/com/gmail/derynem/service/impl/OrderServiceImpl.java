@@ -52,19 +52,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public PageDTO<OrderDTO> getOrderPageInfo(Integer page, Integer limit, UserDTO user) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfOrders;
         if (user == null) {
             countOfOrders = orderRepository.getCountOfOrders(null);
         } else {
             countOfOrders = orderRepository.getCountOfOrders(user.getId());
         }
-        int countOfPages = pageService.getPages(countOfOrders, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfOrders, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         List<Order> orders;
         if (user == null) {
-            orders = orderRepository.getOrders(offset, limit, null);
+            orders = orderRepository.getOrders(offset, validLimit, null);
         } else {
-            orders = orderRepository.getOrders(offset, limit, user.getId());
+            orders = orderRepository.getOrders(offset, validLimit, user.getId());
         }
         List<OrderDTO> dtoList = orders.stream()
                 .map(converter::toDTO)
@@ -77,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Orders info page created, count of pages :{}, count of orders: {}",
                 ordersPageInfo.getCountOfPages(), ordersPageInfo.getEntities().size());
         ordersPageInfo.setPage(page);
-        ordersPageInfo.setLimit(limit);
+        ordersPageInfo.setLimit(validLimit);
         return ordersPageInfo;
     }
 

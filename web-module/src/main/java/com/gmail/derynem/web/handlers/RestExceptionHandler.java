@@ -1,5 +1,6 @@
 package com.gmail.derynem.web.handlers;
 
+import com.gmail.derynem.service.model.api.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,10 @@ public class RestExceptionHandler {
     public ResponseEntity<?> handleControllerException(HttpServletRequest request, Exception e) {
         logger.error(e.getMessage(), e);
         HttpStatus status = getStatus(request);
-        return new ResponseEntity<>(e.getMessage(), status);
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setMessage(e.getMessage());
+        responseDTO.setErrorCode(status.toString());
+        return new ResponseEntity<>(responseDTO, status);
     }
 
     private HttpStatus getStatus(HttpServletRequest request) {

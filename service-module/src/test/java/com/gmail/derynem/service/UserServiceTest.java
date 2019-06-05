@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 import static java.util.Arrays.asList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -51,6 +50,7 @@ public class UserServiceTest {
     private Role validRole;
     private int countOfPages = 4;
     private int countOfUsers = 4;
+    private int limit = 10;
     private PageDTO<UserDTO> usersPageDTO = new PageDTO<>();
 
     @Before
@@ -87,7 +87,7 @@ public class UserServiceTest {
     public void shouldGetListOfUsers() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(asList(validUser, validUser));
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, OFFSET_LIMIT);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, limit);
         Assert.assertNotNull(pageDTO.getEntities());
     }
 
@@ -95,7 +95,7 @@ public class UserServiceTest {
     public void shouldGetEmptyList() {
         int offset = 1;
         Mockito.when(userRepository.findAll(offset, 10)).thenReturn(Collections.emptyList());
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, OFFSET_LIMIT);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(offset, limit);
         Assert.assertEquals(Collections.emptyList(), pageDTO.getEntities());
     }
 
@@ -110,8 +110,8 @@ public class UserServiceTest {
     @Test
     public void shouldGetPages() {
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(countOfUsers);
-        Mockito.when(pageService.getPages(countOfPages, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO pageDTO = userService.getUsersPageInfo(1, OFFSET_LIMIT);
+        Mockito.when(pageService.getPages(countOfPages, limit)).thenReturn(countOfPages);
+        PageDTO pageDTO = userService.getUsersPageInfo(1, limit);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
     }
 
@@ -119,8 +119,8 @@ public class UserServiceTest {
     public void shouldGetPagesIfZeroUsersInDatabase() {
         int count = 0;
         Mockito.when(userRepository.getCountOfEntities()).thenReturn(count);
-        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1, OFFSET_LIMIT);
+        Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
+        PageDTO<UserDTO> pageDTO = userService.getUsersPageInfo(1, limit);
         Assert.assertEquals(countOfPages, pageDTO.getCountOfPages());
     }
 

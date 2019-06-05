@@ -1,6 +1,6 @@
 package com.gmail.derynem.service.model;
 
-import com.gmail.derynem.service.validation.ValidFile;
+import com.gmail.derynem.service.validation.annotation.ValidFile;
 import org.springframework.web.multipart.MultipartFile;
 
 public class UploadDTO {

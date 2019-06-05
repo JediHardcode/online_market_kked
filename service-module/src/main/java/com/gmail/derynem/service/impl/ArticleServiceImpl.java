@@ -69,12 +69,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Transactional
     public PageDTO<ArticleDTO> getArticlePageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfArticles = articleRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfArticles, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfArticles, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         PageDTO<ArticleDTO> articlePageInfo = new PageDTO<>();
         articlePageInfo.setCountOfPages(countOfPages);
-        List<Article> articles = articleRepository.findAll(offset, limit);
+        List<Article> articles = articleRepository.findAll(offset, validLimit);
         List<ArticleDTO> articleDTOS = articles.stream()
                 .map(converter::toDTO)
                 .peek(this::setPreview)
@@ -82,7 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
         articlePageInfo.setEntities(articleDTOS);
         logger.info("count of articles {}, count of pages {}",
                 articlePageInfo.getEntities().size(), articlePageInfo.getCountOfPages());
-        articlePageInfo.setLimit(limit);
+        articlePageInfo.setLimit(validLimit);
         articlePageInfo.setPage(page);
         return articlePageInfo;
     }

@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ReviewServiceTest {
     @Mock
@@ -30,18 +28,19 @@ public class ReviewServiceTest {
     private ReviewService reviewService;
     private int countOfPages = 4;
     private int count = 4;
+    private int limit = 10;
 
     @Before
     public void setUp() {
-        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
+        Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
         reviewService = new ReviewServiceImpl(reviewRepository, reviewConverter, pageService, userRepository);
     }
 
     @Test
     public void shouldGetPagesOfNotHiddenReviews() {
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, OFFSET_LIMIT, false);
+        Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, limit, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 
@@ -49,8 +48,8 @@ public class ReviewServiceTest {
     public void shouldGetPagesIfAllReviewsAreHidden() {
         count = 0;
         Mockito.when(reviewRepository.getCountOfReviews(false)).thenReturn(count);
-        Mockito.when(pageService.getPages(count, OFFSET_LIMIT)).thenReturn(countOfPages);
-        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, OFFSET_LIMIT, false);
+        Mockito.when(pageService.getPages(count, limit)).thenReturn(countOfPages);
+        PageDTO<ReviewDTO> reviewPageInfo = reviewService.getReviewsPageInfo(1, limit, false);
         Assert.assertEquals(countOfPages, reviewPageInfo.getCountOfPages());
     }
 }

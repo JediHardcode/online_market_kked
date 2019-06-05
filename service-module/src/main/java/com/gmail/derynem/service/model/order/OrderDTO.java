@@ -3,9 +3,8 @@ package com.gmail.derynem.service.model.order;
 import com.gmail.derynem.service.model.enums.OrderStatus;
 import com.gmail.derynem.service.model.item.ItemDTO;
 import com.gmail.derynem.service.model.user.UserCommonDTO;
-import com.gmail.derynem.service.validation.ValidQuantity;
+import com.gmail.derynem.service.validation.annotation.ValidQuantity;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

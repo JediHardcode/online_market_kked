@@ -1,6 +1,6 @@
-package com.gmail.derynem.service.validation;
+package com.gmail.derynem.service.validation.annotation;
 
-import com.gmail.derynem.service.validation.constraint.ValidFileValidator;
+import com.gmail.derynem.service.validation.constraint.UniqueEmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidFileValidator.class)
-public @interface ValidFile {
-    String message() default "{file.not.valid}";
+@Constraint(validatedBy = UniqueEmailValidator.class)
+public @interface UniqueEmail {
+    String message() default "{user.email.exist}";
 
     Class<?>[] groups() default {};
 

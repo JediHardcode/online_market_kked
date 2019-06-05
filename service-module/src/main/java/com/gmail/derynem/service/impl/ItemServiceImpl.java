@@ -46,19 +46,20 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public PageDTO<ItemDTO> getItemPageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfItems = itemRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfItems, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfItems, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         PageDTO<ItemDTO> itemPageInfo = new PageDTO<>();
         itemPageInfo.setCountOfPages(countOfPages);
-        List<Item> items = itemRepository.findAll(offset, limit);
+        List<Item> items = itemRepository.findAll(offset, validLimit);
         List<ItemDTO> articleDTOS = items.stream()
                 .map(converter::toDTO)
                 .collect(Collectors.toList());
         itemPageInfo.setEntities(articleDTOS);
         logger.info("count of items {}, count of pages {}",
                 itemPageInfo.getEntities().size(), itemPageInfo.getCountOfPages());
-        itemPageInfo.setLimit(limit);
+        itemPageInfo.setLimit(validLimit);
         itemPageInfo.setPage(page);
         return itemPageInfo;
     }

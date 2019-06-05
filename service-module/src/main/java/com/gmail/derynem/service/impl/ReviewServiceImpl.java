@@ -42,11 +42,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public PageDTO<ReviewDTO> getReviewsPageInfo(Integer page, Integer limit, Boolean isHidden) {
         PageDTO<ReviewDTO> reviewPageDTO = new PageDTO<>();
+        int validLimit = pageService.validateLimit(limit);
         int countOfReviews = reviewRepository.getCountOfReviews(isHidden);
-        int countOfPages = pageService.getPages(countOfReviews, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
+        int countOfPages = pageService.getPages(countOfReviews, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
         reviewPageDTO.setCountOfPages(countOfPages);
-        List<Review> reviewList = reviewRepository.getReviews(offset, limit, isHidden);
+        List<Review> reviewList = reviewRepository.getReviews(offset, validLimit, isHidden);
         if (reviewList == null || reviewList.isEmpty()) {
             logger.info("no available reviews");
             reviewPageDTO.setEntities(Collections.emptyList());
@@ -64,7 +65,7 @@ public class ReviewServiceImpl implements ReviewService {
                     reviewPageDTO.getEntities().size(), reviewPageDTO.getCountOfPages());
         }
         reviewPageDTO.setPage(page);
-        reviewPageDTO.setLimit(limit);
+        reviewPageDTO.setLimit(validLimit);
         return reviewPageDTO;
     }
 

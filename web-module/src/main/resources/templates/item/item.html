@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Article</title>
@@ -24,7 +23,6 @@
                                 </h4>
                                 <p>Description: <span th:text="${item.description}"></span></p>
                                 <p>Price: <span th:text="${item.price}"></span></p>
-                                <p>Art.№: <span th:text="${item.uniqueCode}"></span></p>
                             </div>
                         </form>
                     </th:block>

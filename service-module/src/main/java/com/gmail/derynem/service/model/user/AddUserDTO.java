@@ -1,7 +1,7 @@
 package com.gmail.derynem.service.model.user;
 
 import com.gmail.derynem.service.model.profile.ProfileDTO;
-import com.gmail.derynem.service.validation.UniqueEmail;
+import com.gmail.derynem.service.validation.annotation.UniqueEmail;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -2,7 +2,7 @@ package com.gmail.derynem.service.validation.constraint;
 
 import com.gmail.derynem.service.UserService;
 import com.gmail.derynem.service.model.user.UserDTO;
-import com.gmail.derynem.service.validation.UniqueEmail;
+import com.gmail.derynem.service.validation.annotation.UniqueEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -44,7 +44,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public List<User> findAll(int offset, int limit) {
-        String query = "from " + entityClass.getName() + " e where e.deleted = false";
+        String query = "from " + entityClass.getName() + " e where e.deleted = false order by e.email asc";
         Query q = entityManager.createQuery(query)
                 .setFirstResult(offset)
                 .setMaxResults(limit);

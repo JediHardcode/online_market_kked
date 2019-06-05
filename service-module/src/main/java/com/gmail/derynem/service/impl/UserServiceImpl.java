@@ -62,10 +62,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public PageDTO<UserDTO> getUsersPageInfo(Integer page, Integer limit) {
+        int validLimit = pageService.validateLimit(limit);
         int countOfUsers = userRepository.getCountOfEntities();
-        int countOfPages = pageService.getPages(countOfUsers, limit);
-        int offset = pageService.getOffset(page, countOfPages, limit);
-        List<User> users = userRepository.findAll(offset, limit);
+        int countOfPages = pageService.getPages(countOfUsers, validLimit);
+        int offset = pageService.getOffset(page, countOfPages, validLimit);
+        List<User> users = userRepository.findAll(offset, validLimit);
         List<UserDTO> userDTOList = users.stream()
                 .map(user -> userConverterAssembler.getUserConverter().toDTO(user))
                 .collect(Collectors.toList());

@@ -27,7 +27,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.gmail.derynem.service.constants.PageConstant.OFFSET_LIMIT;
 import static com.gmail.derynem.web.constants.PageNamesConstant.USER_PROFILE_PAGE;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_PRIVATE_USERS;
 import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_USER_PROFILE;
@@ -96,7 +95,7 @@ public class UserControllerIntegrationTest {
     public void shouldRedirectAtUsersPage() {
         Model model = new ExtendedModelMap();
         UpdateRoleDTO updateRoleDTO = new UpdateRoleDTO();
-        String url = userController.showUsers(model, 1, OFFSET_LIMIT, updateRoleDTO);
+        String url = userController.showUsers(model, 1, 10, updateRoleDTO);
         Assert.assertEquals("user/users", url);
     }
 
