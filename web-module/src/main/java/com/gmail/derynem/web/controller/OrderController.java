@@ -1,6 +1,5 @@
 package com.gmail.derynem.web.controller;
 
-import com.gmail.derynem.service.ItemService;
 import com.gmail.derynem.service.OrderService;
 import com.gmail.derynem.service.exception.OrderServiceException;
 import com.gmail.derynem.service.model.PageDTO;
@@ -36,12 +35,9 @@ import static com.gmail.derynem.web.constants.RedirectConstant.REDIRECT_USER_ORD
 public class OrderController {
     private final static Logger logger = LoggerFactory.getLogger(OrderController.class);
     private final OrderService orderService;
-    private final ItemService itemService;
 
-    public OrderController(OrderService orderService,
-                           ItemService itemService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.itemService = itemService;
     }
 
     @GetMapping("/private/orders")
