@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <luquibase.version>3.6.3</luquibase.version>
+        <luquibase.version>4.8.0</luquibase.version>
     </properties>
     <dependencies>
         <dependency>
